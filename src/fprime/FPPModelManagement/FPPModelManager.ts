@@ -376,6 +376,11 @@ export default class FPPModelManager {
     public writeToFile(folderPath: string) {
         const tab: string = "    ";
 
+        let dataTypes: { [key: string]: string; } = {};
+        // TODO: Data Types
+        let portTypes: { [key: string]: string; } = {};
+        // TODO: Data Types
+
 
         this.components.forEach((e: IFPPComponent) => {
             let componentName = e.name;
@@ -390,14 +395,19 @@ export default class FPPModelManager {
             // namespace
             componentContent += "namespace " + e.namespace + "\n\n";
             // component name
-            componentContent += "component" + componentName + " {\n";
+            componentContent += "component " + componentName + " {\n";
             // TODO: kind
 
             // ports
             for (const port of e.ports) {
-                componentContent += tab + "port " + port.name + " {\n";
+                // get type
+                const portType: string = port.properties["type"];
+                componentContent += tab + "port " + port.name + ":" + portType + " {\n";
                 // port properties
                 for (const key in port.properties) {
+                    if (key === "type" || key === "name") {
+                        continue;
+                    }
                     componentContent += tab + tab + key + " = " + port.properties[key] + "\n";
                 }
                 componentContent += tab + "}\n";
@@ -410,6 +420,81 @@ export default class FPPModelManager {
                 }
             });
         });
+
+        // key: namespace
+        // value: content
+        const instanceContent: { [key: string]: string; } = {};
+        this.instances.forEach((e: IFPPInstance) => {
+            let instanceName: string = e.name;
+            const i = instanceName.indexOf(".");
+            const instanceNameSpace = instanceName.substring(0, i);
+            instanceName = instanceName.substring(i + 1);
+            if (!(instanceNameSpace in instanceContent)) {
+                instanceContent[instanceNameSpace] = "namespace " + instanceNameSpace + "\n\n";
+                instanceContent[instanceNameSpace] += "system sys {\n";
+            }
+            // get the component type
+            const instanceType: string = e.properties["type"];
+            // write the instance name first
+            instanceContent[instanceNameSpace] += tab + "instance " + instanceName + ":" + instanceType + " {\n";
+            // write each instance's properties
+            for (const key in e.properties) {
+                if (key === "type" || key === "namespace") {
+                    continue;
+                }
+                instanceContent[instanceNameSpace] += tab + tab + key + " = " + e.properties[key] + "\n";
+            }
+            // closing bracket
+            instanceContent[instanceNameSpace] += tab + "}\n";
+        });
+
+        // key: namespace
+        // value: content
+        const topologyContent: { [key: string]: string; } = {};
+        this.topologies.forEach((e: IFPPTopology) => {
+            let topologyName: string = e.name;
+            const i = topologyName.indexOf(".");
+            const topologyNameSpace = topologyName.substring(0, i);
+            topologyName = topologyName.substring(i + 1);
+            if (!(topologyNameSpace in topologyContent)) {
+                topologyContent[topologyNameSpace] = "";
+            }
+            // write the topology name first
+            topologyContent[topologyNameSpace] += tab + "topology " + topologyName + " {\n";
+            // write each connection
+            for (const connection of e.connections) {
+                // Get rid of namespace
+                let fromInst: string = connection.from.inst.name;
+                fromInst = fromInst.substring(fromInst.indexOf(".") + 1);
+                let fromPort: string = connection.from.port.name;
+                fromPort = fromPort.substring(fromPort.indexOf(".") + 1);
+                let toInst: string = connection.to.inst.name;
+                toInst = toInst.substring(toInst.indexOf(".") + 1);
+                let toPort: string = connection.to.port.name;
+                toPort = toPort.substring(toPort.indexOf(".") + 1);
+
+                topologyContent[topologyNameSpace] += tab + tab;
+                topologyContent[topologyNameSpace] += fromInst + "." + fromPort;
+                topologyContent[topologyNameSpace] += " -> ";
+                topologyContent[topologyNameSpace] += toInst + "." + toPort + "\n";
+            }
+            // closing bracket
+            topologyContent[topologyNameSpace] += tab + "}\n";
+        });
+
+        // write to file for each namespace
+        for (const key in instanceContent) {
+            let instancePath: string = folderPath + "\\" + key;
+            if (!fs.existsSync(instancePath)) {
+                fs.mkdirSync(instancePath);
+            }
+            instancePath += "\\System.fpp";
+            fs.writeFile(instancePath, instanceContent[key] + topologyContent[key] + "}", (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
+        }
     }
 
     private reset() {
