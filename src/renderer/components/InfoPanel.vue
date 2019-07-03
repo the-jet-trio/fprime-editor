@@ -1,5 +1,5 @@
 <template v-slot:header xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-    <v-container class="info-panel">
+    <v-container class="info-panel" v-bind:style="styleObject">
         <v-autocomplete
                 v-model="compAttributes.NameSpace"
                 :items="compAttributes.NameSpaces"
@@ -20,6 +20,7 @@
         ></v-text-field>
         <v-btn color="success" @click="updateComponentInfo()">Update</v-btn>
     </v-container>
+
 </template>
 
 <script lang='ts'>
@@ -50,6 +51,9 @@ import { ViewType } from "../../fprime/FPPModelManagement/FPPModelManager";
                     NameSpaces: [""],
                     Types: [""],
                     Ports: [""],
+                },
+                styleObject: {
+                    display: 'none',
                 }
             };
         },
@@ -81,6 +85,15 @@ import { ViewType } from "../../fprime/FPPModelManagement/FPPModelManager";
         // Get the information of the selected component and assign it to the v-model of the selector.
         methods:{
             showComponentInfo(compType :string, compNamespace: string, compName: string, compBaseID: string){
+                // Check whether the current selected instance is the centric instance of the current view
+                // const oldViewName = this.$route.params.viewName
+                // const newName = this.compAttributes.NameSpace + "." + this.compAttributes.Name;
+                if (this.$route.params.viewName === compNamespace+"."+compName){
+                    this.styleObject.display = "block";
+                }
+                else{
+                    this.styleObject.display = "none";
+                }
                 this.compAttributes.Name = compName;
                 this.compAttributes.BaseID = compBaseID;
                 this.compAttributes.Type = compType;
@@ -114,6 +127,7 @@ import { ViewType } from "../../fprime/FPPModelManagement/FPPModelManager";
                             console.log("Old:", this.OldCompAttributes);
                             console.log("New:", this.compAttributes);
                             this.$root.$emit("updateContent", newName);
+                            this.$route.params.viewName = newName;
                             this.OldCompAttributes.NameSpace = newName.split(".")[0];
                             this.OldCompAttributes.Name = newName.split(".")[1];
                         }
