@@ -141,7 +141,7 @@ class CyManager {
           name: layoutConfig.Name,
           stop: () => {
             this.placeAllPort();
-            this.commonFuncEntries(render.viewType);
+            this.commonFuncEntries();
             this.cy!.fit(undefined, 10);
             // Show the viewport again
             this.container!.style.visibility = "visible";
@@ -206,7 +206,7 @@ class CyManager {
           this.cy!.nodes(nodes).layout(layoutOption).run();
         }
       } else {
-        this.commonFuncEntries(render.viewType);
+        this.commonFuncEntries();
         // Manually fit the viewport if the view does not need layout.
         this.cy!.fit(undefined, 10);
         // Show the viewport again
@@ -343,14 +343,14 @@ class CyManager {
    *  Being called by CyManager when initiate the graph.
    */
 
-  private commonFuncEntries(viewType: string): void {
+  private commonFuncEntries(): void {
     this.removeInvisibleEdge();
     this.movebackAllPort();
     this.stickPort();
     this.appendAnalysisStyle();
     this.addTooltips();
     this.showComponentInfo();
-    this.enableEgdeHandles(viewType);
+    this.enableEgdeHandles();
     fprime.viewManager.updateViewDescriptorFor(this.viewName,
       this.getDescriptor());
   }
@@ -473,15 +473,8 @@ class CyManager {
         });
   }
 
-  private enableEgdeHandles(viewType: string) {
+  private enableEgdeHandles() {
     if(this.cy) {
-      if(viewType !== "Function View") {
-        var eh = (this.cy! as any).edgehandles();
-        console.log("destroy");
-        
-        if(eh) eh.destroy();
-        return;
-      }
       // the default values of each option are outlined below:
       let defaults = {
         handleNodes: '.fprime-port-out',
@@ -490,25 +483,16 @@ class CyManager {
             return 'flat';
           }
           else return null;
-        }
+        },
+        complete: function( sourceNode:  any , targetNode:  any , addedEles :  any ){
+          // fired when edgehandles is done and elements are added
+          console.log("Edge Type source: ");
+          console.dir(sourceNode);
+          console.log("Edge Type target: ");
+          console.dir(targetNode);
+        },
       };
       var eh = (this.cy! as any).edgehandles(defaults);
-      (this.cy! as any) .on('ehstart', (event: any, sourceNode: any) => {
-        (this.cy!.style() as any).selector('.fprime-port-in').style({
-          'border-color': 'red'
-        }).update();
-      });
-      (this.cy! as any) .on('ehstop', (event: any, sourceNode: any) => {
-        (this.cy!.style() as any).selector('.fprime-port-in').style({
-          'border-color': "rgb(158,173,145)"
-        }).update();
-      });
-      (this.cy! as any) .on('ehcomplete', (event: any, sourceNode: any, targetNode: any, addedEles: any) => {
-        console.log(this.cy!.elements('edge').data());
-        
-        
-        fprime.viewManager.addConnection(this.viewName, sourceNode.id(), targetNode.id());
-      });
     }
   }
 
