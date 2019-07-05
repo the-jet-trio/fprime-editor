@@ -307,7 +307,48 @@
                 CyManager.endUpdate();
             },
         }
-    });
+        this.loadAnalysisInfo();
+      },
+      /**
+       * Load the current selected analyzer's result.
+       */
+      loadAnalysisInfo() {
+        const viewName = this.$route.params.viewName;
+        const viewType = this.$route.params.viewType;
+        if (!viewName || !viewType) {
+          return;
+        }
+        CyManager.startUpdate(viewName, {
+          viewType: viewType,
+          needLayout: false,
+          descriptor: CyManager.getDescriptor(),
+          elesHasPosition: [],
+          elesNoPosition: [],
+        });
+        CyManager.endUpdate();
+      },
+      /**
+       * Apply the current selected layout algorithm to the current view. This
+       * would reset the positions of all the elements.
+       */
+      changeLayout() {
+        const viewName = this.$route.params.viewName;
+        const viewType = this.$route.params.viewType;
+        if (!viewName || !viewType) {
+          return;
+        }
+        CyManager.startUpdate(viewName, {
+          viewType: viewType,
+          needLayout: true,
+          descriptor: CyManager.getDescriptor(),
+          elesHasPosition: [],
+          elesNoPosition: [],
+        });
+        CyManager.endUpdate();
+      },
+    }
+  });
+
 </script>
 
 <style>
