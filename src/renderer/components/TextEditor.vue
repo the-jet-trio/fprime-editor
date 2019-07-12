@@ -35,12 +35,21 @@
     export default {
         data () {
             return {
-                code: 'const a = 10',
+                code: 'namespace Ref\n' +
+                    ' \n' +
+                    'component PingReceiver {\n' +
+                    '    kind = active\n' +
+                    '    port PingIn:Svc.Ping {\n' +
+                    '        direction = in\n' +
+                    '        kind = async\n' +
+                    '        number = 1     \n' +
+                    '    }\n' +
+                    '}',
                 cmOptions: {
                     // codemirror options
                     tabSize: 4,
                     mode: 'text/javascript',
-                    theme: 'base16-dark',
+                    theme: 'default',
                     lineNumbers: true,
                     line: true,
                     // more codemirror options, 更多 codemirror 的高级配置...
