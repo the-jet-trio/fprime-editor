@@ -32,19 +32,12 @@
     import 'codemirror/theme/base16-dark.css'
     // more codemirror resources
     // import 'codemirror/some-resource...'
+    import fprime from "../../fprime";
+    import FPPModelManager from "../../fprime/FPPModelManagement/FPPModelManager.ts";
     export default {
         data () {
             return {
-                code: 'namespace Ref\n' +
-                    ' \n' +
-                    'component PingReceiver {\n' +
-                    '    kind = active\n' +
-                    '    port PingIn:Svc.Ping {\n' +
-                    '        direction = in\n' +
-                    '        kind = async\n' +
-                    '        number = 1     \n' +
-                    '    }\n' +
-                    '}',
+                code: "",
                 cmOptions: {
                     // codemirror options
                     tabSize: 4,
@@ -59,6 +52,20 @@
         methods: {
             onCmReady(cm) {
                 console.log('the editor is readied!', cm)
+                this.code = "namespace Ref\n" +
+                    "\n" +
+                    "component PingReceiver {\n" +
+                    "    kind = active\n" +
+                    "    port PingIn:Svc.Ping {\n" +
+                    "        direction = in\n" +
+                    "        kind = async\n" +
+                    "        number = 1\n" +
+                    "    }\n" +
+                    "    port PingOut:Svc.Ping {\n" +
+                    "        direction = out\n" +
+                    "        number = 1\n" +
+                    "    }\n" +
+                    "}"
             },
             onCmFocus(cm) {
                 console.log('the editor is focus!', cm)
