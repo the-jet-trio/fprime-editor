@@ -167,5 +167,11 @@ export default {
   getComponents() {
     return fprime.viewManager.getComponents();
   },
+    /**
+     * Get all the ports in the current model.
+     */
+    getPorts() {
+        return fprime.viewManager.getPorts();
+    },
 
 };

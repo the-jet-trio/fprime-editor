@@ -234,6 +234,10 @@ export default class FPPModelManager {
     public getComponents() {
       return this.components;
     }
+
+    public getPorts() {
+        return this.porttypes;
+    }
   /**
    * Add a new port type to the current model
    * The default values of the port should includes:
@@ -412,18 +416,27 @@ export default class FPPModelManager {
     return true;
   }
 
+
+    /**
+     * Update the model
+     */
   public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
     // @TODO: daiyi
-    this.instances.forEach((i) => {
-      if (i.name === attrs["OldName"]) {
-        console.log("Before",i);
-        i.name = attrs["NewName"];
-        i.properties["type"] = attrs["Type"];
-        i.properties["namespace"] = attrs["NameSpace"];
-        i.properties["base_id_window"] = attrs["BaseID"];
-        console.log("After",i);
+      if (type === ViewType.InstanceCentric) {
+          this.instances.forEach((i) => {
+              if (i.name === attrs["OldName"]) {
+                  console.log("Before", i);
+                  i.name = attrs["NewName"];
+                  i.properties["type"] = attrs["Type"];
+                  i.properties["namespace"] = attrs["NameSpace"];
+                  i.properties["base_id_window"] = attrs["BaseID"];
+                  console.log("After", i);
+              }
+          });
       }
-    })
+      if (type === ViewType.Component){
+          console.log("component!");
+      }
     return true;
   }
   /**

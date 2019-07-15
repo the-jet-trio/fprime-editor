@@ -452,6 +452,15 @@ export default class ViewManager {
     return this.modelManager.getComponents();
   }
   /**
+   * /**
+   * Get all the ports in the model
+   */
+  public async getPorts(){
+    const viewlist = await this.modelManager.loadModel(
+        this.configManager.Config, this);
+    return this.modelManager.getPorts();
+  }
+  /**
    * Add a new default component to the view list
    */
   public addNewItem(type: string, compName? : string) : IViewListItem {

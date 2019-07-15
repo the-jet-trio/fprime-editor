@@ -251,6 +251,23 @@ class CyManager {
   }
 
   /**
+   * bind the click event with component view
+   */
+  public showCompView(el: any, type: string): void{
+    if (this.cy) {
+      // if (type === "ComponentView") {
+      //   console.log(el.map());
+      //   const ele = el.cy();
+      //   ele.on("click", () => {
+      //     console.log("yo!");
+      //   });
+      // } else {
+      //   console.log("hi");
+      // }
+    }
+  }
+
+  /**
    * set a collection of elements to be a certain color
    * @param eles collection of elements (implicitly of the same type)
    * @param color value of color to change
@@ -348,6 +365,7 @@ class CyManager {
     this.appendAnalysisStyle();
     this.addTooltips();
     this.showComponentInfo();
+    this.showComponentView();
     fprime.viewManager.updateViewDescriptorFor(this.viewName,
       this.getDescriptor());
   }
@@ -480,10 +498,17 @@ class CyManager {
   }
 
   /**
+   * This is an empty function in order to be exposed to InfoPanel.vue
+   */
+  public cyShowComponentView(name: string, namespace: string, kind: string): void{
+
+  }
+  /**
    * This function binds each node on the canvas with a click event so that
    * the info panel can show the information of the selected component.
    */
   public showComponentInfo(): void {
+    // For instance-centric view
     this.cy!.nodes().filter((node) => {
       return Object.keys(node.data("properties")).length !== 0;
     })
@@ -499,6 +524,21 @@ class CyManager {
       });
   }
 
+  /**
+   * This functions binds the nodes in component views with a click envent so that
+   * the info panel canshow the information of the selected component.
+   */
+  public showComponentView(): void {
+    // For component view
+    this.cy!.nodes(".fprime-component").forEach((node: any) =>{
+      node.on("click", () => {
+        const name = node.data().label;
+        const namespace = name.split(".")[0];
+        const kind = node.data().kind;
+        this.cyShowComponentView(name, namespace, kind);
+      });
+    });
+  }
   public cyUpdateComponentInfo(compName: string, compNameSpace: string):void{
 
   }
