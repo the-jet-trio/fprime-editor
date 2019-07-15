@@ -489,7 +489,7 @@ export default class FPPModelManager {
       // check if the inst has another conn
       // if not, keep the inst exist in the topo
       var id = findIndex(topology.connections, (i: IFPPConnection) => {
-        return i.from.inst === source || i.to!.inst === source;
+        return i.from.inst === source || (i.to && i.to.inst === source);
       })
       // generate an empty connection for the instance
       if(id === -1) topology.connections.push(
@@ -502,7 +502,7 @@ export default class FPPModelManager {
 
       // same for target
       id = findIndex(topology.connections, (i: IFPPConnection) => {
-        return i.from.inst === target || i.to!.inst === target;
+        return i.from.inst === target || (i.to && i.to.inst === target);
       })
       if(id === -1) topology.connections.push(
         {
@@ -524,10 +524,31 @@ export default class FPPModelManager {
     if(inst == undefined) return false;
 
     // delete all related connections contains inst
+    const related: IFPPInstance[] = [];
     topology.connections = topology.connections.filter((con) => {
-      if(con.from.inst === inst) return false;
-      else if (con.to && con.to.inst === inst) return false;
+      if(con.from.inst === inst) {
+        if(con.to) related.push(con.to.inst);
+        return false;
+      }
+      else if (con.to && con.to.inst === inst) {
+        related.push(con.from.inst);
+        return false;
+      }
       else return true;
+    })
+
+    related.forEach((inst) => {
+      var id = findIndex(topology.connections, (i: IFPPConnection) => {
+        return i.from.inst === inst || (i.to && i.to.inst === inst);
+      })
+      // generate an empty connection for the instance
+      if(id === -1) topology.connections.push(
+        {
+          from: {
+            inst: inst
+          }
+        }
+      );
     })
     return true;
   }
