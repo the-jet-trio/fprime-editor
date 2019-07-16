@@ -292,10 +292,16 @@ export default class ViewDescriptor {
     this.descriptor = desc;
   }
 
+  public updateStyle(old: {[id: string] : IStyle}) {
+    Object.keys(old).forEach((id) => {
+      this.descriptor[id] = old[id];
+    })
+  }
+
   /**
    * Return an array of IStyle from the view descriptor for saving purpose.
    */
-  public get CSSStyles() {
+  public get CSSStyles() : IStyle[] {
     return Object.keys(this.descriptor).map((key) => this.descriptor[key]);
   }
 
