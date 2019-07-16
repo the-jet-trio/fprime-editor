@@ -461,10 +461,23 @@ export default class ViewManager {
   /**
    * Get all the components in the model
    */
-  public async getComponents(){
+  public async getComponents() {
     const viewlist = await this.modelManager.loadModel(
         this.configManager.Config, this);
     return this.modelManager.getComponents();
+  }
+  /**
+   * Get all the text in the model
+   */
+  public async getText() {
+    this.modelManager.generateText();
+    return this.modelManager.getText();
+  }
+  /**
+   * Generate text according to the model
+   */
+  public async generateText() {
+    this.modelManager.generateText();
   }
   /**
    * Add a new default component to the view list

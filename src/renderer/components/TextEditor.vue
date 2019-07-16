@@ -32,11 +32,11 @@
     import 'codemirror/theme/base16-dark.css'
     // more codemirror resources
     // import 'codemirror/some-resource...'
-    import fprime from "../../fprime";
-    import FPPModelManager from "../../fprime/FPPModelManagement/FPPModelManager.ts";
+    import view from "@/store/view";
     export default {
         data () {
             return {
+                text: {},
                 code: "",
                 cmOptions: {
                     // codemirror options
@@ -52,20 +52,6 @@
         methods: {
             onCmReady(cm) {
                 console.log('the editor is readied!', cm)
-                this.code = "namespace Ref\n" +
-                    "\n" +
-                    "component PingReceiver {\n" +
-                    "    kind = active\n" +
-                    "    port PingIn:Svc.Ping {\n" +
-                    "        direction = in\n" +
-                    "        kind = async\n" +
-                    "        number = 1\n" +
-                    "    }\n" +
-                    "    port PingOut:Svc.Ping {\n" +
-                    "        direction = out\n" +
-                    "        number = 1\n" +
-                    "    }\n" +
-                    "}"
             },
             onCmFocus(cm) {
                 console.log('the editor is focus!', cm)
@@ -78,11 +64,20 @@
         computed: {
             codemirror() {
                 return this.$refs.myCm.codemirror
+            },
+            getText: function () {
+                view.getText().then(value => {
+                    if (Object.keys(value).length !== 0) {
+                        this.code = Object.keys(value)[0];
+                    }
+                    console.dir(value)
+                });
             }
         },
         mounted() {
             console.log('this is current codemirror object', this.codemirror)
+            this.getText;
             // you can use this.codemirror to do something...
-        }
+        },
     }
 </script>

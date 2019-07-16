@@ -2,6 +2,7 @@ import IConfig from "../Common/Config";
 import DataImporter, { IOutput } from "../DataImport/DataImporter";
 import fs from "fs";
 import {remove, findIndex} from "lodash";
+import * as path from "path";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
 
@@ -13,6 +14,23 @@ export enum ViewType {
     InstanceCentric = "InstanceCentric View",
     Component = "Component View",
     PortType = "PortType View",
+}
+
+/**
+ * A data type defined
+ */
+export interface IFPPDataType {
+    namespace: string;
+    name: string;
+}
+
+/**
+ * An enum type defined
+ */
+export interface IFPPEnumType {
+    namespace: string;
+    name: string;
+    arg: { [key: string]: number};
 }
 
 /**
@@ -83,6 +101,8 @@ export interface IFPPModel {
 export default class FPPModelManager {
     private text: {[fileName: string]: string} = {};
     private dataImporter: DataImporter = new DataImporter();
+    private datatypes: IFPPDataType[] = [];
+    private enumtypes: IFPPEnumType[] = [];
     private instances: IFPPInstance[] = [];
     private topologies: IFPPTopology[] = [];
     private components: IFPPComponent[] = [];
@@ -106,6 +126,18 @@ export default class FPPModelManager {
         if (data == null || data.length === 0) {
             throw new Error("fail to parse model data, model is null!");
         }
+
+        data.forEach((i: any) => {
+            this.datatypes = this.datatypes.concat(this.generateDataType(
+                i.namespace.data_type,
+            ));
+        });
+
+        data.forEach((i: any) => {
+            this.enumtypes = this.enumtypes.concat(this.generateEnumType(
+                i.namespace.enum,
+            ));
+        });
 
         data.forEach((i: any) => {
             this.porttypes = this.porttypes.concat(this.generatePortType(
@@ -147,7 +179,12 @@ export default class FPPModelManager {
             instances: [],
             components: [],
             porttypes: [],
+            datatypes: [],
         };
+
+        this.datatypes.forEach((e: IFPPDataType) => {
+            viewlist.datatypes.push(e.name);
+        });
         this.topologies.forEach((e: IFPPTopology) => {
             viewlist.topologies.push(e.name);
         });
@@ -171,6 +208,7 @@ export default class FPPModelManager {
             output.appendOutput("Generate view list...");
         }
 
+        console.dir(this.enumtypes);
         // Generate text
         this.generateText();
         console.dir(this.text);
@@ -247,7 +285,7 @@ export default class FPPModelManager {
         return this.components;
     }
     public getText() {
-        return Object.keys(this.text)[0];
+        return this.text;
     }
     /**
      * Add a new port type to the current model
@@ -563,6 +601,15 @@ export default class FPPModelManager {
      */
     public writeToFile(folderPath: string) {
         this.generateText();
+        fs.readdir(folderPath, (err, files) => {
+            if (err) throw err;
+
+            for (const file of files) {
+                fs.unlink(path.join(folderPath, file), err => {
+                    if (err) throw err;
+                });
+            }
+        });
         for (const key in this.text) {
             const fileName = folderPath + "\\" + key;
             mkdirp(getDirName(fileName), function(dir_err: any) {
@@ -576,6 +623,7 @@ export default class FPPModelManager {
                 }
             });
         }
+        console.dir(this.text);
     }
 
     /**
@@ -587,8 +635,27 @@ export default class FPPModelManager {
 
         const tab: string = "    ";
 
-        const dataTypes: { [key: string]: string; } = {};
         // TODO: Data Types INCLUDING fprime.fpp
+        this.datatypes.forEach((e: IFPPDataType) => {
+            const dataTypePath: string = e.namespace + "\\DataType.fpp";
+            if (!(dataTypePath in this.text)) {
+                this.text[dataTypePath] = "namespace " + e.namespace + "\n\n";
+            }
+            this.text[dataTypePath] += "datatype " + e.name + "\n";
+        });
+
+        this.enumtypes.forEach((e: IFPPEnumType) => {
+            const enumTypePath: string = e.namespace + "\\DataType.fpp";
+            if (!(enumTypePath in this.text)) {
+                this.text[enumTypePath] = "namespace " + e.namespace + "\n\n";
+            }
+            this.text[enumTypePath] += "enum " + e.name + " {\n";
+            for (const key in e.arg) {
+                const value = e.arg[key];
+                this.text[enumTypePath] += tab + key + " = " + value + "\n";
+            }
+            this.text[enumTypePath] += "}\n\n";
+        });
 
         this.porttypes.forEach((e: IFPPPortType) => {
             let portTypePath: string = e.namespace;
@@ -784,6 +851,9 @@ export default class FPPModelManager {
         this.instances = [];
         this.topologies = [];
         this.components = [];
+        this.datatypes = [];
+        this.enumtypes = [];
+        this.text = {};
     }
 
     private generatePortType(porttypes: any[]): IFPPPortType[] {
@@ -801,6 +871,46 @@ export default class FPPModelManager {
             const pt: IFPPPortType = {
                 name: ele.$.name,
                 namespace: ele.$.namespace,
+                arg: args,
+            };
+            res.push(pt);
+        });
+
+        return res;
+    }
+
+    private generateDataType(datatypes: any[]): IFPPDataType[] {
+        const res: IFPPDataType[] = [];
+
+        if (datatypes == null || datatypes.length === 0) {
+            return res;
+        }
+
+        datatypes.forEach((ele: any) => {
+            const pt: IFPPDataType = {
+                name: ele.$.name,
+                namespace: ele.$.namespace,
+            };
+            res.push(pt);
+        });
+
+        return res;
+    }
+
+    private generateEnumType(enumtypes: any[]): IFPPEnumType[] {
+        const res: IFPPEnumType[] = [];
+        if (enumtypes == null || enumtypes.length === 0) {
+            return res;
+        }
+
+        enumtypes.forEach((ele: any) => {
+            const args: {[key: string]: number} = {};
+            ele.item.forEach((a: any) => {
+                args[a.$.name] = a._;
+            });
+            const pt: IFPPEnumType = {
+                name: ele.$.name,
+                namespace: "fprime",
                 arg: args,
             };
             res.push(pt);
