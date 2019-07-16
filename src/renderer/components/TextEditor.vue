@@ -32,19 +32,12 @@
     import 'codemirror/theme/base16-dark.css'
     // more codemirror resources
     // import 'codemirror/some-resource...'
+    import view from "@/store/view";
     export default {
         data () {
             return {
-                code: 'namespace Ref\n' +
-                    ' \n' +
-                    'component PingReceiver {\n' +
-                    '    kind = active\n' +
-                    '    port PingIn:Svc.Ping {\n' +
-                    '        direction = in\n' +
-                    '        kind = async\n' +
-                    '        number = 1     \n' +
-                    '    }\n' +
-                    '}',
+                text: {},
+                code: "",
                 cmOptions: {
                     // codemirror options
                     tabSize: 4,
@@ -71,11 +64,20 @@
         computed: {
             codemirror() {
                 return this.$refs.myCm.codemirror
+            },
+            getText: function () {
+                view.getText().then(value => {
+                    if (Object.keys(value).length !== 0) {
+                        this.code = Object.keys(value)[0];
+                    }
+                    console.dir(value)
+                });
             }
         },
         mounted() {
             console.log('this is current codemirror object', this.codemirror)
+            this.getText;
             // you can use this.codemirror to do something...
-        }
+        },
     }
 </script>
