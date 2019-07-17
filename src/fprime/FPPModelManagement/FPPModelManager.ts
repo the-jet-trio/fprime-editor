@@ -185,6 +185,11 @@ export default class FPPModelManager {
         this.datatypes.forEach((e: IFPPDataType) => {
             viewlist.datatypes.push(e.name);
         });
+
+        this.enumtypes.forEach((e: IFPPDataType) => {
+            viewlist.datatypes.push(e.name);
+        });
+
         this.topologies.forEach((e: IFPPTopology) => {
             viewlist.topologies.push(e.name);
         });

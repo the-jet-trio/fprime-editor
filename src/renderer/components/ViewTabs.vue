@@ -114,6 +114,7 @@ export default Vue.extend({
     this.$root.$on('closeTab', (name: string) => {
       this.closeTab(name);
     });
+
   },
   updated() {
     if (this.$route.params.viewName) {

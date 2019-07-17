@@ -80,7 +80,8 @@
                 <info-panel id="info-panel"></info-panel>
                 <option-floats></option-floats>
                 <router-view :height="25"></router-view>
-                <message-panel :offset="24"></message-panel>
+<!--                <message-panel :offset="24"></message-panel>-->
+                <MessagePanel :offset="24" ref = "msg"></MessagePanel>
             </v-content>
             <!-- app footer -->
             <message-footer :height="24"></message-footer>
@@ -120,6 +121,7 @@
         },
         data() {
             return {
+                // bus: new Vue(),
                 processBar: false,
                 layoutAlgorithms: fprime.viewManager.LayoutAlgorithms,
                 analyzers: fprime.viewManager.Analyzers,
@@ -198,6 +200,9 @@
                     view.CloseAll();
                     this.$router.replace("/");
                     this.showOutputPanel();
+                    console.dir(this.$refs);
+                    (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
+                    // this.bus.$emit('generateText');
                 }
             },
             /**
@@ -239,6 +244,17 @@
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                 }
+                const path = require('path');
+                fs.readdir(dir, (err, files) => {
+                    if (err) throw err;
+
+                    for (const file of files) {
+                        fs.unlink(path.join(dir, file), err => {
+                            if (err) throw err;
+                        });
+                    }
+                });
+                // Write text to folder and load it
                 fprime.viewManager.writeToFile("./~tmp");
                 this.processBar = true;
                 await fprime.viewManager.build(dir);
@@ -247,6 +263,9 @@
                 this.$router.replace("/");
                 this.showOutputPanel();
                 view.generateText();
+                // Delete ~tmp folder
+                const rimraf = require("rimraf");
+                rimraf(dir, function () {});
             },
             /**
              * Save the view to file
