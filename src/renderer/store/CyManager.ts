@@ -222,8 +222,8 @@ class CyManager {
    * endUpdate will call the batch function where to execute the updating.
    */
   public endUpdate() {
-    if (this.batch) {
-      this.cy!.batch(this.batch);
+    if (this.cy && this.batch) {
+      this.cy.batch(this.batch);
       this.batch = undefined;
     }
   }
@@ -500,10 +500,12 @@ class CyManager {
           'border-color': "rgb(158,173,145)"
         }).update();
       });
-      (this.cy! as any) .on('ehcomplete', (_0: any, sourceNode: any, targetNode: any, _3: any) => {
+      (this.cy! as any) .on('ehcomplete', (_0: any, sourceNode: any, targetNode: any, addEdge: any) => {
         console.log(sourceNode.data());
         
         fprime.viewManager.addConnection(this.viewName, sourceNode.id(), targetNode.id());
+        addEdge.addClass('port-port');
+        this.configMenu();
       });
     }
   }
