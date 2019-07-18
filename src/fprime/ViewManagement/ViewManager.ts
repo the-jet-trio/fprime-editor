@@ -482,6 +482,7 @@ export default class ViewManager {
         this.configManager.Config, this);
     return this.modelManager.getComponents();
   }
+
   /**
    * Get all the text in the model
    */

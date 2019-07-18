@@ -186,4 +186,4 @@ export default {
         fprime.viewManager.generateText();
     },
 
-};
+}

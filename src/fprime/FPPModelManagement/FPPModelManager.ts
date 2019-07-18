@@ -168,11 +168,11 @@ export default class FPPModelManager {
                 return;
             }
 
-            this.topologies = this.topologies.concat(this.generateTopologies(
-                i.namespace.$.name,
-                i.namespace.system[0].topology,
-            ));
-        });
+      this.topologies = this.topologies.concat(this.generateTopologies(
+        i.namespace.$.name,
+        i.namespace.system[0].topology,
+      ));
+    });
 
         // Return the view list of the model
         const viewlist: { [k: string]: string[] } = {
@@ -412,7 +412,7 @@ export default class FPPModelManager {
      * deleteDataType
      * @param name item to delete
      */
-    public deleteDataType(name: string): boolean{
+    public deleteDataType(name: string): boolean {
         this.datatypes = this.datatypes.filter((i) => i.name !== name);
         return true;
     }
@@ -635,20 +635,29 @@ export default class FPPModelManager {
     return true;
   }
 
-  public updateAttributes(_: string, attrs: {[attrname: string]: string}): boolean {
+    /**
+     * Update the model
+     */
+  public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
     // @TODO: daiyi
-    this.instances.forEach((i) => {
-      if (i.name === attrs["OldName"]) {
-        console.log("Before",i);
-        i.name = attrs["NewName"];
-        i.properties["type"] = attrs["Type"];
-        i.properties["namespace"] = attrs["NameSpace"];
-        i.properties["base_id_window"] = attrs["BaseID"];
-        console.log("After",i);
+      if (type === ViewType.InstanceCentric) {
+          this.instances.forEach((i) => {
+              if (i.name === attrs["OldName"]) {
+                  console.log("Before", i);
+                  i.name = attrs["NewName"];
+                  i.properties["type"] = attrs["Type"];
+                  i.properties["namespace"] = attrs["NameSpace"];
+                  i.properties["base_id_window"] = attrs["BaseID"];
+                  console.log("After", i);
+              }
+          });
       }
-    })
+      if (type === ViewType.Component){
+          console.log("component!");
+      }
     return true;
   }
+
   /**
    * Output the model into the selected folder
    */
@@ -890,7 +899,6 @@ export default class FPPModelManager {
 
             // Concatenate to text
             this.text[instancePath] += instanceContent[key] + topologyContent[key] + "}";
-
             // fs.writeFile(instancePath, instanceContent[key] + topologyContent[key] + "}", (err) => {
             //     if (err) {
             //         throw err;
