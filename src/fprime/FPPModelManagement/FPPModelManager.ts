@@ -600,7 +600,7 @@ export default class FPPModelManager {
     return true;
   }
 
-  public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
+  public updateAttributes(_: string, attrs: {[attrname: string]: string}): boolean {
     // @TODO: daiyi
     this.instances.forEach((i) => {
       if (i.name === attrs["OldName"]) {

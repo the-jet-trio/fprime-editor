@@ -471,7 +471,7 @@ export default class ViewManager {
    * Get all the components in the model
    */
   public async getComponents() {
-    const viewlist = await this.modelManager.loadModel(
+    await this.modelManager.loadModel(
         this.configManager.Config, this);
     return this.modelManager.getComponents();
   }
