@@ -109,7 +109,7 @@ export default Vue.extend({
       },
       menuitems: [{ title: "add" }, { title: "delete" }],
       viewlist: View.state.views,
-      toggle: [false, false, false, false]
+      toggle: [false, false, false, false, false]
     };
   },
   computed: {
@@ -186,13 +186,13 @@ export default Vue.extend({
     dragStart(viewtype: string, itemname: string, e: any) {
       if(viewtype === ViewType.PortType) {
         // drag a port to a component
-        this.toggle = [false, true, false, false] // open 2nd category
+        this.toggle = [false, false, true, false, false] // open 3rd category
       } else if(viewtype === ViewType.Component) {
         // drag a component to instantiate
-        this.toggle = [false, false, true, false] // open 3rd category
+        this.toggle = [false, false, false, true, false] // open 4th category
       } else if (viewtype === ViewType.InstanceCentric) {
         // drag an instance to a function view
-        this.toggle = [false, false, false, true] // open 4th category
+        this.toggle = [false, false, false, false, true] // open 5th category
       }
       
       e.dataTransfer.setData("text/plain", viewtype + "&" + itemname);

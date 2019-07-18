@@ -14,6 +14,7 @@ export enum ViewType {
     InstanceCentric = "InstanceCentric View",
     Component = "Component View",
     PortType = "PortType View",
+    DataType = "DataType View",
 }
 
 /**
@@ -292,6 +293,18 @@ export default class FPPModelManager {
     public getText() {
         return this.text;
     }
+
+    /**
+     * addNewDataType
+     */
+    public addNewDataType(defaultName: string) {
+        const item: IFPPDataType = {
+            name: defaultName,
+            namespace: "undefined",
+        };
+        this.datatypes.push(item);
+    }
+
     /**
      * Add a new port type to the current model
      * The default values of the port should includes:
@@ -395,6 +408,19 @@ export default class FPPModelManager {
         // TODO: (async) update the model data
     }
 
+    /**
+     * deleteDataType
+     * @param name item to delete
+     */
+    public deleteDataType(name: string): boolean{
+        this.datatypes = this.datatypes.filter((i) => i.name !== name);
+        return true;
+    }
+
+    /**
+     * deletePortType
+     * @param name item to delete
+     */
     public deletePortType(name: string): boolean {
         this.porttypes = this.porttypes.filter((i) => i.name !== name);
         return true;
@@ -410,6 +436,10 @@ export default class FPPModelManager {
         return true;
     }
 
+    /**
+     * deleteInstance
+     * @param name item to delete
+     */
     public deleteInstance(name: string): boolean {
         this.instances = this.instances.filter((i) => i.name !== name);
         return true;
@@ -870,6 +900,7 @@ export default class FPPModelManager {
     }
 
     private reset() {
+        this.datatypes = [];
         this.porttypes = [];
         this.instances = [];
         this.topologies = [];
