@@ -33,7 +33,9 @@
     // more codemirror resources
     // import 'codemirror/some-resource...'
     import view from "@/store/view";
-    export default {
+    import Vue from "vue";
+    export default Vue.extend({
+        name: "text-editor",
         data () {
             return {
                 text: {},
@@ -59,6 +61,10 @@
             onCmCodeChange(newCode) {
                 console.log('this is new code', newCode)
                 this.code = newCode
+            },
+            generateText() {
+                this.getText;
+                console.dir(this.code);
             }
         },
         computed: {
@@ -68,16 +74,16 @@
             getText: function () {
                 view.getText().then(value => {
                     if (Object.keys(value).length !== 0) {
-                        this.code = Object.keys(value)[0];
+                        this.code = value[Object.keys(value)[0]];
                     }
                     console.dir(value)
                 });
             }
         },
-        mounted() {
-            console.log('this is current codemirror object', this.codemirror)
-            this.getText;
-            // you can use this.codemirror to do something...
+        mounted: function () {
+            this.$root.$on('generateText', () => {
+                this.getText;
+            });
         },
-    }
+    })
 </script>
