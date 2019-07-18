@@ -74,7 +74,7 @@
             getText: function () {
                 view.getText().then(value => {
                     if (Object.keys(value).length !== 0) {
-                        this.code = Object.keys(value)[0];
+                        this.code = value[Object.keys(value)[0]];
                     }
                     console.dir(value)
                 });
