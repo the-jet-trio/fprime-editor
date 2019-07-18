@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div id="app">
         <v-app>
             <!-- app top toolbar -->
@@ -8,41 +8,77 @@
                 <v-toolbar-title class="mr-3">FPrime Editor</v-toolbar-title>
 
                 <!-- new project button -->
-                <v-btn small icon @click="newProject">
-                    <v-icon>create_new_folder</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon @click="newProject" v-on="on">
+                            <v-icon>create_new_folder</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>New Project</span>
+                </v-tooltip>
 
                 <!-- open button -->
-                <v-btn small icon @click="openProject">
-                    <v-icon>folder_open</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon @click="openProject" v-on="on">
+                            <v-icon>folder_open</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>Open Project</span>
+                </v-tooltip>
 
-                <!-- build button -->
-                <v-btn small icon @click="rebuild">
-                    <v-icon>play_circle_filled</v-icon>
-                </v-btn>
+<!--                &lt;!&ndash; build button &ndash;&gt;-->
+<!--                <v-tooltip bottom>-->
+<!--                    <template v-slot:activator="{ on }">-->
+<!--                        <v-btn small icon @click="rebuild" v-on="on">-->
+<!--                            <v-icon>play_circle_filled</v-icon>-->
+<!--                        </v-btn>-->
+<!--                    </template>-->
+<!--                    <span>Rebuild</span>-->
+<!--                </v-tooltip>-->
 
-                <!-- save button -->
-                <v-btn small icon @click="saveView">
-                    <v-icon>color_lens</v-icon>
-                </v-btn>
+<!--                &lt;!&ndash; save color button &ndash;&gt;-->
+<!--                <v-tooltip bottom>-->
+<!--                    <template v-slot:activator="{ on }">-->
+<!--                        <v-btn small icon @click="saveView" v-on="on">-->
+<!--                            <v-icon>color_lens</v-icon>-->
+<!--                        </v-btn>-->
+<!--                    </template>-->
+<!--                    <span>Save Style</span>-->
+<!--                </v-tooltip>-->
 
                 <!-- write to file button -->
-                <v-btn small icon @click="writeToFile">
-                    <v-icon>save</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon @click="writeToFile" v-on="on">
+                            <v-icon>save</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>Save Project</span>
+                </v-tooltip>
 
                 <!-- refresh button -->
-                <v-btn small icon @click="applyText">
-                    <v-icon>refresh</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon @click="applyText" v-on="on">
+                            <v-icon>refresh</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>Recompile</span>
+                </v-tooltip>
 
                 <v-divider vertical></v-divider>
 
                 <!-- analysis button -->
-                <v-btn small icon @click="invokeAnalyzer">
-                    <v-icon>insert_chart</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon @click="invokeAnalyzer" v-on="on">
+                            <v-icon>insert_chart</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>Analyze</span>
+                </v-tooltip>
+
                 <toolbar-selector
                         :option-list="analyzers"
                         :on-change="loadAnalysisInfo"
@@ -80,7 +116,8 @@
                 <info-panel id="info-panel"></info-panel>
                 <option-floats></option-floats>
                 <router-view :height="25"></router-view>
-                <message-panel :offset="24"></message-panel>
+<!--                <message-panel :offset="24"></message-panel>-->
+                <MessagePanel :offset="24" ref = "msg"></MessagePanel>
             </v-content>
             <!-- app footer -->
             <message-footer :height="24"></message-footer>
@@ -120,6 +157,7 @@
         },
         data() {
             return {
+                // bus: new Vue(),
                 processBar: false,
                 layoutAlgorithms: fprime.viewManager.LayoutAlgorithms,
                 analyzers: fprime.viewManager.Analyzers,
@@ -198,6 +236,9 @@
                     view.CloseAll();
                     this.$router.replace("/");
                     this.showOutputPanel();
+                    console.dir(this.$refs);
+                    (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
+                    // this.bus.$emit('generateText');
                 }
             },
             /**
@@ -239,6 +280,17 @@
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                 }
+                const path = require('path');
+                fs.readdir(dir, (err, files) => {
+                    if (err) throw err;
+
+                    for (const file of files) {
+                        fs.unlink(path.join(dir, file), err => {
+                            if (err) throw err;
+                        });
+                    }
+                });
+                // Write text to folder and load it
                 fprime.viewManager.writeToFile("./~tmp");
                 this.processBar = true;
                 await fprime.viewManager.build(dir);
@@ -247,6 +299,9 @@
                 this.$router.replace("/");
                 this.showOutputPanel();
                 view.generateText();
+                // Delete ~tmp folder
+                const rimraf = require("rimraf");
+                rimraf(dir, function () {});
             },
             /**
              * Save the view to file

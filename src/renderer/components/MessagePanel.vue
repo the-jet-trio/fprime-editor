@@ -44,7 +44,7 @@
             </v-tab-item>
 
             <v-tab-item :key="editor">
-                <text-editor></text-editor>
+                <text-editor ref="editor"></text-editor>
             </v-tab-item>
 
         </v-tabs>
@@ -64,7 +64,6 @@
         props: ["offset"],
         name: "message-panel",
         components: {
-            codemirror,
             TextEditor,
         },
         methods: {
@@ -79,7 +78,11 @@
             },
             onResize() {
                 this.panelWidth = this.$el.parentElement!.clientWidth;
-            }
+            },
+            generateText() {
+                console.dir(this.$refs);
+                (this.$refs.editor as Vue & { generateText: () => boolean }).generateText();
+            },
         },
         mounted() {
             this.$nextTick(() => {
