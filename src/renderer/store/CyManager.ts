@@ -514,6 +514,7 @@ class CyManager {
     })
         .map((node) => {
         node.on("click", () => {
+          console.log(node.data());
           const name = node.data().id.split("_")[1];
           const info = node.data("properties");
           const type = info.type;
@@ -532,6 +533,7 @@ class CyManager {
     // For component view
     this.cy!.nodes(".fprime-component").forEach((node: any) =>{
       node.on("click", () => {
+        console.log(node.data());
         const name = node.data().label;
         const namespace = name.split(".")[0];
         const kind = node.data().kind;
@@ -539,9 +541,7 @@ class CyManager {
       });
     });
   }
-  public cyUpdateComponentInfo(compName: string, compNameSpace: string):void{
 
-  }
   private constructHtml(data: any): string {
     let res = "";
     Object.keys(data).map((key) => {

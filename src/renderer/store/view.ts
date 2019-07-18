@@ -159,19 +159,12 @@ export default {
   },
 
   removeItem(name: string, type: string) {
-    fprime.viewManager.removeItem(name, type);
+      fprime.viewManager.removeItem(name, type);
   },
   /**
    * Get all the components in the current model.
    */
   getComponents() {
-    return fprime.viewManager.getComponents();
+      return fprime.viewManager.getComponents();
   },
-    /**
-     * Get all the ports in the current model.
-     */
-    getPorts() {
-        return fprime.viewManager.getPorts();
-    },
-
 };

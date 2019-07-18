@@ -159,7 +159,7 @@ export default class FPPModelManager {
     this.porttypes.forEach((e: IFPPPortType) => {
       viewlist.porttypes.push(e.namespace + "." + e.name);
     })
-    console.log(viewlist);
+    //console.log(viewlist);
     
 
     // Add output information
@@ -235,9 +235,6 @@ export default class FPPModelManager {
       return this.components;
     }
 
-    public getPorts() {
-        return this.porttypes;
-    }
   /**
    * Add a new port type to the current model
    * The default values of the port should includes:
@@ -618,7 +615,6 @@ export default class FPPModelManager {
         ps.push(p);
       });
       const ns = ele.$.namespace;
-
       res.push({
         name: ns + "." + ele.$.name,
         namespace: ns,
