@@ -32,6 +32,7 @@ export default Vue.extend({
             view.state.filterPort = this.filterPorts;
         },
         $route: function(from: Route, to: Route) {
+            this.$root.$emit("updateContent", to.params.viewName, this.showDisplayPort);
             if(from.params.viewType !== to.params.viewType) {
                 if(from.params.viewType === ViewType.Function ||
                 from.params.viewType === ViewType.InstanceCentric) {

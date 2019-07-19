@@ -1,0 +1,300 @@
+edge {
+  line-color: rgb(0,0,0);
+  mid-target-arrow-shape: triangle;
+  mid-target-arrow-color: rgb(0,0,0);
+  width: 2px;
+}
+
+.instance-port {
+  display: none;
+}
+
+.component-port {
+  display: none;
+}
+
+.component-component {
+  display: none;
+}
+
+.fprime-instance {
+  shape: rectangle;
+  width: 400px;
+  height: 450px;
+  label: data(label);
+  font-size: 28px;
+  text-halign: data(label_hloc);
+  text-valign: data(label_vloc);
+  text-opacity: 1;
+  text-margin-y: 0px;
+  background-color: rgb(252,242,199);
+  border-width: 2px;
+  border-color: rgb(192,192,192);
+}
+
+.fprime-component {
+  shape: rectangle;
+  width: 400px;
+  height: 450px;
+  label: data(label);
+  font-size: 28px;
+  text-opacity: 0.5;
+  text-halign: data(label_hloc);
+  text-valign: data(label_vloc);
+  text-margin-y: 0px;
+  background-color: rgb(216,204,186);
+  border-width: 2px;
+  border-color: rgb(192,192,192);
+}
+
+.fprime-port {
+  shape: rectangle;
+  width: 50px;
+  height: 50px;
+  label: data(label);
+  font-size: 25px;
+  text-opacity: 0.5;
+  text-halign: data(label_hloc);
+  text-valign: data(label_vloc);
+  background-color: rgb(205,217,205);
+  background-image: data(img);
+  background-width: 70%;
+  background-height: 70%;
+  border-width: 2px;
+  border-color: rgb(158,173,145);
+}
+
+#Ref_SG1 {
+  x: 691.5539763293544;
+  y: -86.49795102851145;
+}
+
+#Ref_SG1_timeCaller {
+  x: 489.55397632935444;
+  y: 90.05760452704408;
+}
+
+#Ref_SG1_cmdRegOut {
+  x: 489.55397632935444;
+  y: 39.61316008259962;
+}
+
+#Ref_SG1_cmdIn {
+  x: 489.55397632935444;
+  y: -10.831284361844837;
+}
+
+#Ref_SG1_schedIn {
+  x: 489.55397632935444;
+  y: -61.27572880628924;
+}
+
+#Ref_SG1_logTextOut {
+  x: 489.55397632935444;
+  y: -111.7201732507337;
+}
+
+#Ref_SG1_logOut {
+  x: 489.55397632935444;
+  y: -162.16461769517815;
+}
+
+#Ref_SG1_cmdResponseOut {
+  x: 489.55397632935444;
+  y: -212.60906213962258;
+}
+
+#Ref_SG1_tlmOut {
+  x: 489.55397632935444;
+  y: -263.053506584067;
+}
+
+#Ref_linuxTime {
+  x: 89.55397532935437;
+  y: 128.49795002851187;
+}
+
+#Ref_linuxTime_timeGetPort {
+  x: 291.5539753293544;
+  y: 128.49795002851187;
+}
+
+#Ref_SG2 {
+  x: 1293.5539773293542;
+  y: -86.49795102851145;
+}
+
+#Ref_SG2_timeCaller {
+  x: 1091.5539773293542;
+  y: 90.05760452704408;
+}
+
+#Ref_SG2_cmdRegOut {
+  x: 1091.5539773293542;
+  y: 39.61316008259962;
+}
+
+#Ref_SG2_cmdIn {
+  x: 1091.5539773293542;
+  y: -10.831284361844837;
+}
+
+#Ref_SG2_schedIn {
+  x: 1091.5539773293542;
+  y: -61.27572880628924;
+}
+
+#Ref_SG2_logTextOut {
+  x: 1091.5539773293542;
+  y: -111.7201732507337;
+}
+
+#Ref_SG2_logOut {
+  x: 1091.5539773293542;
+  y: -162.16461769517815;
+}
+
+#Ref_SG2_cmdResponseOut {
+  x: 1091.5539773293542;
+  y: -212.60906213962258;
+}
+
+#Ref_SG2_tlmOut {
+  x: 1091.5539773293542;
+  y: -263.053506584067;
+}
+
+#Ref_SG3 {
+  x: 696.4460246706427;
+  y: 565.5020499714886;
+}
+
+#Ref_SG3_timeCaller {
+  x: 494.4460246706427;
+  y: 742.0576055270442;
+}
+
+#Ref_SG3_cmdRegOut {
+  x: 494.4460246706427;
+  y: 388.9464944159331;
+}
+
+#Ref_SG3_cmdIn {
+  x: 494.4460246706427;
+  y: 439.39093886037756;
+}
+
+#Ref_SG3_schedIn {
+  x: 494.4460246706427;
+  y: 489.83538330482196;
+}
+
+#Ref_SG3_logTextOut {
+  x: 494.4460246706427;
+  y: 540.2798277492664;
+}
+
+#Ref_SG3_logOut {
+  x: 494.4460246706427;
+  y: 590.7242721937109;
+}
+
+#Ref_SG3_cmdResponseOut {
+  x: 494.4460246706427;
+  y: 641.1687166381553;
+}
+
+#Ref_SG3_tlmOut {
+  x: 494.4460246706427;
+  y: 691.6131610825997;
+}
+
+#Ref_SG4 {
+  x: 198.05397512206338;
+  y: 941.6658755084995;
+}
+
+#Ref_SG4_timeCaller {
+  x: 355.16508623317446;
+  y: 714.6658755084995;
+}
+
+#Ref_SG4_cmdRegOut {
+  x: 40.94286401095226;
+  y: 714.6658755084995;
+}
+
+#Ref_SG4_cmdIn {
+  x: 85.83175289984115;
+  y: 714.6658755084995;
+}
+
+#Ref_SG4_schedIn {
+  x: 130.72064178873003;
+  y: 714.6658755084995;
+}
+
+#Ref_SG4_logTextOut {
+  x: 175.60953067761892;
+  y: 714.6658755084995;
+}
+
+#Ref_SG4_logOut {
+  x: 220.4984195665078;
+  y: 714.6658755084995;
+}
+
+#Ref_SG4_cmdResponseOut {
+  x: 265.3873084553967;
+  y: 714.6658755084995;
+}
+
+#Ref_SG4_tlmOut {
+  x: 310.27619734428555;
+  y: 714.6658755084995;
+}
+
+#Ref_SG5 {
+  x: -507.5539773293572;
+  y: 780.4979510285119;
+}
+
+#Ref_SG5_timeCaller {
+  x: -305.5539773293572;
+  y: 780.4979510285119;
+}
+
+#Ref_SG5_cmdRegOut {
+  x: -356.0539773293572;
+  y: 553.4979510285119;
+}
+
+#Ref_SG5_cmdIn {
+  x: -406.5539773293572;
+  y: 553.4979510285119;
+}
+
+#Ref_SG5_schedIn {
+  x: -457.05397732935717;
+  y: 553.4979510285119;
+}
+
+#Ref_SG5_logTextOut {
+  x: -507.55397732935717;
+  y: 553.4979510285119;
+}
+
+#Ref_SG5_logOut {
+  x: -558.0539773293572;
+  y: 553.4979510285119;
+}
+
+#Ref_SG5_cmdResponseOut {
+  x: -608.5539773293572;
+  y: 553.4979510285119;
+}
+
+#Ref_SG5_tlmOut {
+  x: -659.0539773293572;
+  y: 553.4979510285119;
+}

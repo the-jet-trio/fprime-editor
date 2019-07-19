@@ -256,6 +256,26 @@ class CyManager {
   }
 
   /**
+<<<<<<< Updated upstream
+=======
+   * bind the click event with component view
+   */
+  public showCompView(_0: any, _1: string): void{
+    if (this.cy) {
+      // if (type === "ComponentView") {
+      //   console.log(el.map());
+      //   const ele = el.cy();
+      //   ele.on("click", () => {
+      //     console.log("yo!");
+      //   });
+      // } else {
+      //   console.log("hi");
+      // }
+    }
+  }
+
+  /**
+>>>>>>> Stashed changes
    * set a collection of elements to be a certain color
    * @param eles collection of elements (implicitly of the same type)
    * @param color value of color to change
@@ -554,6 +574,12 @@ class CyManager {
 
   }
 
+  /**
+   * This is an empty function in order to be exposed to InfoPanel.vue
+   */
+  public cyShowComponentView(_0: string, _1: string, _2: string): void{
+
+  }
   /**
    * This function binds each node on the canvas with a click event so that
    * the info panel can show the information of the selected component.

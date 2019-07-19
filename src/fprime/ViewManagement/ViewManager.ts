@@ -259,7 +259,7 @@ export default class ViewManager {
     let oldStyle : {[id: string] : IStyle} = {};
     if(oldDescriptor) {
       oldStyle = oldDescriptor.Descriptor;
-      oldStyle = ViewDescriptor.parseStyleFrom(CyManager.getDescriptor(), oldDescriptor.CSSStyles);
+      oldStyle = ViewDescriptor.parseStyleFrom(CyManager.getDescriptor(), []);
     }
     // generate the corresponding view descriptor first, and then
     // generate the corresponding Cytoscape JSON from the view descriptor.
