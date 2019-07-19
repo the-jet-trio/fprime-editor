@@ -222,8 +222,8 @@ class CyManager {
    * endUpdate will call the batch function where to execute the updating.
    */
   public endUpdate() {
-    if (this.batch) {
-      this.cy!.batch(this.batch);
+    if (this.cy && this.batch) {
+      this.cy.batch(this.batch);
       this.batch = undefined;
     }
   }
@@ -253,6 +253,23 @@ class CyManager {
       return this.cy!.$(":selected");
     }
     return [];
+  }
+
+  /**
+   * bind the click event with component view
+   */
+  public showCompView(el: any, type: string): void{
+    if (this.cy) {
+      // if (type === "ComponentView") {
+      //   console.log(el.map());
+      //   const ele = el.cy();
+      //   ele.on("click", () => {
+      //     console.log("yo!");
+      //   });
+      // } else {
+      //   console.log("hi");
+      // }
+    }
   }
 
   /**
@@ -355,6 +372,7 @@ class CyManager {
     this.showComponentInfo();
     this.enableEgdeHandles();
     this.configMenu();
+    this.showComponentView();
     fprime.viewManager.updateViewDescriptorFor(this.viewName,
       this.getDescriptor());
   }
@@ -500,10 +518,12 @@ class CyManager {
           'border-color': "rgb(158,173,145)"
         }).update();
       });
-      (this.cy! as any) .on('ehcomplete', (_0: any, sourceNode: any, targetNode: any, _3: any) => {
+      (this.cy! as any) .on('ehcomplete', (_0: any, sourceNode: any, targetNode: any, addEdge: any) => {
         console.log(sourceNode.data());
         
         fprime.viewManager.addConnection(this.viewName, sourceNode.id(), targetNode.id());
+        addEdge.addClass('port-port');
+        this.configMenu();
       });
     }
   }
@@ -553,15 +573,23 @@ class CyManager {
   }
 
   /**
+   * This is an empty function in order to be exposed to InfoPanel.vue
+   */
+  public cyShowComponentView(name: string, namespace: string, kind: string): void{
+
+  }
+  /**
    * This function binds each node on the canvas with a click event so that
    * the info panel can show the information of the selected component.
    */
   public showComponentInfo(): void {
+    // For instance-centric view
     this.cy!.nodes().filter((node) => {
       return Object.keys(node.data("properties")).length !== 0;
     })
         .map((node) => {
         node.on("click", () => {
+          console.log(node.data());
           const name = node.data().id.split("_")[1];
           const info = node.data("properties");
           const type = info.type;
@@ -575,6 +603,24 @@ class CyManager {
   public cyUpdateComponentInfo(_0: string, _1: string):void{
 
   }
+
+  /**
+   * This functions binds the nodes in component views with a click envent so that
+   * the info panel canshow the information of the selected component.
+   */
+  public showComponentView(): void {
+    // For component view
+    this.cy!.nodes(".fprime-component").forEach((node: any) => {
+      node.on("click", () => {
+        console.log(node.data());
+        const name = node.data().label;
+        const namespace = name.split(".")[0];
+        const kind = node.data().kind;
+        this.cyShowComponentView(name, namespace, kind);
+      });
+    });
+  }
+
   private constructHtml(data: any): string {
     let res = "";
     Object.keys(data).map((key) => {

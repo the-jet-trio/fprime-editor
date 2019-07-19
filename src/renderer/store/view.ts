@@ -1,5 +1,5 @@
 import fprime from "fprime";
-import ViewManager, {
+import {
     IViewList,
     IViewListItem
 } from "fprime/ViewManagement/ViewManager";
@@ -192,4 +192,4 @@ export default {
         fprime.viewManager.applyText(fileName, content);
     },
 
-};
+}

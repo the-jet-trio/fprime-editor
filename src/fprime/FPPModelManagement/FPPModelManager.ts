@@ -16,6 +16,7 @@ export enum ViewType {
     InstanceCentric = "InstanceCentric View",
     Component = "Component View",
     PortType = "PortType View",
+    DataType = "DataType View",
 }
 
 /**
@@ -170,11 +171,11 @@ export default class FPPModelManager {
                 return;
             }
 
-            this.topologies = this.topologies.concat(this.generateTopologies(
-                i.namespace.$.name,
-                i.namespace.system[0].topology,
-            ));
-        });
+      this.topologies = this.topologies.concat(this.generateTopologies(
+        i.namespace.$.name,
+        i.namespace.system[0].topology,
+      ));
+    });
 
         // Return the view list of the model
         const viewlist: { [k: string]: string[] } = {
@@ -299,6 +300,17 @@ export default class FPPModelManager {
     }
 
     /**
+     * addNewDataType
+     */
+    public addNewDataType(defaultName: string) {
+        const item: IFPPDataType = {
+            name: defaultName,
+            namespace: "undefined",
+        };
+        this.datatypes.push(item);
+    }
+
+    /**
      * Add a new port type to the current model
      * The default values of the port should includes:
      *  - a default name past by param
@@ -401,6 +413,19 @@ export default class FPPModelManager {
         // TODO: (async) update the model data
     }
 
+    /**
+     * deleteDataType
+     * @param name item to delete
+     */
+    public deleteDataType(name: string): boolean {
+        this.datatypes = this.datatypes.filter((i) => i.name !== name);
+        return true;
+    }
+
+    /**
+     * deletePortType
+     * @param name item to delete
+     */
     public deletePortType(name: string): boolean {
         this.porttypes = this.porttypes.filter((i) => i.name !== name);
         return true;
@@ -416,6 +441,10 @@ export default class FPPModelManager {
         return true;
     }
 
+    /**
+     * deleteInstance
+     * @param name item to delete
+     */
     public deleteInstance(name: string): boolean {
         this.instances = this.instances.filter((i) => i.name !== name);
         return true;
@@ -600,67 +629,99 @@ export default class FPPModelManager {
     }
 
     public removeInstance(toponame: string, instname: string): boolean {
-        console.log("rm instance from the topo");
-        const topology = this.topologies.find((i) => i.name === toponame);
-        if (topology == undefined) {
-            return false;
+    console.log("rm instance from the topo");
+    const topology = this.topologies.find((i) => i.name === toponame);
+    if(topology == undefined) return false;
+    
+    const inst = this.instances.find((i) => i.name === instname);
+    if(inst == undefined) return false;
+
+    // delete all related connections contains inst
+    const related: IFPPInstance[] = [];
+    topology.connections = topology.connections.filter((con) => {
+      if(con.from.inst === inst) {
+        if(con.to) related.push(con.to.inst);
+        return false;
+      }
+      else if (con.to && con.to.inst === inst) {
+        related.push(con.from.inst);
+        return false;
+      }
+      else return true;
+    })
+
+    related.forEach((inst) => {
+      var id = findIndex(topology.connections, (i: IFPPConnection) => {
+        return i.from.inst === inst || (i.to && i.to.inst === inst);
+      })
+      // generate an empty connection for the instance
+      if(id === -1) topology.connections.push(
+        {
+          from: {
+            inst: inst
+          }
         }
-
-        const inst = this.instances.find((i) => i.name === instname);
-        if (inst == undefined) {
-            return false;
-        }
-
-        // delete all related connections contains inst
-        const related: IFPPInstance[] = [];
-        topology.connections = topology.connections.filter((con) => {
-            if (con.from.inst === inst) {
-                if (con.to) {
-                    related.push(con.to.inst);
-                }
-                return false;
-            } else if (con.to && con.to.inst === inst) {
-                related.push(con.from.inst);
-                return false;
-            } else {
-                return true;
-            }
-        });
-
-        related.forEach((inst) => {
-            var id = findIndex(topology.connections, (i: IFPPConnection) => {
-                return i.from.inst === inst || (i.to && i.to.inst === inst);
-            });
-            // generate an empty connection for the instance
-            if (id === -1) {
-                topology.connections.push(
-                    {
-                        from: {
-                            inst: inst
-                        }
-                    }
-                );
-            }
-        });
-        return true;
-    }
-
-    public updateAttributes(type: string, attrs: { [attrname: string]: string }): boolean {
-        // @TODO: daiyi
-        this.instances.forEach((i) => {
-            if (i.name === attrs["OldName"]) {
-                console.log("Before", i);
-                i.name = attrs["NewName"];
-                i.properties["type"] = attrs["Type"];
-                i.properties["namespace"] = attrs["NameSpace"];
-                i.properties["base_id_window"] = attrs["BaseID"];
-                console.log("After", i);
-            }
-        });
-        return true;
-    }
+      );
+    })
+    return true;
+  }
 
     /**
+     * Update the model
+     */
+  public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
+    // @TODO: daiyi
+      if (type === ViewType.InstanceCentric) {
+          this.instances.forEach((i) => {
+              if (i.name === attrs["OldName"]) {
+                  console.log("Before", i);
+                  i.name = attrs["NewName"];
+                  i.properties["type"] = attrs["Type"];
+                  i.properties["namespace"] = attrs["NameSpace"];
+                  i.properties["base_id_window"] = attrs["BaseID"];
+                  console.log("After", i);
+              }
+          });
+      }
+      if (type === ViewType.Component){
+          console.log("component!");
+      }
+    return true;
+  }
+
+    /**
+     * Output the model into the selected folder
+     */
+    public writeToFile(folderPath: string) {
+      );
+    })
+    return true;
+  }
+
+    /**
+     * Update the model
+     */
+  public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
+    // @TODO: daiyi
+      if (type === ViewType.InstanceCentric) {
+          this.instances.forEach((i) => {
+              if (i.name === attrs["OldName"]) {
+                  console.log("Before", i);
+                  i.name = attrs["NewName"];
+                  i.properties["type"] = attrs["Type"];
+                  i.properties["namespace"] = attrs["NameSpace"];
+                  i.properties["base_id_window"] = attrs["BaseID"];
+                  console.log("After", i);
+              }
+          });
+      }
+      if (type === ViewType.Component){
+          console.log("component!");
+      }
+    return true;
+  }
+
+  /**
      * Output the model into the selected folder
      */
     public writeToFile(folderPath: string) {
@@ -924,6 +985,7 @@ export default class FPPModelManager {
     }
 
     private reset() {
+        this.datatypes = [];
         this.porttypes = [];
         this.instances = [];
         this.topologies = [];

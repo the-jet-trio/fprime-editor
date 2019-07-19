@@ -21,6 +21,7 @@ export enum ViewType {
   InstanceCentric = "InstanceCentric View",
   Component = "Component View",
   PortType = "PortType View",
+  DataType = "DataType View",
 }
 
 export default class ViewManager {
@@ -68,6 +69,7 @@ export default class ViewManager {
     [ViewType.Function] : 1,
     [ViewType.InstanceCentric] : 1,
     [ViewType.PortType] : 1,
+    [ViewType.DataType] : 1,
   }
 
   public filterPorts = false;
@@ -95,6 +97,7 @@ export default class ViewManager {
    * The view list of the current project.
    */
   private viewList: IViewList = {
+    [ViewType.DataType]: [],
     [ViewType.PortType]: [],
     [ViewType.Component]: [],
     [ViewType.InstanceCentric]: [],
@@ -431,6 +434,10 @@ export default class ViewManager {
       .map((e:string) => {
         return {name: e, type: ViewType.PortType};
     })
+    this.viewList[ViewType.DataType] = viewList.datatypes
+      .map((e: string) => {
+        return { name: e, type: ViewType.DataType };
+      })
   }
 
   /**
@@ -471,10 +478,11 @@ export default class ViewManager {
    * Get all the components in the model
    */
   public async getComponents() {
-    const viewlist = await this.modelManager.loadModel(
+    await this.modelManager.loadModel(
         this.configManager.Config, this);
     return this.modelManager.getComponents();
   }
+
   /**
    * Get all the text in the model
    */
@@ -501,6 +509,10 @@ export default class ViewManager {
     // define the default name of the new created component
     let defaultName : string = "undefined";
     switch(type) {
+      case ViewType.DataType:
+        defaultName  = "NewDataType" + this.indexCursor[type];
+        this.modelManager.addNewDataType(defaultName);
+        break;
       case ViewType.PortType:
         defaultName = "NewPortType" + this.indexCursor[type];
         this.modelManager.addNewPortType(defaultName);
@@ -551,6 +563,8 @@ export default class ViewManager {
       this.modelManager.deleteTopology(name);
     } else if (type === ViewType.PortType) {
       this.modelManager.deletePortType(name);
+    } else if (type === ViewType.DataType) {
+      this.modelManager.deleteDataType(name);
     }
     // remove in the view list
     this.viewList[type] = this.viewList[type].filter((i) => i.name !== name);

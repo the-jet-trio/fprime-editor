@@ -31,14 +31,16 @@ export default Vue.extend({
             this.$root.$emit("updateContent", this.$route.params.viewName, val);
             view.state.filterPort = this.filterPorts;
         },
-        $route: function(from: Route) {
-            if(from.params.viewType === ViewType.Function ||
-            from.params.viewType === ViewType.InstanceCentric) {
-                this.showDisplayPort = true;
-                this.$root.$emit("updateContent", this.$route.params.viewName, this.showDisplayPort);
-            }
-            else {
-                this.showDisplayPort = false;
+        $route: function(from: Route, to: Route) {
+            if(from.params.viewType !== to.params.viewType) {
+                if(from.params.viewType === ViewType.Function ||
+                from.params.viewType === ViewType.InstanceCentric) {
+                    this.showDisplayPort = true;
+                    this.$root.$emit("updateContent", from.params.viewName, this.showDisplayPort);
+                }
+                else {
+                    this.showDisplayPort = false;
+                }
             }
         }
     }
