@@ -65,7 +65,14 @@
             generateText() {
                 this.getText;
                 console.dir(this.code);
-            }
+            },
+            applyText() {
+                view.applyText("ABC.fpp", "namespace ABC\n" +
+                    "\n" +
+                    "datatype XYZ");
+            },
+            showText(name) {
+            },
         },
         computed: {
             codemirror() {
@@ -79,11 +86,6 @@
                     console.dir(value)
                 });
             }
-        },
-        mounted: function () {
-            this.$root.$on('generateText', () => {
-                this.getText;
-            });
         },
     })
 </script>

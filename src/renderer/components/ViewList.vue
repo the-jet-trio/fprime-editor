@@ -127,6 +127,9 @@ export default Vue.extend({
     $route(to: Route) {
       if (to.params.viewName) {
         View.LoadViewByName(to.params.viewName);
+        // Show corresponding text
+        this.$root.$emit("showText", to.params.viewName);
+        console.dir(to);
       }
     }
   },

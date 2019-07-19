@@ -1,8 +1,10 @@
 import IConfig from "../Common/Config";
-import DataImporter, { IOutput } from "../DataImport/DataImporter";
+import DataImporter, {IOutput} from "../DataImport/DataImporter";
 import fs from "fs";
 import {remove, findIndex} from "lodash";
 import * as path from "path";
+import fprime from "../index";
+
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
 
@@ -30,7 +32,7 @@ export interface IFPPDataType {
 export interface IFPPEnumType {
     namespace: string;
     name: string;
-    arg: { [key: string]: number};
+    arg: { [key: string]: number };
 }
 
 /**
@@ -39,7 +41,7 @@ export interface IFPPEnumType {
 export interface IFPPPortType {
     name: string;
     namespace: string;
-    arg: { [key: string]: {value: string, pass_by: string} };
+    arg: { [key: string]: { value: string, pass_by: string } };
 }
 
 /**
@@ -99,7 +101,7 @@ export interface IFPPModel {
  *
  */
 export default class FPPModelManager {
-    private text: {[fileName: string]: string} = {};
+    private text: { [fileName: string]: string } = {};
     private dataImporter: DataImporter = new DataImporter();
     private datatypes: IFPPDataType[] = [];
     private enumtypes: IFPPEnumType[] = [];
@@ -108,6 +110,7 @@ export default class FPPModelManager {
     private components: IFPPComponent[] = [];
     private porttypes: IFPPPortType[] = [];
     private keywords: string[] = ["base_id", "name"];
+    private fileTable: { [element: string]: string } = {}; // Used to look up which element belongs to which file
 
     /**
      *
@@ -286,12 +289,15 @@ export default class FPPModelManager {
             }
         }
     }
+
     public getComponents() {
         return this.components;
     }
+
     public getText() {
         return this.text;
     }
+
     /**
      * Add a new port type to the current model
      * The default values of the port should includes:
@@ -428,10 +434,14 @@ export default class FPPModelManager {
             return i.name === portname;
         });
         const comp = this.components.find((i) => i.name === compname);
-        if (porttype == undefined || comp == undefined) { return false; }
+        if (porttype == undefined || comp == undefined) {
+            return false;
+        }
         // existing port
         const newPortname = porttype.name.charAt(0).toLowerCase() + porttype.name.slice(1);
-        if (comp.ports.find((i) => i.name === newPortname)) { return false; }
+        if (comp.ports.find((i) => i.name === newPortname)) {
+            return false;
+        }
         // console.log("In addPortToComponent");
 
         // console.dir(porttype);
@@ -457,12 +467,16 @@ export default class FPPModelManager {
         // console.log("add instance to topo: " + instname + " " + toponame);
 
         const instance = this.instances.find((i) => i.name === instname);
-        if (instance == undefined) { return false; }
+        if (instance == undefined) {
+            return false;
+        }
         // console.log("find instance");
         // console.log(instance);
 
         const topology = this.topologies.find((i) => i.name === toponame);
-        if (topology == undefined) { return false; }
+        if (topology == undefined) {
+            return false;
+        }
         // console.log("find topo");
         // console.log(topology);
 
@@ -475,161 +489,191 @@ export default class FPPModelManager {
         return true;
     }
 
-  public addConnection(toponame: string, from_inst: string, from_port: string, 
-    to_inst: string, to_port: string): boolean {
-      if(from_inst === to_inst) {
-        console.log("can't drag connection on one instance");
-        return false;
-      }
-      const topology = this.topologies.find((i) => i.name === toponame);
-      if(topology == undefined) return false;
-      
-      const source = this.instances.find((i) => i.name === from_inst);
-      if(source == undefined) return false;
-      
-      const target = this.instances.find((i) => i.name === to_inst);
-      if(target == undefined) return false;
-
-      const newConn: IFPPConnection = {
-        from: {
-          inst: source,
-          port: this.getPortByInstance(source, from_port),
-        },
-        to: {
-          inst: target,
-          port: this.getPortByInstance(target, to_port),
+    public addConnection(toponame: string, from_inst: string, from_port: string,
+                         to_inst: string, to_port: string): boolean {
+        if (from_inst === to_inst) {
+            console.log("can't drag connection on one instance");
+            return false;
         }
-      }
-      
-      // query if there are existing connection
-      const res = topology.connections.filter((con) => {
-        return con.from.port && con.to 
-        && con.from.inst.name === from_inst && con.from.port.name === from_port 
-        && con.to.inst.name === to_inst && con.to.port.name === to_port;
-      });
-      if(res.length > 0) {
-        console.log("existing connection");
-        return false;
-      }
+        const topology = this.topologies.find((i) => i.name === toponame);
+        if (topology == undefined) {
+            return false;
+        }
 
-      console.log("new connection");
-      console.dir(newConn);
-      topology.connections.push(newConn);
-      return true;
+        const source = this.instances.find((i) => i.name === from_inst);
+        if (source == undefined) {
+            return false;
+        }
+
+        const target = this.instances.find((i) => i.name === to_inst);
+        if (target == undefined) {
+            return false;
+        }
+
+        const newConn: IFPPConnection = {
+            from: {
+                inst: source,
+                port: this.getPortByInstance(source, from_port),
+            },
+            to: {
+                inst: target,
+                port: this.getPortByInstance(target, to_port),
+            },
+        };
+
+        // query if there are existing connection
+        const res = topology.connections.filter((con) => {
+            return con.from.port && con.to
+                && con.from.inst.name === from_inst && con.from.port.name === from_port
+                && con.to.inst.name === to_inst && con.to.port.name === to_port;
+        });
+        if (res.length > 0) {
+            console.log("existing connection");
+            return false;
+        }
+
+        console.log("new connection");
+        console.dir(newConn);
+        topology.connections.push(newConn);
+        return true;
     }
 
-  public removeConnection(toponame: string, from_inst: string, from_port: string, 
-    to_inst: string, to_port: string): boolean {
-      console.log("rm conn topo:" + toponame + " from: " + from_inst + " " + from_port
-        + " to: " + to_inst + " " + to_port);
-      
-      if(from_inst === to_inst) return false;
-      const topology = this.topologies.find((i) => i.name === toponame);
-      if(topology == undefined) return false;
-      
-      const source = this.instances.find((i) => i.name === from_inst);
-      if(source == undefined) return false;
-      
-      const target = this.instances.find((i) => i.name === to_inst);
-      if(target == undefined) return false;
+    public removeConnection(toponame: string, from_inst: string, from_port: string,
+                            to_inst: string, to_port: string): boolean {
+        console.log("rm conn topo:" + toponame + " from: " + from_inst + " " + from_port
+            + " to: " + to_inst + " " + to_port);
 
-      remove(topology.connections, (i: IFPPConnection) => {
-        return i.from.port && i.to 
-        && i.from.inst === source && i.from.port.name === from_port
-        && i.to.inst === target && i.to.port.name === to_port;
-      });
-      // check if the inst has another conn
-      // if not, keep the inst exist in the topo
-      var id = findIndex(topology.connections, (i: IFPPConnection) => {
-        return i.from.inst === source || (i.to && i.to.inst === source);
-      })
-      // generate an empty connection for the instance
-      if(id === -1) topology.connections.push(
-        {
-          from: {
-            inst: source
-          }
+        if (from_inst === to_inst) {
+            return false;
         }
-      );
-
-      // same for target
-      id = findIndex(topology.connections, (i: IFPPConnection) => {
-        return i.from.inst === target || (i.to && i.to.inst === target);
-      })
-      if(id === -1) topology.connections.push(
-        {
-          from: {
-            inst: target
-          }
+        const topology = this.topologies.find((i) => i.name === toponame);
+        if (topology == undefined) {
+            return false;
         }
-      );
 
-      return true;
+        const source = this.instances.find((i) => i.name === from_inst);
+        if (source == undefined) {
+            return false;
+        }
+
+        const target = this.instances.find((i) => i.name === to_inst);
+        if (target == undefined) {
+            return false;
+        }
+
+        remove(topology.connections, (i: IFPPConnection) => {
+            return i.from.port && i.to
+                && i.from.inst === source && i.from.port.name === from_port
+                && i.to.inst === target && i.to.port.name === to_port;
+        });
+        // check if the inst has another conn
+        // if not, keep the inst exist in the topo
+        var id = findIndex(topology.connections, (i: IFPPConnection) => {
+            return i.from.inst === source || (i.to && i.to.inst === source);
+        });
+        // generate an empty connection for the instance
+        if (id === -1) {
+            topology.connections.push(
+                {
+                    from: {
+                        inst: source
+                    }
+                }
+            );
+        }
+
+        // same for target
+        id = findIndex(topology.connections, (i: IFPPConnection) => {
+            return i.from.inst === target || (i.to && i.to.inst === target);
+        });
+        if (id === -1) {
+            topology.connections.push(
+                {
+                    from: {
+                        inst: target
+                    }
+                }
+            );
+        }
+
+        return true;
     }
 
-  public removeInstance(toponame: string, instname: string): boolean {
-    console.log("rm instance from the topo");
-    const topology = this.topologies.find((i) => i.name === toponame);
-    if(topology == undefined) return false;
-    
-    const inst = this.instances.find((i) => i.name === instname);
-    if(inst == undefined) return false;
-
-    // delete all related connections contains inst
-    const related: IFPPInstance[] = [];
-    topology.connections = topology.connections.filter((con) => {
-      if(con.from.inst === inst) {
-        if(con.to) related.push(con.to.inst);
-        return false;
-      }
-      else if (con.to && con.to.inst === inst) {
-        related.push(con.from.inst);
-        return false;
-      }
-      else return true;
-    })
-
-    related.forEach((inst) => {
-      var id = findIndex(topology.connections, (i: IFPPConnection) => {
-        return i.from.inst === inst || (i.to && i.to.inst === inst);
-      })
-      // generate an empty connection for the instance
-      if(id === -1) topology.connections.push(
-        {
-          from: {
-            inst: inst
-          }
+    public removeInstance(toponame: string, instname: string): boolean {
+        console.log("rm instance from the topo");
+        const topology = this.topologies.find((i) => i.name === toponame);
+        if (topology == undefined) {
+            return false;
         }
-      );
-    })
-    return true;
-  }
 
-  public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
-    // @TODO: daiyi
-    this.instances.forEach((i) => {
-      if (i.name === attrs["OldName"]) {
-        console.log("Before",i);
-        i.name = attrs["NewName"];
-        i.properties["type"] = attrs["Type"];
-        i.properties["namespace"] = attrs["NameSpace"];
-        i.properties["base_id_window"] = attrs["BaseID"];
-        console.log("After",i);
-      }
-    })
-    return true;
-  }
-  /**
-   * Output the model into the selected folder
-   */
-  public writeToFile(folderPath: string) {
-        this.generateText();
+        const inst = this.instances.find((i) => i.name === instname);
+        if (inst == undefined) {
+            return false;
+        }
+
+        // delete all related connections contains inst
+        const related: IFPPInstance[] = [];
+        topology.connections = topology.connections.filter((con) => {
+            if (con.from.inst === inst) {
+                if (con.to) {
+                    related.push(con.to.inst);
+                }
+                return false;
+            } else if (con.to && con.to.inst === inst) {
+                related.push(con.from.inst);
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        related.forEach((inst) => {
+            var id = findIndex(topology.connections, (i: IFPPConnection) => {
+                return i.from.inst === inst || (i.to && i.to.inst === inst);
+            });
+            // generate an empty connection for the instance
+            if (id === -1) {
+                topology.connections.push(
+                    {
+                        from: {
+                            inst: inst
+                        }
+                    }
+                );
+            }
+        });
+        return true;
+    }
+
+    public updateAttributes(type: string, attrs: { [attrname: string]: string }): boolean {
+        // @TODO: daiyi
+        this.instances.forEach((i) => {
+            if (i.name === attrs["OldName"]) {
+                console.log("Before", i);
+                i.name = attrs["NewName"];
+                i.properties["type"] = attrs["Type"];
+                i.properties["namespace"] = attrs["NameSpace"];
+                i.properties["base_id_window"] = attrs["BaseID"];
+                console.log("After", i);
+            }
+        });
+        return true;
+    }
+
+    /**
+     * Output the model into the selected folder
+     */
+    public writeToFile(folderPath: string) {
         fs.readdir(folderPath, (err, files) => {
-            if (err) throw err;
+            if (err) {
+                throw err;
+            }
 
             for (const file of files) {
                 fs.unlink(path.join(folderPath, file), err => {
-                    if (err) throw err;
+                    if (err) {
+                        throw err;
+                    }
                 });
             }
         });
@@ -869,6 +913,16 @@ export default class FPPModelManager {
         }
     }
 
+    /**
+     * Update text according to the text editor.
+     */
+    public applyText(fileName: string, content: string) {
+        console.dir(fileName);
+        console.dir(content);
+        this.text[fileName] = content;
+        console.dir(this.text);
+    }
+
     private reset() {
         this.porttypes = [];
         this.instances = [];
@@ -887,7 +941,7 @@ export default class FPPModelManager {
         }
 
         porttypes.forEach((ele: any) => {
-            const args: {[key: string]: {value: string, pass_by: string}} = {};
+            const args: { [key: string]: { value: string, pass_by: string } } = {};
             ele.arg.forEach((a: any) => {
                 args[a.$.name] = {value: a.$.type, pass_by: a.$.pass_by};
             });
@@ -927,7 +981,7 @@ export default class FPPModelManager {
         }
 
         enumtypes.forEach((ele: any) => {
-            const args: {[key: string]: number} = {};
+            const args: { [key: string]: number } = {};
             ele.item.forEach((a: any) => {
                 args[a.$.name] = a._;
             });
@@ -1011,7 +1065,7 @@ export default class FPPModelManager {
             });
 
             res.push({
-                name:  ns + "." + ele.$.name,
+                name: ns + "." + ele.$.name,
                 base_id: ele.$.base_id,
                 ports: ps,
                 properties: props,
