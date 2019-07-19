@@ -83,11 +83,21 @@
                 console.dir(this.$refs);
                 (this.$refs.editor as Vue & { generateText: () => boolean }).generateText();
             },
+            applyText() {
+                console.dir(this.$refs);
+                (this.$refs.editor as Vue & { applyText: () => boolean }).applyText();
+            },
+            showText(element: string) {
+                (this.$refs.editor as Vue & { showText: (element: string) => boolean }).showText(element);
+            },
         },
         mounted() {
             this.$nextTick(() => {
                 this.onResize();
-            })
+            });
+            this.$root.$on('showText', (element: string) => {
+                this.showText(element);
+            });
         },
         data() {
             return {

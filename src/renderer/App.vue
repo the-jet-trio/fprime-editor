@@ -276,6 +276,9 @@
              * Recompile the model according to the text
              */
             async applyText() {
+                // Apply text change
+                (this.$refs.msg as Vue & { applyText: () => boolean }).applyText();
+
                 const dir = "./~tmp";
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
@@ -298,10 +301,10 @@
                 view.CloseAll();
                 this.$router.replace("/");
                 this.showOutputPanel();
-                view.generateText();
                 // Delete ~tmp folder
                 const rimraf = require("rimraf");
                 rimraf(dir, function () {});
+                (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
             },
             /**
              * Save the view to file

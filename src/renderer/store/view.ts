@@ -185,5 +185,11 @@ export default {
     generateText() {
         fprime.viewManager.generateText();
     },
+    /**
+     * Update text according to the text editor.
+     */
+    applyText(fileName: string, content: string) {
+        fprime.viewManager.applyText(fileName, content);
+    },
 
 }

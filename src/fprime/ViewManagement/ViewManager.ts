@@ -497,6 +497,12 @@ export default class ViewManager {
     this.modelManager.generateText();
   }
   /**
+   * Update text according to the text editor.
+   */
+  public async applyText(fileName: string, content: string) {
+    this.modelManager.applyText(fileName, content);
+  }
+  /**
    * Add a new default component to the view list
    */
   public addNewItem(type: string, compName? : string) : IViewListItem {
