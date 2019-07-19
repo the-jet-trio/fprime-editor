@@ -171,11 +171,11 @@ export default class FPPModelManager {
                 return;
             }
 
-      this.topologies = this.topologies.concat(this.generateTopologies(
-        i.namespace.$.name,
-        i.namespace.system[0].topology,
-      ));
-    });
+            this.topologies = this.topologies.concat(this.generateTopologies(
+                i.namespace.$.name,
+                i.namespace.system[0].topology,
+            ));
+        });
 
         // Return the view list of the model
         const viewlist: { [k: string]: string[] } = {
@@ -629,99 +629,75 @@ export default class FPPModelManager {
     }
 
     public removeInstance(toponame: string, instname: string): boolean {
-    console.log("rm instance from the topo");
-    const topology = this.topologies.find((i) => i.name === toponame);
-    if(topology == undefined) return false;
-    
-    const inst = this.instances.find((i) => i.name === instname);
-    if(inst == undefined) return false;
-
-    // delete all related connections contains inst
-    const related: IFPPInstance[] = [];
-    topology.connections = topology.connections.filter((con) => {
-      if(con.from.inst === inst) {
-        if(con.to) related.push(con.to.inst);
-        return false;
-      }
-      else if (con.to && con.to.inst === inst) {
-        related.push(con.from.inst);
-        return false;
-      }
-      else return true;
-    })
-
-    related.forEach((inst) => {
-      var id = findIndex(topology.connections, (i: IFPPConnection) => {
-        return i.from.inst === inst || (i.to && i.to.inst === inst);
-      })
-      // generate an empty connection for the instance
-      if(id === -1) topology.connections.push(
-        {
-          from: {
-            inst: inst
-          }
+        console.log("rm instance from the topo");
+        const topology = this.topologies.find((i) => i.name === toponame);
+        if (topology == undefined) {
+            return false;
         }
-      );
-    })
-    return true;
-  }
+
+        const inst = this.instances.find((i) => i.name === instname);
+        if (inst == undefined) {
+            return false;
+        }
+
+        // delete all related connections contains inst
+        const related: IFPPInstance[] = [];
+        topology.connections = topology.connections.filter((con) => {
+            if (con.from.inst === inst) {
+                if (con.to) {
+                    related.push(con.to.inst);
+                }
+                return false;
+            } else if (con.to && con.to.inst === inst) {
+                related.push(con.from.inst);
+                return false;
+            } else {
+                return true;
+            }
+        });
+
+        related.forEach((inst) => {
+            var id = findIndex(topology.connections, (i: IFPPConnection) => {
+                return i.from.inst === inst || (i.to && i.to.inst === inst);
+            });
+            // generate an empty connection for the instance
+            if (id === -1) {
+                topology.connections.push(
+                    {
+                        from: {
+                            inst: inst
+                        }
+                    }
+                );
+            }
+        });
+        return true;
+    }
 
     /**
      * Update the model
      */
-  public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
-    // @TODO: daiyi
-      if (type === ViewType.InstanceCentric) {
-          this.instances.forEach((i) => {
-              if (i.name === attrs["OldName"]) {
-                  console.log("Before", i);
-                  i.name = attrs["NewName"];
-                  i.properties["type"] = attrs["Type"];
-                  i.properties["namespace"] = attrs["NameSpace"];
-                  i.properties["base_id_window"] = attrs["BaseID"];
-                  console.log("After", i);
-              }
-          });
-      }
-      if (type === ViewType.Component){
-          console.log("component!");
-      }
-    return true;
-  }
+    public updateAttributes(type: string, attrs: { [attrname: string]: string }): boolean {
+        // @TODO: daiyi
+        if (type === ViewType.InstanceCentric) {
+            this.instances.forEach((i) => {
+                if (i.name === attrs["OldName"]) {
+                    console.log("Before", i);
+                    i.name = attrs["NewName"];
+                    i.properties["type"] = attrs["Type"];
+                    i.properties["namespace"] = attrs["NameSpace"];
+                    i.properties["base_id_window"] = attrs["BaseID"];
+                    console.log("After", i);
+                }
+            });
+        }
+        if (type === ViewType.Component) {
+            console.log("component!");
+        }
+        return true;
+    }
 
     /**
-     * Output the model into the selected folder
-     */
-    public writeToFile(folderPath: string) {
-      );
-    })
-    return true;
-  }
-
-    /**
-     * Update the model
-     */
-  public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
-    // @TODO: daiyi
-      if (type === ViewType.InstanceCentric) {
-          this.instances.forEach((i) => {
-              if (i.name === attrs["OldName"]) {
-                  console.log("Before", i);
-                  i.name = attrs["NewName"];
-                  i.properties["type"] = attrs["Type"];
-                  i.properties["namespace"] = attrs["NameSpace"];
-                  i.properties["base_id_window"] = attrs["BaseID"];
-                  console.log("After", i);
-              }
-          });
-      }
-      if (type === ViewType.Component){
-          console.log("component!");
-      }
-    return true;
-  }
-
-  /**
      * Output the model into the selected folder
      */
     public writeToFile(folderPath: string) {
