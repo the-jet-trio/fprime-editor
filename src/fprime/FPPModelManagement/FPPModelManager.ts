@@ -3,7 +3,6 @@ import DataImporter, {IOutput} from "../DataImport/DataImporter";
 import fs from "fs";
 import {remove, findIndex} from "lodash";
 import * as path from "path";
-import fprime from "../index";
 
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
@@ -111,7 +110,7 @@ export default class FPPModelManager {
     private components: IFPPComponent[] = [];
     private porttypes: IFPPPortType[] = [];
     private keywords: string[] = ["base_id", "name"];
-    private fileTable: { [element: string]: string } = {}; // Used to look up which element belongs to which file
+    // private fileTable: { [element: string]: string } = {}; // Used to look up which element belongs to which file
 
     /**
      *
