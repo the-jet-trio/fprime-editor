@@ -58,9 +58,9 @@ export default Vue.extend({
     updateContent(name: string, filterPorts?: boolean) {
       var render: IRenderJSON;
       if(filterPorts !== undefined) {
-        render = fprime.viewManager.rerender(name, filterPorts);
+        render = fprime.viewManager.rerender(name, CyManager.getDescriptor(), filterPorts);
       } else {
-        render = fprime.viewManager.rerender(name, view.state.filterPort);
+        render = fprime.viewManager.rerender(name, CyManager.getDescriptor(), view.state.filterPort);
       }
         CyManager.startUpdate(this.viewName, render);
         CyManager.endUpdate();

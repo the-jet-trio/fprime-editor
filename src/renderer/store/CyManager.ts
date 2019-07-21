@@ -255,10 +255,10 @@ class CyManager {
     return [];
   }
 
+  public showCompView(el: any, type: string): void{
   /**
    * bind the click event with component view
    */
-  public showCompView(el: any, type: string): void{
     if (this.cy) {
       // if (type === "ComponentView") {
       //   console.log(el.map());
@@ -550,7 +550,7 @@ class CyManager {
               fprime.viewManager.removeConnection(module.cyManager.viewName, target.data().source, target.data().target);
             } else if (target.classes().includes('fprime-instance')) {
               fprime.viewManager.removeInstance(module.cyManager.viewName, target.data().label);
-              var render = fprime.viewManager.rerender(module.cyManager.viewName);
+              var render = fprime.viewManager.rerender(module.cyManager.viewName, module.cyManager.getDescriptor());
               module.cyManager.startUpdate(module.cyManager.viewName, render);
               module.cyManager.endUpdate();
             }
@@ -575,7 +575,7 @@ class CyManager {
   /**
    * This is an empty function in order to be exposed to InfoPanel.vue
    */
-  public cyShowComponentView(name: string, namespace: string, kind: string): void{
+  public cyShowComponentView(_0: string, _1: string, _2: string): void{
 
   }
   /**
