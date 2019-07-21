@@ -5,7 +5,6 @@ import ConfigManager from "../ConfigManagement/ConfigManager";
 import LayoutGenerator from "./LayoutGenerator";
 import AnalyzerManager from "../StyleManagement/AnalyzerManager";
 import { IStyle } from "../DataImport/StyleConverter";
-import CyManager from "@/store/CyManager";
 
 export interface IViewList {
   [type: string]: IViewListItem[];
@@ -253,13 +252,13 @@ export default class ViewManager {
     }
   }
 
-  public rerender(viewName: string, filterPorts?: boolean): IRenderJSON {
+  public rerender(viewName: string, oldJson: ICytoscapeJSON, filterPorts?: boolean): IRenderJSON {
     // save the old styles from the previous descriptor
     let oldDescriptor = this.viewDescriptors[viewName];
     let oldStyle : {[id: string] : IStyle} = {};
     if(oldDescriptor) {
       oldStyle = oldDescriptor.Descriptor;
-      oldStyle = ViewDescriptor.parseStyleFrom(CyManager.getDescriptor(), []);
+      oldStyle = ViewDescriptor.parseStyleFrom(oldJson, []);
     }
     // generate the corresponding view descriptor first, and then
     // generate the corresponding Cytoscape JSON from the view descriptor.
