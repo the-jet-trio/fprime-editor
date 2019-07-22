@@ -55,6 +55,9 @@ export default {
      * @constructor
      */
     UpdateViewList(oldName: string, newName: string) {
+        if (oldName === newName){
+            return true;
+        }
         const existed =
             Object.keys(views)
                 .map((key) => views[key])
@@ -172,6 +175,12 @@ export default {
      */
     getComponents() {
         return fprime.viewManager.getComponents();
+    },
+    /**
+     * Get all the ports in the current model.
+     */
+    getPorts(){
+        return fprime.viewManager.getPorts();
     },
     /**
      * Get all the text in the current model.

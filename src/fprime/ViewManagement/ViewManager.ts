@@ -484,6 +484,15 @@ export default class ViewManager {
   }
 
   /**
+   * Get all the ports in the model
+   */
+  public async getPorts(){
+    await this.modelManager.loadModel(
+        this.configManager.Config, this);
+    return this.modelManager.getPorts();
+  }
+
+  /**
    * Get all the text in the model
    */
   public async getText() {

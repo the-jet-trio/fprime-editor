@@ -36,32 +36,37 @@
             ></v-text-field>
             <v-btn color="success" @click="updateComponentView()">Update</v-btn>
         </v-container>
-<!--        <v-container class="info-panel" v-bind:style="portPanel">-->
-<!--            <v-text-field-->
-<!--                    v-model="portAttributes.Name"-->
-<!--                    label="Name"-->
-<!--            ></v-text-field>-->
-<!--            <v-autocomplete-->
-<!--                    v-model="portAttributes.Role"-->
-<!--                    :items="portAttributes.Roles"-->
-<!--                    label="NameSpace"-->
-<!--            ></v-autocomplete>-->
-<!--            <v-autocomplete-->
-<!--                    v-model="portAttributes.Type"-->
-<!--                    :items="portAttributes.Types"-->
-<!--                    label="Type"-->
-<!--            ></v-autocomplete>-->
-<!--            <v-autocomplete-->
-<!--                    v-model="portAttributes.Direction"-->
-<!--                    :items="portAttributes.Directions"-->
-<!--                    label="Type"-->
-<!--            ></v-autocomplete>-->
-<!--            <v-text-field-->
-<!--                    v-model="portAttributes.Number"-->
-<!--                    label="Number"-->
-<!--            ></v-text-field>-->
-<!--            <v-btn color="success" @click="updatePortInfo()">Update</v-btn>-->
-<!--        </v-container>-->
+        <v-container class="info-panel" v-bind:style="portPanel">
+            <v-text-field
+                    v-model="portAttributes.Name"
+                    label="Name"
+            ></v-text-field>
+            <v-autocomplete
+                    v-model="portAttributes.Role"
+                    :items="portAttributes.Roles"
+                    label="Role"
+            ></v-autocomplete>
+            <v-autocomplete
+                    v-model="portAttributes.Type"
+                    :items="portAttributes.Types"
+                    label="Type"
+            ></v-autocomplete>
+            <v-autocomplete
+                    v-model="portAttributes.Direction"
+                    :items="portAttributes.Directions"
+                    label="Direction"
+            ></v-autocomplete>
+            <v-text-field
+                    v-model="portAttributes.Number"
+                    label="Number"
+            ></v-text-field>
+            <v-autocomplete
+                    v-model="portAttributes.Kind"
+                    :items="portAttributes.Kinds"
+                    label="Kind"
+            ></v-autocomplete>
+            <v-btn color="success" @click="updatePortInfo()">Update</v-btn>
+        </v-container>
     </v-container>
 </template>
 
@@ -93,13 +98,19 @@
                     Types: [""],
                     Ports: [""],
                 },
+                oldCompViews:{
+                    Name: "",
+                    NameSpace: "",
+                    Kind: ""
+                },
                 compViews:{
                     Name: "",
                     NameSpace: "",
                     Kind: ""
                 },
-                portAttributes: {
+                oldPortAttributes: {
                     Name:"",
+                    Names:[""],
                     Direction: "",
                     Directions:["in","out"],
                     Number:"",
@@ -107,6 +118,21 @@
                     Roles:[""],
                     Type : "",
                     Types:[""],
+                    Kind: "",
+                    Kinds: [""],
+                },
+                portAttributes: {
+                    Name:"",
+                    Names:[""],
+                    Direction: "",
+                    Directions:["in","out"],
+                    Number:"",
+                    Role:"",
+                    Roles:[""],
+                    Type : "",
+                    Types:[""],
+                    Kind: "",
+                    Kinds: [""],
                 },
                 compPanel: {
                     display: 'none',
@@ -121,11 +147,12 @@
         },
         created(){
             this.getComponentInfo;
-            //this.getPortInfo;
+            this.getPortInfo;
         },
         mounted(){
             CyManager.cyShowComponentInfo = this.showComponentInfo;
             CyManager.cyShowComponentView = this.showComponentView;
+            CyManager.cyShowPortInfo = this.showPortInfo;
 
 
         },
@@ -151,23 +178,48 @@
                     //this.comPorts = port;
                 });
             },
-            // getPortInfo: function() {
-            //     view.getPorts().then(value => {
-            //         var roles:string[] = new Array();
-            //         var types:string[] = new Array();
-            //         //var port:string[] = new Array();
-            //         for(var i=0; i < value.length;i++){
-            //             console.log(value[i]);
-            //             // roles.push(value[i].roles);
-            //             // types.push(value[i].types);
-            //         }
-            //         this.portAttributes.Types = types;
-            //         this.portAttributes.Roles = roles;
-            //     });
-            // }
+            getPortInfo: function() {
+                view.getPorts().then(value => {
+                    var names:string[] = new Array();
+                    var roles:string[] = new Array();
+                    var types:string[] = new Array();
+                    var kinds:string[] = new Array();
+                    //var port:string[] = new Array();
+                    for(let p of value){
+                        //console.log(p);
+                        const prop = p.properties;
+                        if (prop.name){
+                            names.push(prop.name);
+                        }
+                        if (prop.role) {
+                            roles.push(prop.role);
+                        }
+                        if (prop.type) {
+                            types.push(prop.type);
+                        }
+                        if (prop.kind) {
+                            kinds.push(prop.kind);
+                        }
+                    }
+                    this.portAttributes.Names = this.uniq(names);
+                    this.portAttributes.Types = this.uniq(types);
+                    this.portAttributes.Roles = this.uniq(roles);
+                    this.portAttributes.Kinds = this.uniq(kinds);
+                });
+            }
         },
 
         methods:{
+            // Remove duplicated elements in an array
+            uniq(arr: string[]){
+              let ret = [];
+              for (let i = 0; i < arr.length; ++i){
+                  if (ret.indexOf(arr[i]) === -1){
+                      ret.push(arr[i]);
+                  }
+              }
+              return ret;
+            },
             // Get the information of the selected component view and assign it to the v-model of the selector.
             showComponentView(compName: string, compNamespace: string, kind: string ){
                 if (this.$route.params.viewType === ViewType.Component ) {
@@ -175,6 +227,12 @@
                     this.compViewPanel.display = "block";
                     this.portPanel.display = "none";
                 }
+                else{
+                    this.compViewPanel.display = "none";
+                }
+                this.oldCompViews.Name = compName;
+                this.oldCompViews.NameSpace = compNamespace;
+                this.oldCompViews.Kind = kind;
                 this.compViews.Name = compName;
                 this.compViews.NameSpace = compNamespace;
                 this.compViews.Kind = kind;
@@ -197,6 +255,7 @@
                 }
                 else{
                     this.compPanel.display = "none";
+                    this.compViewPanel.display = "none";
                 }
                 this.compAttributes.Name = compName;
                 this.compAttributes.BaseID = compBaseID;
@@ -207,9 +266,47 @@
                 this.OldCompAttributes.Type = compType;
                 this.OldCompAttributes.NameSpace = compNamespace;
             },
+            // Get the information of the selected port and assign it to the v-model of the selector.
+            showPortInfo(portName: string, portDirect: string, portNumber: string, portRole: string, portType:string, portKind:string){
+                if (this.$route.params.viewType === ViewType.InstanceCentric ||this.$route.params.viewType === ViewType.Component) {
+                    this.portPanel.display = "block";
+                    this.compPanel.display = "none";
+                    this.compViewPanel.display = "none";
+                    this.portAttributes.Name = portName;
+                    this.portAttributes.Direction = portDirect;
+                    this.portAttributes.Number = portNumber;
+                    this.portAttributes.Role = portRole;
+                    this.portAttributes.Type = portType;
+                    this.portAttributes.Kind = portKind;
+                    this.oldPortAttributes.Name = portName;
+                    this.oldPortAttributes.Direction = portDirect;
+                    this.oldPortAttributes.Number = portNumber;
+                    this.oldPortAttributes.Role = portRole;
+                    this.oldPortAttributes.Type = portType;
+                    this.oldPortAttributes.Kind = portKind;
+                }
+            },
             updateComponentView(){
                 if(this.compViews.Name && this.compViews.NameSpace && this.compViews.Kind){
-
+                    const oldName = this.oldCompViews.Name;
+                    const newName = this.compViews.Name;
+                    const non_existed = view.UpdateViewList(oldName,newName);
+                    if(non_existed) {
+                        const result = fprime.viewManager.updateAttributes(ViewType.Component, {
+                            ["NameSpace"]: this.compViews.NameSpace,
+                            ["Name"]: this.compViews.Name,
+                            ["Kind"]: this.compViews.Kind,
+                            ["OldName"]: this.oldCompViews.Name
+                        });
+                        if (result){
+                            this.$root.$emit("updateContent", newName);
+                            this.$route.params.viewName = newName;
+                            this.oldCompViews.Name = newName;
+                        }
+                    }
+                    else{
+                        alert("The name you want to change has already been in the model!");
+                    }
                 }
                 else{
                     alert("Please use valid input!");
@@ -236,11 +333,6 @@
                             });
                         if (result) {
                             // 2 content: rerender
-                            console.log("Old:", this.OldCompAttributes);
-                            console.log("New:", this.compAttributes);
-                            var grab = CyManager.getGrabbed();
-                            CyManager.showCompView(grab,"ComponentView");
-                            console.log(grab);
                             this.$root.$emit("updateContent", newName);
                             this.$route.params.viewName = newName;
                             this.OldCompAttributes.NameSpace = newName.split(".")[0];
@@ -254,6 +346,27 @@
                 else{
                     alert("Please use valid input!");
                 }
+            },
+            updatePortInfo(){
+                const oldName = this.oldPortAttributes.Name;
+                const newName = this.portAttributes.Name;
+                const result = fprime.viewManager.updateAttributes("Port",
+                    {
+                        ["CompName"]: this.$route.params.viewName,
+                        ["ViewType"]: this.$route.params.viewType,
+                        ["Name"]: this.portAttributes.Name,
+                        ["Direction"]: this.portAttributes.Direction,
+                        ["Number"]: this.portAttributes.Number,
+                        ["Role"]: this.portAttributes.Role,
+                        ["Type"]: this.portAttributes.Type,
+                        ["Kind"]: this.portAttributes.Kind,
+                        ["OldName"]: oldName,
+                        ["NewName"]: newName
+                    });
+                if(result){
+                    this.oldPortAttributes.Name = newName;
+                }
+
             }
         },
     })
@@ -262,7 +375,7 @@
 <style>
     .info-panel {
         display: block;
-        height: 350px;
+        height: 480px;
         position: fixed;
         box-shadow: 0px -0.5px 1px #bdbdbd;
         background-color: white;

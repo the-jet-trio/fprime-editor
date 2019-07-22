@@ -173,7 +173,7 @@ export default class ViewDescriptor {
         id: compID,
         modelID: i.name,
         type: NodeType.component,
-        properties: {},
+        properties: {kind: i.kind},
       };
 
       // Covert all the ports to a node in the graph
@@ -352,7 +352,7 @@ export default class ViewDescriptor {
               id: n.id,
               img: (n.type === NodeType.Port) ?
                 "static/ports/up.png" : undefined,
-              kind: (n.type === NodeType.Port) ?
+              kind: (n.type === NodeType.Port || n.type === NodeType.component) ?
                 n.properties.kind : undefined,
               direction: (n.type === NodeType.Port) ?
                 n.properties.direction : undefined,
@@ -460,6 +460,7 @@ export default class ViewDescriptor {
         return [
           node.type,
           prop.type ? `fprime-component-${node.id}` : "",
+          prop.kind ? `fprime-component-${prop.kind}` : "",
         ].filter((i) => i !== "").join(" ");
       }
 
