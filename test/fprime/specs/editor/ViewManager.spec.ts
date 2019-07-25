@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import * as fs from "fs";
-import * as path from "path";
+// import * as fs from "fs";
+// import * as path from "path";
 import ViewManager from "fprime/ViewManagement/ViewManager";
 import { ICytoscapeJSON } from "fprime/ViewManagement/ViewDescriptor";
 import { NodeType, EdgeType } from "fprime/ViewManagement/ViewDescriptor";
@@ -84,16 +84,18 @@ describe("ViewManager rerender", () => {
     viewManager = new ViewManager();
   });
 
-  it("should return null when name is empty", () => {
-    // expect(viewManager.render("")).to.equal(null);
-  });
+  it ("should rerender as expect format", async () => {
+    await viewManager.build(__project);
+    viewManager.render(viewName, false);
+    console.log("result:");
+    console.dir(viewManager.rerender(viewName, json, false)!);
+    
+    expect(viewManager.rerender(viewName, json, false)!).to.deep.equal(json);
+  })
 
-  it("should return null if name not in view list", () => {
-    // expect(viewManager.render("invalid_view")).to.equal(null);
-  });
-
-  it("should return null if the project is not built", () => {
-    // expect(viewManager.render(viewName)).to.equal(null);
+  it("should rerender as the default setting if never render before", async () => {
+    await viewManager.build(__project);
+    expect(viewManager.rerender("invalid name", json)).to.equal(null);
   });
 
   it("should show unused ports if filterPorts boolean is true",

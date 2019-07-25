@@ -2,4 +2,4 @@
 --require source-map-support/register
 --require tsconfig-paths/register
 --recursive
-./test/fprime/specs/**/*spec.ts
+./test/fprime/specs/editor/*spec.ts
