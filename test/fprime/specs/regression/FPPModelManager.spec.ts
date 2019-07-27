@@ -45,6 +45,10 @@ describe("FppModelManager Parsing", () => {
         } as IConfig,
       );
       const view = modelManager.query(viewName1, "Function View");
+      console.log("DEBUG: ");
+      console.log("query result:");
+      console.log(view);
+      
       expect(view.instances.length).to.be.equal(22);
       expect(view.connections.length).to.be.equal(11);
   });

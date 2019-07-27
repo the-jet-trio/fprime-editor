@@ -157,6 +157,7 @@ describe("ViewManager updateViewDescriptor", () => {
       elesHasPosition: ["ins_1", "ins_1_p1", "ins_2", "ins_2_p1"],
       elesNoPosition: [],
       descriptor: json,
+      viewType: "Function View",
     });
   });
 

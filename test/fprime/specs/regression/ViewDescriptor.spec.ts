@@ -611,6 +611,7 @@ describe("ViewDescriptor", () => {
         "comp_1_p1", "comp_1_p2"],
       elesNoPosition: [],
       descriptor: json,
+      viewType: "",
     });
   });
 
@@ -813,6 +814,7 @@ describe("ViewDescriptor", () => {
       elesHasPosition: ["ins_1_p1", "ins_2"],
       elesNoPosition: ["ins_1", "ins_2_p1"],
       descriptor: json,
+      viewType: "",
     });
   });
 

@@ -56,14 +56,16 @@ export default Vue.extend({
       event.preventDefault();
     },
     updateContent(name: string, filterPorts?: boolean) {
-      var render: IRenderJSON;
+      var render: IRenderJSON | null;
       if(filterPorts !== undefined) {
         render = fprime.viewManager.rerender(name, CyManager.getDescriptor(), filterPorts);
       } else {
         render = fprime.viewManager.rerender(name, CyManager.getDescriptor(), view.state.filterPort);
       }
+      if (render) {
         CyManager.startUpdate(this.viewName, render);
         CyManager.endUpdate();
+      }
     }
   },
   mounted() {

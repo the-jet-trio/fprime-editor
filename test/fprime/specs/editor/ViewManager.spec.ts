@@ -86,16 +86,15 @@ describe("ViewManager rerender", () => {
 
   it ("should rerender as expect format", async () => {
     await viewManager.build(__project);
-    viewManager.render(viewName, false);
-    console.log("result:");
-    console.dir(viewManager.rerender(viewName, json, false)!);
-    
-    expect(viewManager.rerender(viewName, json, false)!).to.deep.equal(json);
+    var previous = viewManager.render(viewName);
+    viewManager.updateViewDescriptorFor(viewName, json);
+    expect(viewManager.rerender(viewName, {} as ICytoscapeJSON)!).to.deep.equal(previous);
   })
 
   it("should rerender as the default setting if never render before", async () => {
     await viewManager.build(__project);
-    expect(viewManager.rerender("invalid name", json)).to.equal(null);
+    var previous = viewManager.render(viewName);
+    expect(viewManager.rerender(viewName, {} as ICytoscapeJSON)!).to.deep.equal(previous);
   });
 
   it("should show unused ports if filterPorts boolean is true",

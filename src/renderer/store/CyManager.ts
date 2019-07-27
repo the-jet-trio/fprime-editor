@@ -551,8 +551,10 @@ class CyManager {
             } else if (target.classes().includes('fprime-instance')) {
               fprime.viewManager.removeInstance(module.cyManager.viewName, target.data().label);
               var render = fprime.viewManager.rerender(module.cyManager.viewName, module.cyManager.getDescriptor());
-              module.cyManager.startUpdate(module.cyManager.viewName, render);
-              module.cyManager.endUpdate();
+              if (render) {
+                module.cyManager.startUpdate(module.cyManager.viewName, render);
+                module.cyManager.endUpdate();
+              }
             }
           },
         },

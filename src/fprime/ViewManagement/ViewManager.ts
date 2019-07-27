@@ -253,6 +253,8 @@ export default class ViewManager {
   }
 
   public rerender(viewName: string, oldJson: ICytoscapeJSON, filterPorts?: boolean): IRenderJSON | null {
+    console.log(this.viewDescriptors);
+    
     // save the old styles from the previous descriptor
     let oldDescriptor = this.viewDescriptors[viewName];
     let oldStyle : {[id: string] : IStyle} = {};
