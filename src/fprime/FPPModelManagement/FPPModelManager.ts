@@ -210,7 +210,7 @@ export default class FPPModelManager {
         this.porttypes.forEach((e: IFPPPortType) => {
             viewlist.porttypes.push(e.namespace + "." + e.name);
         });
-        console.log(viewlist);
+        // console.log(viewlist);
 
 
         // Add output information
