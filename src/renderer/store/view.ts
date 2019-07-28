@@ -188,8 +188,8 @@ export default {
     /**
      * Update text according to the text editor.
      */
-    applyText(fileName: string, content: string) {
-        fprime.viewManager.applyText(fileName, content);
+    applyText(files: {[fileName: string]: string}) {
+        fprime.viewManager.applyText(files);
     },
 
 }

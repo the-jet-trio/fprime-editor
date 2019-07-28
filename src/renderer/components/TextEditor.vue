@@ -1,7 +1,14 @@
 <template>
     <div class = "text-editor">
+        <v-autocomplete
+                v-model="fileName"
+                :items="fileNames"
+                filled
+                rounded
+        ></v-autocomplete>
         <!-- bidirectional data binding（双向数据绑定） -->
         <codemirror v-model="code" :options="cmOptions"></codemirror>
+
 
         <!-- or to manually control the datasynchronization（或者手动控制数据流，需要像这样手动监听changed事件） -->
         <codemirror ref="myCm"
@@ -22,6 +29,7 @@
         <!--                        @input="onCmCodeChange">-->
         <!--            </codemirror>-->
         <!--        </no-ssr>-->
+
     </div>
 </template>
 
@@ -38,6 +46,9 @@
         name: "text-editor",
         data () {
             return {
+                fileName: "",
+                fileNames: [],
+                files: {},
                 text: {},
                 code: "",
                 cmOptions: {
@@ -61,16 +72,22 @@
             onCmCodeChange(newCode) {
                 console.log('this is new code', newCode)
                 this.code = newCode
+                this.files[this.fileName] = newCode;  // Update code stored in text editor
             },
+            // Read text from Modelmanager
             generateText() {
                 this.getText;
                 console.dir(this.code);
             },
+            // Write text to Modelmanager
             applyText() {
-                view.applyText("ABC.fpp", "namespace ABC\n" +
-                    "\n" +
-                    "datatype XYZ");
+                view.applyText(files);
             },
+            // Return text files
+            returnFiles() {
+                return this.files;
+            },
+            // Show corresponding text to the selected element
             showText(name) {
             },
         },
@@ -81,11 +98,22 @@
             getText: function () {
                 view.getText().then(value => {
                     if (Object.keys(value).length !== 0) {
-                        this.code = value[Object.keys(value)[0]];
+                        // this.fileNames = Object.keys(value);
+                        this.files = value;
                     }
                     console.dir(value)
                 });
             }
         },
+        watch: {
+            files: function (val, oldVal) {
+                this.fileNames = Object.keys(val);
+            },
+            fileName: function (val, oldVal) {
+                if (val) {
+                    this.code = this.files[val];
+                }
+            },
+        }
     })
 </script>
