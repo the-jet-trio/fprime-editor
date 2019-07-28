@@ -1,4 +1,4 @@
-import cytoscape, { EventObject } from "cytoscape";
+import cytoscape, { EventObject, EdgeSingular } from "cytoscape";
 import { NodeSingular, ElementDefinition, NodeCollection } from "cytoscape";
 import coseBilkent from "cytoscape-cose-bilkent";
 import nodeResize from "rp-cytoscape-node-resize";
@@ -373,26 +373,21 @@ class CyManager {
     this.enableEgdeHandles();
     this.configMenu();
     this.showComponentView();
-    if(fprime.viewManager.filterPorts) {
-      this.showUnusedPort();
-    }else {
-      this.hideUnusedPort();
-    }
-    
+    this.refreshUnusedPorts();
     fprime.viewManager.updateViewDescriptorFor(this.viewName,
       this.getDescriptor());
   }
 
-  public hideUnusedPort(): void {
-    this.cy!.nodes(".fprime-port-unused").forEach((node) => {
-      node.style("visibility", "hidden");
-    })
-  }
-
-  public showUnusedPort(): void {
-    this.cy!.nodes(".fprime-port-unused").forEach((node) => {
-      node.style("visibility", "visible");
-    })
+  public refreshUnusedPorts(): void {
+    if(fprime.viewManager.filterPorts) {
+      this.cy!.nodes(".fprime-port-unused").forEach((node) => {
+        node.style("visibility", "visible");
+      });
+    }else {
+      this.cy!.nodes(".fprime-port-unused").forEach((node) => {
+        node.style("visibility", "hidden");
+      });
+    }
   }
 
 /**
@@ -540,11 +535,11 @@ class CyManager {
           'border-color': "rgb(158,173,145)"
         }).update();
       });
-      (this.cy! as any) .on('ehcomplete', (_0: any, sourceNode: any, targetNode: any, addEdge: any) => {
-        console.log(sourceNode.data());
-        
+      (this.cy! as any) .on('ehcomplete', (_0: any, sourceNode: NodeSingular, targetNode: NodeSingular, addEdge: EdgeSingular) => {
         fprime.viewManager.addConnection(this.viewName, sourceNode.id(), targetNode.id());
         addEdge.addClass('port-port');
+        sourceNode.removeClass("fprime-port-unused");
+        targetNode.removeClass("fprime-port-unused");
         this.configMenu();
       });
     }
@@ -569,6 +564,17 @@ class CyManager {
             var target = event.target || event.cyTarget;
             if(target.classes().includes('port-port')) {
               target.remove();
+
+              if(target.source().connectedEdges().length <= 1) {
+                // become an unused port
+                target.source().addClass('fprime-port-unused');
+              }
+              if(target.target().connectedEdges().length <= 1) {
+                // become an unused port
+                target.target().addClass('fprime-port-unused');
+              }
+              module.cyManager.refreshUnusedPorts();
+              
               fprime.viewManager.removeConnection(module.cyManager.viewName, target.data().source, target.data().target);
             } else if (target.classes().includes('fprime-instance')) {
               fprime.viewManager.removeInstance(module.cyManager.viewName, target.data().label);

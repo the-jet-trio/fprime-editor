@@ -30,13 +30,8 @@ export default Vue.extend({
     watch: 
     {
         filterPorts: function(visible) {
-            if(visible) {
-                CyManager.showUnusedPort();
-            }
-            else {
-                CyManager.hideUnusedPort();
-            }
             fprime.viewManager.filterPorts = visible;
+            CyManager.refreshUnusedPorts();
         },
         $route: function(from: Route) {
             if(from.params.viewType === ViewType.Function ||
