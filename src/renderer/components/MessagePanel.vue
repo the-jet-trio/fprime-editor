@@ -91,8 +91,8 @@
             {
                 return (this.$refs.editor as Vue & { returnFiles: () => any }).returnFiles();
             },
-            showText(element: string) {
-                (this.$refs.editor as Vue & { showText: (element: string) => boolean }).showText(element);
+            showText(element: any) {
+                (this.$refs.editor as Vue & { showText: (element: any) => boolean }).showText(element);
             },
         },
         mounted() {

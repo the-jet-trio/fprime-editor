@@ -88,7 +88,23 @@
                 return this.files;
             },
             // Show corresponding text to the selected element
-            showText(name) {
+            showText(params) {
+                console.dir(params);
+                const viewName = params.viewName.split(".", 2);
+                const name = viewName[1];
+                const namespace = viewName[0];
+                const type = params.viewType;
+                let path = "";
+                if (type === "Component View" || type === "PortType View") {
+                    path = namespace + "\\" + name + ".fpp";
+                }
+                else if (type === "Function View" || type === "InstanceCentric View") {
+                    path = namespace + "\\" + "System.fpp";
+                }
+                if (this.fileNames.includes(path))
+                {
+                    this.fileName = path;
+                }
             },
         },
         computed: {
