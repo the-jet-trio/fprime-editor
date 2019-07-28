@@ -373,7 +373,12 @@ class CyManager {
     this.enableEgdeHandles();
     this.configMenu();
     this.showComponentView();
-    this.hideUnusedPort();
+    if(fprime.viewManager.filterPorts) {
+      this.showUnusedPort();
+    }else {
+      this.hideUnusedPort();
+    }
+    
     fprime.viewManager.updateViewDescriptorFor(this.viewName,
       this.getDescriptor());
   }
@@ -471,14 +476,18 @@ class CyManager {
   private addTooltips(): void {
     this.tippyIns =
       this.cy!.nodes().filter((node) => {
-        return Object.keys(node.data("properties")).length !== 0;
+        var nodes = node.data("properties");
+        if(nodes) return Object.keys(nodes).length !== 0;
+        else return false;
       })
         .map((node, _i, _nodes) => {
           const ref = (node as any).popperRef();
           const tippy = new Tippy(ref, { // tippy options:
             html: (() => {
               const content = document.createElement("div");
-              content.innerHTML = this.constructHtml(node.data("properties"));
+              var props = node.data("properties");
+              delete props.unused;
+              content.innerHTML = this.constructHtml(props);
               return content;
             })(),
             trigger: "manual", // probably want manual mode
@@ -600,7 +609,9 @@ class CyManager {
   public showComponentInfo(): void {
     // For instance-centric view
     this.cy!.nodes().filter((node) => {
-      return Object.keys(node.data("properties")).length !== 0;
+      var nodes = node.data("properties");
+      if(nodes) return Object.keys(nodes).length !== 0;
+      else return false;
     })
         .map((node) => {
         node.on("click", () => {

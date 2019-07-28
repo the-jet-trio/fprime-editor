@@ -18,6 +18,7 @@ import { Route } from "vue-router";
 import { ViewType } from "../../fprime/FPPModelManagement/FPPModelManager";
 import view from "../store/view";
 import CyManager from "@/store/CyManager";
+import fprime from "../../fprime";
 export default Vue.extend({
     data()
     {
@@ -35,6 +36,7 @@ export default Vue.extend({
             else {
                 CyManager.hideUnusedPort();
             }
+            fprime.viewManager.filterPorts = visible;
         },
         $route: function(from: Route) {
             if(from.params.viewType === ViewType.Function ||
