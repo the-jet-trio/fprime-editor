@@ -498,8 +498,8 @@ export default class ViewManager {
   /**
    * Update text according to the text editor.
    */
-  public async applyText(fileName: string, content: string) {
-    this.modelManager.applyText(fileName, content);
+  public async applyText(files: {[fileName: string]: string}) {
+    this.modelManager.applyText(files);
   }
   /**
    * Add a new default component to the view list

@@ -87,6 +87,10 @@
                 console.dir(this.$refs);
                 (this.$refs.editor as Vue & { applyText: () => boolean }).applyText();
             },
+            returnFiles()
+            {
+                return (this.$refs.editor as Vue & { returnFiles: () => any }).returnFiles();
+            },
             showText(element: string) {
                 (this.$refs.editor as Vue & { showText: (element: string) => boolean }).showText(element);
             },
@@ -129,7 +133,7 @@
 <style>
     .message-panel {
         display: none;
-        height: 250px;
+        height: 350px;
         position: fixed;
         box-shadow: 0px -0.5px 1px #bdbdbd;
         background-color: white;
@@ -146,6 +150,6 @@
     }
     .message-panel .v-tabs__content p {
         overflow: auto;
-        max-height: 220px;
+        max-height: 320px;
     }
 </style>

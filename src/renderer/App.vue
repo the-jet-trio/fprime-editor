@@ -277,7 +277,10 @@
              */
             async applyText() {
                 // Apply text change
-                (this.$refs.msg as Vue & { applyText: () => boolean }).applyText();
+                // (this.$refs.msg as Vue & { applyText: () => boolean }).applyText(); // Trigger text editor to write text to Modelmanager
+                const files = (this.$refs.msg as Vue & { returnFiles: () => any }).returnFiles(); // Get text files from text editor
+                console.dir(files);
+                fprime.viewManager.applyText(files); // Triggers ViewManager to recompile with new files
 
                 const dir = "./~tmp";
                 if (!fs.existsSync(dir)) {

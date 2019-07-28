@@ -952,11 +952,9 @@ export default class FPPModelManager {
     /**
      * Update text according to the text editor.
      */
-    public applyText(fileName: string, content: string) {
-        console.dir(fileName);
-        console.dir(content);
-        this.text[fileName] = content;
-        console.dir(this.text);
+    public applyText(files: {[fileName: string]: string}) {
+        console.dir(files);
+        this.text = files;
     }
 
     private reset() {
