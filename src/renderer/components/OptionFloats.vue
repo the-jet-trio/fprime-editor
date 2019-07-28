@@ -17,6 +17,7 @@ import Vue from "vue";
 import { Route } from "vue-router";
 import { ViewType } from "../../fprime/FPPModelManagement/FPPModelManager";
 import view from "../store/view";
+import CyManager from "@/store/CyManager";
 export default Vue.extend({
     data()
     {
@@ -27,21 +28,21 @@ export default Vue.extend({
     },
     watch: 
     {
-        filterPorts: function(val) {
-            this.$root.$emit("updateContent", this.$route.params.viewName, val);
-            view.state.filterPort = this.filterPorts;
+        filterPorts: function(visible) {
+            if(visible) {
+                CyManager.showUnusedPort();
+            }
+            else {
+                CyManager.hideUnusedPort();
+            }
         },
-        $route: function(from: Route, to: Route) {
-            this.$root.$emit("updateContent", to.params.viewName, this.showDisplayPort);
-            if(from.params.viewType !== to.params.viewType) {
-                if(from.params.viewType === ViewType.Function ||
-                from.params.viewType === ViewType.InstanceCentric) {
-                    this.showDisplayPort = true;
-                    this.$root.$emit("updateContent", from.params.viewName, this.showDisplayPort);
-                }
-                else {
-                    this.showDisplayPort = false;
-                }
+        $route: function(from: Route) {
+            if(from.params.viewType === ViewType.Function ||
+            from.params.viewType === ViewType.InstanceCentric) {
+                this.showDisplayPort = true;
+            }
+            else {
+                this.showDisplayPort = false;
             }
         }
     }

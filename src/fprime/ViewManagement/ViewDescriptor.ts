@@ -163,6 +163,13 @@ export default class ViewDescriptor {
             to: view.graph.nodes[portID],
           };
         }
+
+        // for filter ports feature, add a new property to unconnected ports
+        if(!(Object.keys(i.used_ports) as any).includes(p)) {
+          view.graph.nodes[portID].properties["unused"] = true;
+        } else {
+          view.graph.nodes[portID].properties["unused"] = false;
+        }
       });
     });
 
@@ -438,6 +445,11 @@ export default class ViewDescriptor {
    */
   private generateNodeClasses(node: INode, canConnect: boolean): string {
     const prop = node.properties;
+    // if(node.type === NodeType.Port) {
+    //   console.log("DEBUG: node properties");
+    //   console.log(prop);
+    // }
+    
     switch (node.type) {
       case NodeType.Instance: {
         return [
@@ -453,6 +465,7 @@ export default class ViewDescriptor {
           prop.kind ? `fprime-port-${prop.kind}` : "",
           prop.direction ? `fprime-port-${prop.direction}` : "",
           canConnect && prop.direction === "out" ? `fprime-port-connect` : "",
+          prop.unused ? `fprime-port-unused` : "",
         ].filter((i) => i !== "").join(" ");
       }
 

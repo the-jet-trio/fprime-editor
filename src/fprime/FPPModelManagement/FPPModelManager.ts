@@ -70,6 +70,9 @@ export interface IFPPInstance {
     base_id: string;
     ports: { [p: string]: IFPPPort };
     properties: { [p: string]: string };
+    // Modified by Minghui Tang 7/28/2019
+    // used for filterPorts feature
+    used_ports: { [p: string]: IFPPPort };
 }
 
 /**
@@ -225,7 +228,7 @@ export default class FPPModelManager {
         return viewlist;
     }
 
-    public query(viewName: string, viewType: string, filterPorts?: boolean): any {
+    public query(viewName: string, viewType: string): any {
         switch (viewType) {
             case ViewType.Function: {
                 var cons: IFPPConnection[] = this.topologies.filter(
@@ -239,9 +242,7 @@ export default class FPPModelManager {
                         ins.push(Object.assign({}, c.to.inst));
                     }
                 });
-                if (!filterPorts) {
-                    ins = this.filterUnusedPorts(ins, cons);
-                }
+                ins = this.filterUnusedPorts(ins, cons);
 
                 return {
                     instances: ins,
@@ -277,9 +278,7 @@ export default class FPPModelManager {
                     });
                 });
                 ins.push(Object.assign({}, root));
-                if (filterPorts) {
-                    ins = this.filterUnusedPorts(ins, cons);
-                }
+                ins = this.filterUnusedPorts(ins, cons);
                 return {
                     instances: ins,
                     connections: cons,
@@ -390,6 +389,7 @@ export default class FPPModelManager {
                 ["type"]: cpName,
                 ["namespace"]: namespace,
             },
+            used_ports: {},
         };
 
         this.instances.push(item);
@@ -1108,6 +1108,7 @@ export default class FPPModelManager {
                 base_id: ele.$.base_id,
                 ports: ps,
                 properties: props,
+                used_ports: {},
             });
         });
 
@@ -1182,7 +1183,7 @@ export default class FPPModelManager {
                     }
                 });
             });
-            i.ports = ps;
+            i.used_ports = ps;
         });
         return ins;
     }

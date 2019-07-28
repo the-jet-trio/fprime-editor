@@ -15,6 +15,7 @@ const ins1: IFPPInstance = {
     p2: { name: "p2", properties: { direction: "out", kind: "sync" } },
   },
   properties: { key1: "val1", key2: "val2" },
+  used_ports: {},
 };
 
 const ins2: IFPPInstance = {
@@ -23,6 +24,7 @@ const ins2: IFPPInstance = {
   ports: { p1: { name: "p1", properties: { direction: "in", num: "2",
                                            kind: "async" } } },
   properties: { key1: "val1" },
+  used_ports: {}
 };
 
 const mockModel: IFPPModel = {

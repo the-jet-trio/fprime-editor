@@ -373,8 +373,21 @@ class CyManager {
     this.enableEgdeHandles();
     this.configMenu();
     this.showComponentView();
+    this.hideUnusedPort();
     fprime.viewManager.updateViewDescriptorFor(this.viewName,
       this.getDescriptor());
+  }
+
+  public hideUnusedPort(): void {
+    this.cy!.nodes(".fprime-port-unused").forEach((node) => {
+      node.style("visibility", "hidden");
+    })
+  }
+
+  public showUnusedPort(): void {
+    this.cy!.nodes(".fprime-port-unused").forEach((node) => {
+      node.style("visibility", "visible");
+    })
   }
 
 /**

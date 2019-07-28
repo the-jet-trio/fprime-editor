@@ -55,13 +55,9 @@ export default Vue.extend({
     allowDrop(event: any) {
       event.preventDefault();
     },
-    updateContent(name: string, filterPorts?: boolean) {
+    updateContent(name: string) {
       var render: IRenderJSON | null;
-      if(filterPorts !== undefined) {
-        render = fprime.viewManager.rerender(name, CyManager.getDescriptor(), filterPorts);
-      } else {
-        render = fprime.viewManager.rerender(name, CyManager.getDescriptor(), view.state.filterPort);
-      }
+        render = fprime.viewManager.rerender(name, CyManager.getDescriptor());
       if (render) {
         CyManager.startUpdate(this.viewName, render);
         CyManager.endUpdate();
@@ -73,8 +69,8 @@ export default Vue.extend({
     CyManager.init(document.getElementById("cytoscape")!);
     this.updateCytoscape();
     // mount updateContent calling from viewlist 
-    this.$root.$on('updateContent', (name: string, filterPorts?: boolean) => {
-      this.updateContent(name, filterPorts);
+    this.$root.$on('updateContent', (name: string) => {
+      this.updateContent(name);
     });
   },
   beforeDestroy() {

@@ -202,7 +202,7 @@ export default class ViewManager {
    * @returns The render JSON object for rendering, the current system uses
    * cytoscape as the front-end rendering library.
    */
-  public render(viewName: string, filterPorts?: boolean,
+  public render(viewName: string,
                 forceLayout: boolean = false): IRenderJSON | null {
     // Check if the name is in the view list
     const viewType = Object.keys(this.viewList)
@@ -222,8 +222,7 @@ export default class ViewManager {
       return null;
     }
     // Find the Cytoscape JSON if already exists.
-    if (this.cytoscapeJSONs[viewName] && 
-      (filterPorts == undefined || this.filterPorts === filterPorts)) {
+    if (this.cytoscapeJSONs[viewName]) {
       return {
         viewType: viewType,
         needLayout: forceLayout,
@@ -238,8 +237,7 @@ export default class ViewManager {
     try {
       // If not, generate the corresponding view descriptor first, and then
       // generate the corresponding Cytoscape JSON from the view descriptor.
-      const viewDescriptor = this.generateViewDescriptorFor(viewName, filterPorts);
-      if(filterPorts) this.filterPorts = filterPorts;
+      const viewDescriptor = this.generateViewDescriptorFor(viewName);
       this.viewDescriptors[viewName] = viewDescriptor;
       // Convert the view descriptor to the render JSON (cytoscape format)
       const json = this.generateRenderJSONFrom(viewDescriptor);
@@ -252,7 +250,7 @@ export default class ViewManager {
     }
   }
 
-  public rerender(viewName: string, oldJson: ICytoscapeJSON, filterPorts?: boolean): IRenderJSON | null {
+  public rerender(viewName: string, oldJson: ICytoscapeJSON): IRenderJSON | null {
     console.log(this.viewDescriptors);
     
     // save the old styles from the previous descriptor
@@ -263,12 +261,11 @@ export default class ViewManager {
       oldStyle = ViewDescriptor.parseStyleFrom(oldJson, []);
     }
     else {
-      return this.render(viewName, filterPorts);
+      return this.render(viewName);
     }
     // generate the corresponding view descriptor first, and then
     // generate the corresponding Cytoscape JSON from the view descriptor.
-    let viewDescriptor: ViewDescriptor = this.generateViewDescriptorFor(viewName, filterPorts);
-    if(filterPorts) this.filterPorts = filterPorts;
+    let viewDescriptor: ViewDescriptor = this.generateViewDescriptorFor(viewName);
     if(oldStyle) viewDescriptor.updateStyle(oldStyle);
     this.viewDescriptors[viewName] = viewDescriptor;
     // Convert the view descriptor to the render JSON (cytoscape format)
@@ -451,12 +448,12 @@ export default class ViewManager {
    * instance from the FPP model data.
    * @param viewName The name of the view which should be in the view list.
    */
-  private generateViewDescriptorFor(viewName: string, filterPorts?: boolean): ViewDescriptor {
+  private generateViewDescriptorFor(viewName: string): ViewDescriptor {
     const view = Object.keys(this.viewList)
       .map((key) => this.viewList[key])
       .reduce((x, y) => x.concat(y))
       .filter((x) => x.name === viewName)[0];
-    const model = this.modelManager.query(view.name, view.type, filterPorts);
+    const model = this.modelManager.query(view.name, view.type);
     // Generate the graph part of the view descriptor
     const descriptor = ViewDescriptor.buildFrom(model, view.type);
     // Load the styledescriptor part of the view descriptor from file
