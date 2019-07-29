@@ -299,8 +299,10 @@
                             ["OldName"]: this.oldCompViews.Name
                         });
                         if (result){
-                            this.$root.$emit("updateContent", newName);
+                            console.log(this.$route.params.viewName);
                             this.$route.params.viewName = newName;
+                            console.log(this.$route.params.viewName);
+                            this.$root.$emit("updateCytoscape", newName);
                             this.oldCompViews.Name = newName;
                         }
                     }
@@ -333,10 +335,12 @@
                             });
                         if (result) {
                             // 2 content: rerender
-                            this.$root.$emit("updateContent", newName);
                             this.$route.params.viewName = newName;
+                            console.log(newName);
+                            this.$root.$emit("updateCytoscape", newName);
                             this.OldCompAttributes.NameSpace = newName.split(".")[0];
                             this.OldCompAttributes.Name = newName.split(".")[1];
+
                         }
                     }
                     else{
@@ -364,6 +368,8 @@
                         ["NewName"]: newName
                     });
                 if(result){
+
+                    this.$root.$emit("updateCytoscape",this.$route.params.viewName);
                     this.oldPortAttributes.Name = newName;
                 }
 

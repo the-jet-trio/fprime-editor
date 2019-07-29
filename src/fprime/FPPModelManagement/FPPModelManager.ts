@@ -3,6 +3,7 @@ import DataImporter, { IOutput } from "../DataImport/DataImporter";
 import fs from "fs";
 import {remove, findIndex} from "lodash";
 import * as path from "path";
+import ViewManager from "fprime/ViewManagement/ViewManager";
 import {directives} from "vuetify/lib";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
@@ -110,7 +111,6 @@ export default class FPPModelManager {
     private components: IFPPComponent[] = [];
     private porttypes: IFPPPortType[] = [];
     private keywords: string[] = ["base_id", "name"];
-
     /**
      *
      */
@@ -221,7 +221,11 @@ export default class FPPModelManager {
         console.dir(this.text);
         return viewlist;
     }
-
+    // public wait(){
+    //     while(!this.loadOK){
+    //        // do nothing
+    //     }
+    // }
     public query(viewName: string, viewType: string, filterPorts?: boolean): any {
         switch (viewType) {
             case ViewType.Function: {
@@ -498,7 +502,7 @@ export default class FPPModelManager {
         // console.log("add instance to topo: " + instname + " " + toponame);
 
         const instance = this.instances.find((i) => i.name === instname);
-        if (instance == undefined) { return false; }
+        if (instance === undefined) { return false; }
         // console.log("find instance");
         // console.log(instance);
 

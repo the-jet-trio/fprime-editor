@@ -31,10 +31,12 @@ export default Vue.extend({
       // This part need refinement.
       this.parentHeight = window.innerHeight - 40 - 24 - this.offset;
     },
-    updateCytoscape() {
+    updateCytoscape(name: string) {
+      this.viewName = name;
       const render = fprime.viewManager.render(this.viewName, view.state.filterPort)!;
       if(render!=null)
         CyManager.startUpdate(this.viewName, render);
+        CyManager.endUpdate();
     },
     dropItem(event: any) {
       console.log("Drop");
@@ -69,10 +71,13 @@ export default Vue.extend({
   mounted() {
     this.viewName = this.$route.params.viewName;
     CyManager.init(document.getElementById("cytoscape")!);
-    this.updateCytoscape();
+    this.updateCytoscape(this.viewName);
     // mount updateContent calling from viewlist 
     this.$root.$on('updateContent', (name: string, filterPorts?: boolean) => {
       this.updateContent(name, filterPorts);
+    });
+    this.$root.$on('updateCytoscape', (name: string)=>{
+      this.updateCytoscape(name);
     });
   },
   beforeDestroy() {
@@ -86,7 +91,7 @@ export default Vue.extend({
         CyManager.getDescriptor(),
       );
       this.viewName = to.params.viewName;
-      this.updateCytoscape();
+      this.updateCytoscape(this.viewName);
     }
   }
 });

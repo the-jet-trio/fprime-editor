@@ -576,7 +576,7 @@ class CyManager {
    */
   public showComponentInfo(): void {
     // For instance-centric view
-    this.cy!.nodes().filter((node) => {
+    this.cy!.nodes(".fprime-instance").filter((node) => {
       return Object.keys(node.data("properties")).length !== 0 && !node.data("direction") ;
     })
         .map((node) => {
@@ -598,14 +598,25 @@ class CyManager {
    */
   public showComponentView(): void {
     // For component view
-    this.cy!.nodes(".fprime-component").forEach((node: any) => {
-      node.on("click", () => {
+    this.cy!.nodes(".fprime-component").filter((node) => {
+      return Object.keys(node.data("properties")).length !== 0;
+    })
+        .map((node) => {
+        node.on("click", () => {
         const name = node.data().label;
         const namespace = name.split(".")[0];
         const kind = node.data().kind;
         this.cyShowComponentView(name, namespace, kind);
       });
     });
+    // this.cy!.nodes(".fprime-component").forEach((node: any) => {
+    //   node.on("click", () => {
+    //     const name = node.data().label;
+    //     const namespace = name.split(".")[0];
+    //     const kind = node.data().kind;
+    //     this.cyShowComponentView(name, namespace, kind);
+    //   });
+    // });
   }
 
   /**
@@ -613,7 +624,7 @@ class CyManager {
    * can show the information of the selected port.
    */
   public showPortInfo(): void {
-    this.cy!.nodes().filter((node) => {
+    this.cy!.nodes(".fprime-port").filter((node) => {
       return Object.keys(node.data("properties")).length !== 0 && node.data("direction") ;
     })
         .map((node) => {

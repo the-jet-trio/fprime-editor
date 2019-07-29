@@ -6,6 +6,8 @@ import LayoutGenerator from "./LayoutGenerator";
 import AnalyzerManager from "../StyleManagement/AnalyzerManager";
 import { IStyle } from "../DataImport/StyleConverter";
 import CyManager from "@/store/CyManager";
+import {IFPPComponent} from "../FPPModelManagement/FPPModelManager";
+import {IFPPPort} from "../FPPModelManagement/FPPModelManager";
 
 export interface IViewList {
   [type: string]: IViewListItem[];
@@ -25,7 +27,6 @@ export enum ViewType {
 }
 
 export default class ViewManager {
-
   /**
    * All the view descriptors of the views. In the current design, the view
    * descriptor should be generated as needed (call render).
@@ -71,6 +72,9 @@ export default class ViewManager {
     [ViewType.PortType] : 1,
     [ViewType.DataType] : 1,
   }
+
+  private comps: IFPPComponent[] = [];
+  private ports = new Set();
 
   public filterPorts = false;
 
@@ -159,6 +163,8 @@ export default class ViewManager {
       // Load the FPP model
       const viewlist = await this.modelManager.loadModel(
         this.configManager.Config, this);
+      this.comps = this.modelManager.getComponents();
+      this.ports = this.modelManager.getPorts();
       this.generateViewList(viewlist);
     } catch (err) {
       this.appendOutput(err);
@@ -478,8 +484,11 @@ export default class ViewManager {
    * Get all the components in the model
    */
   public async getComponents() {
-    await this.modelManager.loadModel(
-        this.configManager.Config, this);
+    await this.modelManager.loadModel(this.configManager.Config, this);
+    // while (this.comps.length === 0){
+    //
+    // }
+    // return this.comps;
     return this.modelManager.getComponents();
   }
 
@@ -487,9 +496,12 @@ export default class ViewManager {
    * Get all the ports in the model
    */
   public async getPorts(){
-    await this.modelManager.loadModel(
-        this.configManager.Config, this);
+    await this.modelManager.loadModel(this.configManager.Config, this);
     return this.modelManager.getPorts();
+    // while (this.ports.size === 0){
+    //   console.log(this.ports);
+    // }
+    // return this.ports;
   }
 
   /**
@@ -606,3 +618,4 @@ export default class ViewManager {
     return this.modelManager.removeInstance(view, inst_name);
   }
 }
+
