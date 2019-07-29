@@ -94,6 +94,7 @@ export default Vue.extend({
 #cytoscape {
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
 .custom-context-menu {

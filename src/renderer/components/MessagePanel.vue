@@ -148,8 +148,13 @@
         padding-top: 0px;
         white-space: pre-wrap;
     }
-    .message-panel .v-tabs__content p {
+    .message-panel .v-window__container p {
         overflow: auto;
+        max-height: 320px;
+    }
+
+    .message-panel .v-window__container .text-editor {
+        overflow: hidden;
         max-height: 320px;
     }
 </style>

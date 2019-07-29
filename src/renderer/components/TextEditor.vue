@@ -7,7 +7,6 @@
                 rounded
         ></v-autocomplete>
         <!-- bidirectional data binding（双向数据绑定） -->
-        <codemirror v-model="code" :options="cmOptions"></codemirror>
 
 
         <!-- or to manually control the datasynchronization（或者手动控制数据流，需要像这样手动监听changed事件） -->
