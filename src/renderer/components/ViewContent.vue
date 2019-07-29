@@ -33,10 +33,12 @@ export default Vue.extend({
     },
     updateCytoscape(name: string) {
       this.viewName = name;
-      const render = fprime.viewManager.render(this.viewName, view.state.filterPort)!;
-      if(render!=null)
+      const render = fprime.viewManager.render(this.viewName, view.state.filterPort);
+      console.log(render);
+      if(render!=null) {
         CyManager.startUpdate(this.viewName, render);
         CyManager.endUpdate();
+      }
     },
     dropItem(event: any) {
       console.log("Drop");

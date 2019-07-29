@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <v-navigation-drawer value="true" stateless>
     <v-list
     >
@@ -151,6 +151,7 @@ export default Vue.extend({
       });
     },
     clickMenuItem(menuitem: string) {
+
       if (menuitem === "add") {
         this.addNewItem(this.menu.clickedType);
       } else if (menuitem === "delete") {
