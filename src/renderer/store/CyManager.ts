@@ -612,7 +612,6 @@ class CyManager {
     })
         .map((node) => {
         node.on("click", () => {
-          console.log(node.data());
           const name = node.data().id.split("_")[1];
           const info = node.data("properties");
           const type = info.type;
@@ -634,10 +633,11 @@ class CyManager {
     })
         .map((node) => {
         node.on("click", () => {
-        const name = node.data().label;
-        const namespace = name.split(".")[0];
-        const kind = node.data().kind;
-        this.cyShowComponentView(name, namespace, kind);
+          console.log(node.data());
+          const name = node.data().label;
+          const namespace = name.split(".")[0];
+          const kind = node.data().kind;
+          this.cyShowComponentView(name, namespace, kind);
       });
     });
     // this.cy!.nodes(".fprime-component").forEach((node: any) => {
@@ -660,7 +660,6 @@ class CyManager {
     })
         .map((node) => {
           node.on("click", () => {
-            console.log(node.data());
             const info = node.data("properties");
             const name = info.name;
             const direct = info.direction;

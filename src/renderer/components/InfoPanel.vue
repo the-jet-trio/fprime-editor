@@ -302,7 +302,12 @@
                             console.log(this.$route.params.viewName);
                             this.$route.params.viewName = newName;
                             console.log(this.$route.params.viewName);
-                            this.$root.$emit("updateCytoscape", newName);
+                            if (newName === oldName) {
+                                this.$root.$emit("updateContent", newName);
+                            }
+                            else{
+                                this.$root.$emit("updateCytoscape", newName);
+                            }
                             this.oldCompViews.Name = newName;
                         }
                     }
@@ -336,7 +341,6 @@
                         if (result) {
                             // 2 content: rerender
                             this.$route.params.viewName = newName;
-                            console.log(newName);
                             this.$root.$emit("updateCytoscape", newName);
                             this.OldCompAttributes.NameSpace = newName.split(".")[0];
                             this.OldCompAttributes.Name = newName.split(".")[1];
@@ -368,8 +372,7 @@
                         ["NewName"]: newName
                     });
                 if(result){
-
-                    this.$root.$emit("updateCytoscape",this.$route.params.viewName);
+                    this.$root.$emit("updateContent",this.$route.params.viewName);
                     this.oldPortAttributes.Name = newName;
                 }
 
