@@ -255,22 +255,6 @@ class CyManager {
     return [];
   }
 
-  public showCompView(el: any, type: string): void{
-  /**
-   * bind the click event with component view
-   */
-    if (this.cy) {
-      // if (type === "ComponentView") {
-      //   console.log(el.map());
-      //   const ele = el.cy();
-      //   ele.on("click", () => {
-      //     console.log("yo!");
-      //   });
-      // } else {
-      //   console.log("hi");
-      // }
-    }
-  }
 
   /**
    * set a collection of elements to be a certain color
@@ -374,6 +358,7 @@ class CyManager {
     this.configMenu();
     this.showComponentView();
     this.refreshUnusedPorts();
+    this.showPortInfo();
     fprime.viewManager.updateViewDescriptorFor(this.viewName,
       this.getDescriptor());
   }
@@ -609,14 +594,20 @@ class CyManager {
 
   }
   /**
+   * This is an empty function in order to be exposed to InfoPanel.vue
+   */
+  public cyShowPortInfo(_0: string, _1: string, _2: string, _3: string, _4: string, _5: string):void{
+
+  }
+  /**
    * This function binds each node on the canvas with a click event so that
    * the info panel can show the information of the selected component.
    */
   public showComponentInfo(): void {
     // For instance-centric view
-    this.cy!.nodes().filter((node) => {
+    this.cy!.nodes(".fprime-instance").filter((node) => {
       var nodes = node.data("properties");
-      if(nodes) return Object.keys(nodes).length !== 0;
+      if(nodes) return Object.keys(nodes).length !== 0 && !node.data("direction");
       else return false;
     })
         .map((node) => {
@@ -632,27 +623,55 @@ class CyManager {
       });
   }
 
-  public cyUpdateComponentInfo(_0: string, _1: string):void{
-
-  }
-
   /**
-   * This functions binds the nodes in component views with a click envent so that
-   * the info panel canshow the information of the selected component.
+   * This function binds the nodes in component views with a click event so that
+   * the info panel can show the information of the selected component.
    */
   public showComponentView(): void {
     // For component view
-    this.cy!.nodes(".fprime-component").forEach((node: any) => {
-      node.on("click", () => {
-        console.log(node.data());
+    this.cy!.nodes(".fprime-component").filter((node) => {
+      return Object.keys(node.data("properties")).length !== 0;
+    })
+        .map((node) => {
+        node.on("click", () => {
         const name = node.data().label;
         const namespace = name.split(".")[0];
         const kind = node.data().kind;
         this.cyShowComponentView(name, namespace, kind);
       });
     });
+    // this.cy!.nodes(".fprime-component").forEach((node: any) => {
+    //   node.on("click", () => {
+    //     const name = node.data().label;
+    //     const namespace = name.split(".")[0];
+    //     const kind = node.data().kind;
+    //     this.cyShowComponentView(name, namespace, kind);
+    //   });
+    // });
   }
 
+  /**
+   * This function binds the port nodes with a click event so that the info panel
+   * can show the information of the selected port.
+   */
+  public showPortInfo(): void {
+    this.cy!.nodes(".fprime-port").filter((node) => {
+      return Object.keys(node.data("properties")).length !== 0 && node.data("direction") ;
+    })
+        .map((node) => {
+          node.on("click", () => {
+            console.log(node.data());
+            const info = node.data("properties");
+            const name = info.name;
+            const direct = info.direction;
+            const number = info.number;
+            const role = info.role;
+            const type = info.type;
+            const kind = info.kind;
+            this.cyShowPortInfo(name, direct, number, role, type, kind);
+          });
+        });
+  }
   private constructHtml(data: any): string {
     let res = "";
     Object.keys(data).map((key) => {

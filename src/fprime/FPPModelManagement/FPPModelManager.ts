@@ -3,9 +3,10 @@ import DataImporter, {IOutput} from "../DataImport/DataImporter";
 import fs from "fs";
 import {remove, findIndex} from "lodash";
 import * as path from "path";
-
-var getDirName = require("path").dirname;
-var mkdirp = require('mkdirp');
+import ViewManager from "fprime/ViewManagement/ViewManager";
+import {directives} from "vuetify/lib";
+const getDirName = require("path").dirname;
+const mkdirp = require('mkdirp');
 
 /**
  *
@@ -113,7 +114,6 @@ export default class FPPModelManager {
     private components: IFPPComponent[] = [];
     private porttypes: IFPPPortType[] = [];
     private keywords: string[] = ["base_id", "name"];
-    // private fileTable: { [element: string]: string } = {}; // Used to look up which element belongs to which file
 
     /**
      *
@@ -294,7 +294,16 @@ export default class FPPModelManager {
     public getComponents() {
         return this.components;
     }
-
+    public getPorts() {
+        let ret = new Set();
+        this.instances.forEach((i) => {
+            const ports = i.ports;
+           for (const p in ports) {
+               ret.add(ports[p]);
+           }
+        });
+        return ret;
+    }
     public getText() {
         return this.text;
     }
@@ -496,10 +505,8 @@ export default class FPPModelManager {
     public addInstanceToTopo(instname: string, toponame: string): boolean {
         // console.log("add instance to topo: " + instname + " " + toponame);
 
-        var instance = this.instances.find((i) => i.name === instname);
-        if (instance == undefined) {
-            return false;
-        }
+        const instance = this.instances.find((i) => i.name === instname);
+        if (instance === undefined) { return false; }
         // console.log("find instance");
         // console.log(instance);
 
@@ -678,30 +685,82 @@ export default class FPPModelManager {
     /**
      * Update the model
      */
-    public updateAttributes(type: string, attrs: { [attrname: string]: string }): boolean {
-        // @TODO: daiyi
-        if (type === ViewType.InstanceCentric) {
-            this.instances.forEach((i) => {
-                if (i.name === attrs["OldName"]) {
-                    console.log("Before", i);
-                    i.name = attrs["NewName"];
-                    i.properties["type"] = attrs["Type"];
-                    i.properties["namespace"] = attrs["NameSpace"];
-                    i.properties["base_id_window"] = attrs["BaseID"];
-                    console.log("After", i);
-                }
-            });
-        }
-        if (type === ViewType.Component) {
-            console.log("component!");
-        }
-        return true;
-    }
+  public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
+      if (type === ViewType.InstanceCentric) {
+          this.instances.forEach((i) => {
+              if (i.name === attrs["OldName"]) {
+                  console.log("Before", i);
+                  i.name = attrs["NewName"];
+                  i.properties["type"] = attrs["Type"];
+                  i.properties["namespace"] = attrs["NameSpace"];
+                  i.properties["base_id_window"] = attrs["BaseID"];
+                  console.log("After", i);
+              }
+          });
+      }
+      if (type === ViewType.Component){
+          this.components.forEach((i) => {
+              if (i.name === attrs["OldName"]){
+                  console.log("Before", i);
+                  i.name = attrs["Name"];
+                  i.kind = attrs["Kind"];
+                  i.namespace = attrs["NameSpace"];
+                  console.log("after", i);
+              }
+          });
+      }
+      if (type === "Port") {
+          if (attrs["ViewType"] === ViewType.InstanceCentric) {
+              this.instances.forEach((i) => {
+                  if (i.name === attrs["CompName"]) {
+                      const ports = i.ports;
+                      for (let p in ports) {
+                          if (p === attrs["OldName"]) {
+                              console.log("before", ports[p]);
+                              ports[p].name = attrs["NewName"];
+                              ports[p].properties["direction"] = attrs["Direction"];
+                              ports[p].properties["name"] = attrs["NewName"];
+                              ports[p].properties["number"] = attrs["Number"];
+                              ports[p].properties["role"] = attrs["Role"];
+                              ports[p].properties["type"] = attrs["Type"];
+                              ports[p].properties["kind"] = attrs["Kind"];
+                              console.log("after", ports[p]);
+                              break;
+                          }
+                      }
+                  }
+              });
+          }
+          else if (attrs["ViewType"] === ViewType.Component){
+              this.components.forEach((i) => {
+                  if (i.name === attrs["CompName"]){
+                      const ports = i.ports;
+                      for (let p of ports){
+                          if (p.name === attrs["OldName"]){
+                              console.log("before", p);
+                              p.name = attrs["NewName"];
+                              p.properties["direction"] = attrs["Direction"];
+                              p.properties["name"] = attrs["NewName"];
+                              p.properties["number"] = attrs["Number"];
+                              p.properties["role"] = attrs["Role"];
+                              p.properties["type"] = attrs["Type"];
+                              p.properties["kind"] = attrs["Kind"];
+                              console.log("after", p);
+                              break;
+                          }
+                      }
+                  }
+              });
+          }
+      }
+    return true;
+  }
 
-    /**
-     * Output the model into the selected folder
-     */
-    public writeToFile(folderPath: string) {
+  /**
+   * Output the model into the selected folder
+   */
+  public writeToFile(folderPath: string) {
+        this.generateText();
         fs.readdir(folderPath, (err, files) => {
             if (err) {
                 throw err;
