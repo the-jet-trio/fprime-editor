@@ -15,7 +15,8 @@
                     :options="cmOptions"
                     @ready="onCmReady"
                     @focus="onCmFocus"
-                    @input="onCmCodeChange">
+                    @input="onCmCodeChange"
+                    @cursorActivity="onCursorActivity">
         </codemirror>
 
         <!--        &lt;!&ndash; if Nust.js/SSR（如果在 Nuxt.js 环境下，需要外面包裹一层 no-ssr） &ndash;&gt;-->
@@ -73,6 +74,8 @@
                 this.code = newCode
                 this.files[this.fileName] = newCode;  // Update code stored in text editor
             },
+            onCursorActivity(cm) {
+            },
             // Read text from Modelmanager
             generateText() {
                 this.getText;
@@ -110,6 +113,7 @@
             codemirror() {
                 return this.$refs.myCm.codemirror
             },
+            // Get text from ModelManager
             getText: function () {
                 view.getText().then(value => {
                     if (Object.keys(value).length !== 0) {
@@ -118,7 +122,18 @@
                     }
                     console.dir(value)
                 });
-            }
+            },
+            // Update text from ModelManager
+            dummyGetText: function () {
+                view.getText().then(value => {
+                    if (Object.keys(value).length !== 0) {
+                        // this.fileNames = Object.keys(value);
+                        this.files = value;
+                    }
+                    console.dir(value);
+                    alert("DELETE");
+                });
+            },
         },
         watch: {
             files: function (val, oldVal) {
@@ -129,6 +144,9 @@
                     this.code = this.files[val];
                 }
             },
+        },
+        mounted(){
+            view.updateEditor = this.generateText;
         }
     })
 </script>

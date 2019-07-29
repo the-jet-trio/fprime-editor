@@ -3,7 +3,6 @@ import DataImporter, {IOutput} from "../DataImport/DataImporter";
 import fs from "fs";
 import {remove, findIndex} from "lodash";
 import * as path from "path";
-import ViewManager from "fprime/ViewManagement/ViewManager";
 import {directives} from "vuetify/lib";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
@@ -213,18 +212,15 @@ export default class FPPModelManager {
         this.porttypes.forEach((e: IFPPPortType) => {
             viewlist.porttypes.push(e.namespace + "." + e.name);
         });
-        // console.log(viewlist);
-
 
         // Add output information
         if (output) {
             output.appendOutput("Generate view list...");
         }
 
-        // console.dir(this.enumtypes);
         // Generate text
-        // this.generateText();
-        // console.dir(this.text);
+        this.generateText();
+        console.dir(this.text);
         return viewlist;
     }
 
@@ -429,6 +425,8 @@ export default class FPPModelManager {
      */
     public deleteDataType(name: string): boolean {
         this.datatypes = this.datatypes.filter((i) => i.name !== name);
+        this.updateEditor();
+        console.dir(this.datatypes);
         return true;
     }
 
@@ -679,6 +677,7 @@ export default class FPPModelManager {
                 );
             }
         });
+        this.updateEditor();
         return true;
     }
 
@@ -1001,13 +1000,8 @@ export default class FPPModelManager {
 
             // Concatenate to text
             this.text[instancePath] += instanceContent[key] + topologyContent[key] + "}";
-
-            // fs.writeFile(instancePath, instanceContent[key] + topologyContent[key] + "}", (err) => {
-            //     if (err) {
-            //         throw err;
-            //     }
-            // });
         }
+        console.dir(this.text);
     }
 
     /**
@@ -1016,6 +1010,12 @@ export default class FPPModelManager {
     public applyText(files: {[fileName: string]: string}) {
         console.dir(files);
         this.text = files;
+    }
+
+    /**
+     * Dummy function to update text editor according to the ModelManager.
+     */
+    public updateEditor(): void {
     }
 
     private reset() {

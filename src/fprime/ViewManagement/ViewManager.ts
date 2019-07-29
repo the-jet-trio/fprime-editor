@@ -519,6 +519,9 @@ export default class ViewManager {
   public async generateText() {
     this.modelManager.generateText();
   }
+  public updateEditor() {
+    this.modelManager.updateEditor();
+  }
   /**
    * Update text according to the text editor.
    */
