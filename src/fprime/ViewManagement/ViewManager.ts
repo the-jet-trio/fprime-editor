@@ -567,16 +567,16 @@ export default class ViewManager {
     switch(type) {
       case ViewType.DataType:
         defaultName  = "NewDataType" + this.indexCursor[type];
-        this.modelManager.addNewDataType(defaultName);
+        defaultName = this.modelManager.addNewDataType(defaultName);
         break;
       case ViewType.PortType:
         defaultName = "NewPortType" + this.indexCursor[type];
-        this.modelManager.addNewPortType(defaultName);
+        defaultName = this.modelManager.addNewPortType(defaultName);
         break;
       case ViewType.Component:
         defaultName  = "NewComponent" + this.indexCursor[type];
         // add new component to the model
-        this.modelManager.addNewComponent(defaultName);
+        defaultName = this.modelManager.addNewComponent(defaultName);
         break;
       case ViewType.InstanceCentric:
         defaultName  = "NewInstance" + this.indexCursor[type];
@@ -588,14 +588,14 @@ export default class ViewManager {
             defaultName = type[0] + "." + defaultName;
           }
         } else {
-          this.modelManager.addNewInstance(defaultName, "UndefinedComponent");
+          defaultName = this.modelManager.addNewInstance(defaultName, "UndefinedComponent");
         }
         
         break;
       case ViewType.Function:
         defaultName  = "NewTopology" + this.indexCursor[type];
         // add new component to the model
-        this.modelManager.addNewFunctionView(defaultName);
+        defaultName = this.modelManager.addNewFunctionView(defaultName);
         break;
       default:
         break;

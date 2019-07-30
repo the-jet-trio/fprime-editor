@@ -419,4 +419,8 @@
     #fprime-header-toolbar .tooltip {
         height: 48px;
     }
+    
+    html {
+        overflow: hidden;
+    }
 </style>
