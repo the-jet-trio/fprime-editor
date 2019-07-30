@@ -200,5 +200,4 @@ export default {
     applyText(files: {[fileName: string]: string}) {
         fprime.viewManager.applyText(files);
     },
-
 }

@@ -8,7 +8,7 @@ import { IStyle } from "../DataImport/StyleConverter";
 import CyManager from "@/store/CyManager";
 import {IFPPComponent} from "../FPPModelManagement/FPPModelManager";
 import {IFPPPort} from "../FPPModelManagement/FPPModelManager";
-
+import view from "@/store/view";
 export interface IViewList {
   [type: string]: IViewListItem[];
 }
@@ -258,7 +258,6 @@ export default class ViewManager {
   }
 
   public rerender(viewName: string, oldJson: ICytoscapeJSON): IRenderJSON | null {
-    console.log(this.viewDescriptors);
     
     // save the old styles from the previous descriptor
     let oldDescriptor = this.viewDescriptors[viewName];
@@ -625,5 +624,6 @@ export default class ViewManager {
     // remove instance and all related connection from the model
     return this.modelManager.removeInstance(view, inst_name);
   }
+
 }
 

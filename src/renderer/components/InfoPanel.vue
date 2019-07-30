@@ -142,7 +142,7 @@
                 },
                 portPanel: {
                     display: 'none',
-                }
+                },
             };
         },
         created(){
@@ -153,7 +153,6 @@
             CyManager.cyShowComponentInfo = this.showComponentInfo;
             CyManager.cyShowComponentView = this.showComponentView;
             CyManager.cyShowPortInfo = this.showPortInfo;
-
 
         },
         // Get all components in the current model and push them to the items of the selector.
@@ -341,7 +340,9 @@
                         if (result) {
                             // 2 content: rerender
                             this.$route.params.viewName = newName;
+
                             this.$root.$emit("updateCytoscape", newName);
+                            this.$root.$emit("updateContent", newName);
                             this.OldCompAttributes.NameSpace = newName.split(".")[0];
                             this.OldCompAttributes.Name = newName.split(".")[1];
 

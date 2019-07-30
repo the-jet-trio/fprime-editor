@@ -7,7 +7,7 @@ import ViewManager from "fprime/ViewManagement/ViewManager";
 import {directives} from "vuetify/lib";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
-
+import fprime from "fprime";
 /**
  *
  */
@@ -711,11 +711,15 @@ export default class FPPModelManager {
       }
       if (type === "Port") {
           if (attrs["ViewType"] === ViewType.InstanceCentric) {
+              console.log("okkk",attrs["CompName"],attrs["OldName"]);
               this.instances.forEach((i) => {
                   if (i.name === attrs["CompName"]) {
-                      const ports = i.ports;
+                      let ports = i.ports;
+                      console.log("Before Ports",i,ports);
+                      console.log("type",typeof (ports));
+                      let find;
                       for (let p in ports) {
-                          if (p === attrs["OldName"]) {
+                          if (ports[p].name  === attrs["OldName"]) {
                               console.log("before", ports[p]);
                               ports[p].name = attrs["NewName"];
                               ports[p].properties["direction"] = attrs["Direction"];
@@ -728,13 +732,16 @@ export default class FPPModelManager {
                               break;
                           }
                       }
+
+                      console.log("After Ports",i,ports);
                   }
               });
           }
           else if (attrs["ViewType"] === ViewType.Component){
               this.components.forEach((i) => {
                   if (i.name === attrs["CompName"]){
-                      const ports = i.ports;
+                      let ports = i.ports;
+                      console.log("type",typeof (ports));
                       for (let p of ports){
                           if (p.name === attrs["OldName"]){
                               console.log("before", p);
