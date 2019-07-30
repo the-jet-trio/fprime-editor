@@ -130,6 +130,44 @@ export default class ViewManager {
     this.outputMessage.analysis += v + "\n";
   }
 
+  public async newProject(dir: string) {
+      try {
+          // Cleanup the views
+          this.cleanup();
+          // Set the project path
+          this.configManager.ProjectPath = dir;
+          // Load the project config.
+          this.configManager.loadConfig();
+
+          // Initialize the layoutGenerator
+          const layouts = this.layoutGenerator.getAutoLayoutList(
+              this.configManager.Config);
+          this.layoutAlgorithms.selected = layouts.selected;
+          this.layoutAlgorithms.selections = layouts.algorithms;
+
+          // // TODO: Load the available model analyzers
+          const analyzers = this.analyzerManager.getAnalyzerList(
+              this.configManager.Config);
+          // Push a fake analyzer to allow user disable the analysis info.
+          analyzers.push("Disable");
+          this.analyzers.selected = analyzers.length > 0 ? analyzers[0] : "";
+          this.analyzers.selections = analyzers;
+
+          // Load the default style from the config
+          this.styleManager.loadDefaultStyles(
+              this.configManager.Config.DefaultStyleFilePath);
+
+          // // Load the FPP model
+          // const viewlist = await this.modelManager.loadModel(
+          //     this.configManager.Config, this);
+          // this.comps = this.modelManager.getComponents();
+          // this.ports = this.modelManager.getPorts();
+          // this.generateViewList(viewlist);
+      } catch (err) {
+          this.appendOutput(err);
+      }
+  }
+
   /**
    * Build the current FPrime project and get the view list.
    * @param dir The folder path of a project.
@@ -402,7 +440,7 @@ export default class ViewManager {
   /**
    * Clean up the memeory
    */
-  private cleanup() {
+  public cleanup() {
     Object.keys(this.viewDescriptors).forEach((key) => {
       delete this.viewDescriptors[key];
     });

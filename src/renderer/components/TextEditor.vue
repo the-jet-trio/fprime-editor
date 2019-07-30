@@ -3,8 +3,6 @@
         <v-autocomplete
                 v-model="fileName"
                 :items="fileNames"
-                filled
-                rounded
         ></v-autocomplete>
         <!-- bidirectional data binding（双向数据绑定） -->
 

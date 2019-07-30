@@ -212,12 +212,12 @@
                     properties: ["openDirectory"]
                 });
                 if (dirs) {
-                    this.processBar = true;
-                    await fprime.viewManager.build(dirs[0]);
+                    // this.processBar = true;
+                    await fprime.viewManager.newProject(dirs[0]);
                     // Close all the opening views
                     view.CloseAll();
                     this.$router.replace("/");
-                    this.showOutputPanel();
+                    // this.showOutputPanel();
                 }
             },
             /**
@@ -238,7 +238,6 @@
                     this.showOutputPanel();
                     console.dir(this.$refs);
                     (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
-                    // this.bus.$emit('generateText');
                 }
             },
             /**

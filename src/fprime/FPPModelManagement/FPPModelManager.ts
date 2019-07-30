@@ -422,7 +422,7 @@ export default class FPPModelManager {
     public addNewFunctionView(defaultName: string) {
         var item: IFPPTopology[] = [];
         item.push({
-            name: defaultName,
+            name: "Ref." + defaultName,
             connections: [],
         });
 
@@ -430,6 +430,8 @@ export default class FPPModelManager {
         // TODO: (async) update the model data
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
+        console.dir(this.topologies);
+        console.dir(this.text);
     }
 
     /**
