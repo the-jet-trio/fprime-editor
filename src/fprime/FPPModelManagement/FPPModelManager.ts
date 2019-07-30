@@ -3,7 +3,6 @@ import DataImporter, {IOutput} from "../DataImport/DataImporter";
 import fs from "fs";
 import {remove, findIndex} from "lodash";
 import * as path from "path";
-import ViewManager from "fprime/ViewManagement/ViewManager";
 import {directives} from "vuetify/lib";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
@@ -213,18 +212,15 @@ export default class FPPModelManager {
         this.porttypes.forEach((e: IFPPPortType) => {
             viewlist.porttypes.push(e.namespace + "." + e.name);
         });
-        // console.log(viewlist);
-
 
         // Add output information
         if (output) {
             output.appendOutput("Generate view list...");
         }
 
-        // console.dir(this.enumtypes);
         // Generate text
-        // this.generateText();
-        // console.dir(this.text);
+        this.generateText();
+        console.dir(this.text);
         return viewlist;
     }
 
@@ -305,6 +301,7 @@ export default class FPPModelManager {
         return ret;
     }
     public getText() {
+        this.generateText();
         return this.text;
     }
 
@@ -314,9 +311,11 @@ export default class FPPModelManager {
     public addNewDataType(defaultName: string) {
         var item: IFPPDataType = {
             name: defaultName,
-            namespace: "undefined",
+            namespace: "Unspecified",
         };
         this.datatypes.push(item);
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
     }
 
     /**
@@ -329,10 +328,12 @@ export default class FPPModelManager {
     public addNewPortType(defaultName: string) {
         var porttype: IFPPPortType = {
             name: defaultName,
-            namespace: "undefined",
+            namespace: "Unspecified",
             arg: {},
         };
         this.porttypes.push(porttype);
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
     }
 
     /**
@@ -351,13 +352,15 @@ export default class FPPModelManager {
         var ps: IFPPPort[] = [];
         item.push({
             name: defaultName,
-            namespace: "unspecified",
+            namespace: "Unspecified",
             ports: ps,
-            kind: "undefined",
+            kind: "Active",
         });
 
         this.components = this.components.concat(item);
         // TODO: (async) update the model data
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
     }
 
     /**
@@ -403,6 +406,8 @@ export default class FPPModelManager {
 
         this.instances.push(item);
         // TODO: (async) update the model data
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
     }
 
     /**
@@ -415,12 +420,16 @@ export default class FPPModelManager {
     public addNewFunctionView(defaultName: string) {
         var item: IFPPTopology[] = [];
         item.push({
-            name: defaultName,
+            name: "Ref." + defaultName,
             connections: [],
         });
 
         this.topologies = this.topologies.concat(item);
         // TODO: (async) update the model data
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
+        console.dir(this.topologies);
+        console.dir(this.text);
     }
 
     /**
@@ -429,6 +438,8 @@ export default class FPPModelManager {
      */
     public deleteDataType(name: string): boolean {
         this.datatypes = this.datatypes.filter((i) => i.name !== name);
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -438,6 +449,8 @@ export default class FPPModelManager {
      */
     public deletePortType(name: string): boolean {
         this.porttypes = this.porttypes.filter((i) => i.name !== name);
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -448,6 +461,9 @@ export default class FPPModelManager {
      */
     public deleteComponent(name: string): boolean {
         this.components = this.components.filter((i) => i.name !== name);
+        this.generateText();
+        console.dir(this.text);
+        fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -457,11 +473,15 @@ export default class FPPModelManager {
      */
     public deleteInstance(name: string): boolean {
         this.instances = this.instances.filter((i) => i.name !== name);
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
     public deleteTopology(name: string): boolean {
         this.topologies = this.topologies.filter((i) => i.name !== name);
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -499,6 +519,8 @@ export default class FPPModelManager {
 
         comp.ports.push(port);
         console.dir(comp);
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -523,6 +545,10 @@ export default class FPPModelManager {
             },
         };
         topology.connections.push(halfConnection);
+
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
+
         return true;
     }
 
@@ -572,6 +598,10 @@ export default class FPPModelManager {
         console.log("new connection");
         console.dir(newConn);
         topology.connections.push(newConn);
+
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
+
         return true;
     }
 
@@ -633,6 +663,9 @@ export default class FPPModelManager {
             );
         }
 
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
+
         return true;
     }
 
@@ -679,6 +712,10 @@ export default class FPPModelManager {
                 );
             }
         });
+
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
+
         return true;
     }
 
@@ -717,7 +754,6 @@ export default class FPPModelManager {
                       let ports = i.ports;
                       console.log("Before Ports",i,ports);
                       console.log("type",typeof (ports));
-                      let find;
                       for (let p in ports) {
                           if (ports[p].name  === attrs["OldName"]) {
                               console.log("before", ports[p]);
@@ -760,7 +796,10 @@ export default class FPPModelManager {
               });
           }
       }
-    return true;
+
+      this.generateText();
+      fprime.viewManager.updateEditor(this.text);
+      return true;
   }
 
   /**
@@ -1008,13 +1047,8 @@ export default class FPPModelManager {
 
             // Concatenate to text
             this.text[instancePath] += instanceContent[key] + topologyContent[key] + "}";
-
-            // fs.writeFile(instancePath, instanceContent[key] + topologyContent[key] + "}", (err) => {
-            //     if (err) {
-            //         throw err;
-            //     }
-            // });
         }
+        console.dir(this.text);
     }
 
     /**
@@ -1023,6 +1057,12 @@ export default class FPPModelManager {
     public applyText(files: {[fileName: string]: string}) {
         console.dir(files);
         this.text = files;
+    }
+
+    /**
+     * Dummy function to update text editor according to the ModelManager.
+     */
+    public updateEditor(text: any): void {
     }
 
     private reset() {

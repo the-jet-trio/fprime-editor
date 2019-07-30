@@ -3,8 +3,6 @@
         <v-autocomplete
                 v-model="fileName"
                 :items="fileNames"
-                filled
-                rounded
         ></v-autocomplete>
         <!-- bidirectional data binding（双向数据绑定） -->
 
@@ -15,7 +13,8 @@
                     :options="cmOptions"
                     @ready="onCmReady"
                     @focus="onCmFocus"
-                    @input="onCmCodeChange">
+                    @input="onCmCodeChange"
+                    @cursorActivity="onCursorActivity">
         </codemirror>
 
         <!--        &lt;!&ndash; if Nust.js/SSR（如果在 Nuxt.js 环境下，需要外面包裹一层 no-ssr） &ndash;&gt;-->
@@ -40,6 +39,7 @@
     // more codemirror resources
     // import 'codemirror/some-resource...'
     import view from "@/store/view";
+    import FPPModelManager from "../../fprime/FPPModelManagement/FPPModelManager";
     import Vue from "vue";
     export default Vue.extend({
         name: "text-editor",
@@ -73,10 +73,12 @@
                 this.code = newCode
                 this.files[this.fileName] = newCode;  // Update code stored in text editor
             },
+            onCursorActivity(cm) {
+            },
             // Read text from Modelmanager
             generateText() {
                 this.getText;
-                console.dir(this.code);
+                console.dir(this.files);
             },
             // Write text to Modelmanager
             applyText() {
@@ -105,11 +107,24 @@
                     this.fileName = path;
                 }
             },
+            readText(text) {
+                this.files = text;
+                if (this.fileName in this.files)
+                {
+                    this.code = this.files[this.fileName];
+                }
+                else {
+                    this.code = "";
+                    this.fileName = "";
+                }
+                console.dir(this);
+            }
         },
         computed: {
             codemirror() {
                 return this.$refs.myCm.codemirror
             },
+            // Get text from ModelManager
             getText: function () {
                 view.getText().then(value => {
                     if (Object.keys(value).length !== 0) {
@@ -118,7 +133,7 @@
                     }
                     console.dir(value)
                 });
-            }
+            },
         },
         watch: {
             files: function (val, oldVal) {
@@ -129,6 +144,9 @@
                     this.code = this.files[val];
                 }
             },
+        },
+        mounted(){
+            view.updateEditor = this.readText;
         }
     })
 </script>
