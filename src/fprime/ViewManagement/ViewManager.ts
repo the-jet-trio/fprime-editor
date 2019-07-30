@@ -157,12 +157,7 @@ export default class ViewManager {
           this.styleManager.loadDefaultStyles(
               this.configManager.Config.DefaultStyleFilePath);
 
-          // // Load the FPP model
-          // const viewlist = await this.modelManager.loadModel(
-          //     this.configManager.Config, this);
-          // this.comps = this.modelManager.getComponents();
-          // this.ports = this.modelManager.getPorts();
-          // this.generateViewList(viewlist);
+          this.updateEditor({});
       } catch (err) {
           this.appendOutput(err);
       }
