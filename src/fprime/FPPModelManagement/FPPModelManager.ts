@@ -3,7 +3,6 @@ import DataImporter, {IOutput} from "../DataImport/DataImporter";
 import fs from "fs";
 import {remove, findIndex} from "lodash";
 import * as path from "path";
-import {directives} from "vuetify/lib";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
 import fprime from "fprime";
@@ -113,6 +112,7 @@ export default class FPPModelManager {
     private components: IFPPComponent[] = [];
     private porttypes: IFPPPortType[] = [];
     private keywords: string[] = ["base_id", "name"];
+    private defaultNamespace: string = "Ref";
 
     /**
      *
@@ -190,11 +190,11 @@ export default class FPPModelManager {
         };
 
         this.datatypes.forEach((e: IFPPDataType) => {
-            viewlist.datatypes.push(e.name);
+            viewlist.datatypes.push(e.namespace + "." + e.name);
         });
 
         this.enumtypes.forEach((e: IFPPDataType) => {
-            viewlist.datatypes.push(e.name);
+            viewlist.datatypes.push(e.namespace + "." + e.name);
         });
 
         this.topologies.forEach((e: IFPPTopology) => {
@@ -308,14 +308,15 @@ export default class FPPModelManager {
     /**
      * addNewDataType
      */
-    public addNewDataType(defaultName: string) {
+    public addNewDataType(defaultName: string): string {
         var item: IFPPDataType = {
             name: defaultName,
-            namespace: "Unspecified",
+            namespace: this.defaultNamespace,
         };
         this.datatypes.push(item);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
+        return item.namespace + "." + item.name;
     }
 
     /**
@@ -325,15 +326,16 @@ export default class FPPModelManager {
      *  - instance number of the port type is 0
      * @param defaultName default name of the new port type
      */
-    public addNewPortType(defaultName: string) {
+    public addNewPortType(defaultName: string): string {
         var porttype: IFPPPortType = {
             name: defaultName,
-            namespace: "Unspecified",
+            namespace: this.defaultNamespace,
             arg: {},
         };
         this.porttypes.push(porttype);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
+        return porttype.namespace + "." + porttype.name;
     }
 
     /**
@@ -347,20 +349,18 @@ export default class FPPModelManager {
      *
      * @param defaultName default name of the new component
      */
-    public addNewComponent(defaultName: string) {
-        var item: IFPPComponent[] = [];
-        var ps: IFPPPort[] = [];
-        item.push({
-            name: defaultName,
-            namespace: "Unspecified",
-            ports: ps,
+    public addNewComponent(defaultName: string): string {
+        var item: IFPPComponent = {
+            name: this.defaultNamespace + "." + defaultName,
+            namespace: this.defaultNamespace,
+            ports: [],
             kind: "Active",
-        });
-
-        this.components = this.components.concat(item);
+        };
+        this.components.push(item);
         // TODO: (async) update the model data
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
+        return item.name;
     }
 
     /**
@@ -368,14 +368,14 @@ export default class FPPModelManager {
      * The instance should created only when the corresponding component exists.
      * The default values of the instance should includes:
      *  - name: @param defaultName
-     *  - base_id: defalut should be ? @todo
+     *  - base_id: defalt value is -1
      *  - ports: the ports array in the component
-     *  -
+     *  - properties including type and namespace
      *
      * @param defaultName default name of the new instance
      * @param cpName name of the corresponding component
      */
-    public addNewInstance(defaultName: string, cpName: string) {
+    public addNewInstance(defaultName: string, cpName: string): string {
         var ps: { [p: string]: IFPPPort } = {};
         var type = cpName.split("\.");
         if (type.length !== 2) {
@@ -401,13 +401,14 @@ export default class FPPModelManager {
                 ["type"]: cpName,
                 ["namespace"]: namespace,
             },
-            used_ports: {},
+            used_ports: {}, // no port is connected yet, so the set is empty
         };
 
         this.instances.push(item);
         // TODO: (async) update the model data
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
+        return item.name;
     }
 
     /**
@@ -417,19 +418,18 @@ export default class FPPModelManager {
      *  - an empty connection array
      * @param defaultName default name of the new function view
      */
-    public addNewFunctionView(defaultName: string) {
-        var item: IFPPTopology[] = [];
-        item.push({
-            name: "Ref." + defaultName,
+    public addNewFunctionView(defaultName: string): string {
+        var item: IFPPTopology = {
+            name: this.defaultNamespace + "." + defaultName,
             connections: [],
-        });
-
-        this.topologies = this.topologies.concat(item);
+        };
+        this.topologies.push(item);
         // TODO: (async) update the model data
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         console.dir(this.topologies);
         console.dir(this.text);
+        return item.name;
     }
 
     /**
@@ -437,7 +437,7 @@ export default class FPPModelManager {
      * @param name item to delete
      */
     public deleteDataType(name: string): boolean {
-        this.datatypes = this.datatypes.filter((i) => i.name !== name);
+        this.datatypes = this.datatypes.filter((i) => (i.namespace + "." + i.name) !== name);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
@@ -448,7 +448,7 @@ export default class FPPModelManager {
      * @param name item to delete
      */
     public deletePortType(name: string): boolean {
-        this.porttypes = this.porttypes.filter((i) => i.name !== name);
+        this.porttypes = this.porttypes.filter((i) => (i.namespace + "." + i.name) !== name);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
@@ -486,18 +486,17 @@ export default class FPPModelManager {
     }
 
     public addPortToComponent(portname: string, compname: string): boolean {
-        if (portname.indexOf(".") >= 0) {
-            portname = portname.split(".")[1];
-        }
         var porttype = this.porttypes.find((i) => {
-            return i.name === portname;
+            return (i.namespace + "." + i.name) === portname;
         });
         var comp = this.components.find((i) => i.name === compname);
         if (porttype == undefined || comp == undefined) {
             return false;
         }
-        // existing port
+        // rename the port with the first letter in lower case
         var newPortname = porttype.name.charAt(0).toLowerCase() + porttype.name.slice(1);
+        console.log("new port name" + newPortname);
+        // existing port
         if (comp.ports.find((i) => i.name === newPortname)) {
             return false;
         }
