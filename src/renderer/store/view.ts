@@ -200,8 +200,8 @@ export default {
     applyText(files: {[fileName: string]: string}) {
         fprime.viewManager.applyText(files);
     },
-    updateEditor() {
-        fprime.viewManager.updateEditor();
+    updateEditor(text: any) {
+
     },
 }
 

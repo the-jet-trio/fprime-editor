@@ -41,6 +41,7 @@
     // more codemirror resources
     // import 'codemirror/some-resource...'
     import view from "@/store/view";
+    import FPPModelManager from "../../fprime/FPPModelManagement/FPPModelManager";
     import Vue from "vue";
     export default Vue.extend({
         name: "text-editor",
@@ -79,7 +80,7 @@
             // Read text from Modelmanager
             generateText() {
                 this.getText;
-                console.dir(this.code);
+                console.dir(this.files);
             },
             // Write text to Modelmanager
             applyText() {
@@ -108,6 +109,18 @@
                     this.fileName = path;
                 }
             },
+            readText(text) {
+                this.files = text;
+                if (this.fileName in this.files)
+                {
+                    this.code = this.files[this.fileName];
+                }
+                else {
+                    this.code = "";
+                    this.fileName = "";
+                }
+                console.dir(this);
+            }
         },
         computed: {
             codemirror() {
@@ -123,17 +136,6 @@
                     console.dir(value)
                 });
             },
-            // Update text from ModelManager
-            dummyGetText: function () {
-                view.getText().then(value => {
-                    if (Object.keys(value).length !== 0) {
-                        // this.fileNames = Object.keys(value);
-                        this.files = value;
-                    }
-                    console.dir(value);
-                    alert("DELETE");
-                });
-            },
         },
         watch: {
             files: function (val, oldVal) {
@@ -146,7 +148,7 @@
             },
         },
         mounted(){
-            view.updateEditor = this.generateText;
+            view.updateEditor = this.readText;
         }
     })
 </script>

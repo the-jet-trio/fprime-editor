@@ -8,6 +8,7 @@ import { IStyle } from "../DataImport/StyleConverter";
 import CyManager from "@/store/CyManager";
 import {IFPPComponent} from "../FPPModelManagement/FPPModelManager";
 import {IFPPPort} from "../FPPModelManagement/FPPModelManager";
+import view from "@/store/view";
 
 export interface IViewList {
   [type: string]: IViewListItem[];
@@ -510,7 +511,6 @@ export default class ViewManager {
    * Get all the text in the model
    */
   public async getText() {
-    this.modelManager.generateText();
     return this.modelManager.getText();
   }
   /**
@@ -518,9 +518,6 @@ export default class ViewManager {
    */
   public async generateText() {
     this.modelManager.generateText();
-  }
-  public updateEditor() {
-    this.modelManager.updateEditor();
   }
   /**
    * Update text according to the text editor.
@@ -627,6 +624,10 @@ export default class ViewManager {
   public removeInstance(view: string, inst_name: string): boolean {
     // remove instance and all related connection from the model
     return this.modelManager.removeInstance(view, inst_name);
+  }
+
+  public updateEditor(text: any) {
+      view.updateEditor(text);
   }
 }
 
