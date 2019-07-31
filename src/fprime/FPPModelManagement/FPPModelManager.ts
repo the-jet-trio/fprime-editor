@@ -220,11 +220,8 @@ export default class FPPModelManager {
 
         // Generate text
         this.generateText();
-<<<<<<< HEAD
         fprime.viewManager.updateEditor(this.text);
         console.dir(this.text);
-=======
->>>>>>> minghui
         return viewlist;
     }
 
