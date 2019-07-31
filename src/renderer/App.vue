@@ -60,7 +60,7 @@
                 <!-- refresh button -->
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
-                        <v-btn small icon @click="applyText" v-on="on">
+                        <v-btn small icon @click="recompile" v-on="on">
                             <v-icon>refresh</v-icon>
                         </v-btn>
                     </template>
@@ -274,27 +274,30 @@
             /**
              * Recompile the model according to the text
              */
-            async applyText() {
+            async recompile() {
                 // Apply text change
                 // (this.$refs.msg as Vue & { applyText: () => boolean }).applyText(); // Trigger text editor to write text to Modelmanager
                 const files = (this.$refs.msg as Vue & { returnFiles: () => any }).returnFiles(); // Get text files from text editor
-                console.dir(files);
+                console.dir(files["Ref\\System.fpp"]);
                 fprime.viewManager.applyText(files); // Triggers ViewManager to recompile with new files
 
                 const dir = "./~tmp";
+                const rimraf = require("rimraf");
+                // rimraf(dir, function () {});
+                rimraf.sync(dir);
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                 }
-                const path = require('path');
-                fs.readdir(dir, (err, files) => {
-                    if (err) throw err;
-
-                    for (const file of files) {
-                        fs.unlink(path.join(dir, file), err => {
-                            if (err) throw err;
-                        });
-                    }
-                });
+                // const path = require('path');
+                // fs.readdir(dir, (err, files) => {
+                //     if (err) throw err;
+                //
+                //     for (const file of files) {
+                //         fs.unlink(path.join(dir, file), err => {
+                //             if (err) throw err;
+                //         });
+                //     }
+                // });
                 // Write text to folder and load it
                 fprime.viewManager.writeToFile("./~tmp");
                 this.processBar = true;
@@ -304,7 +307,6 @@
                 this.$router.replace("/");
                 this.showOutputPanel();
                 // Delete ~tmp folder
-                const rimraf = require("rimraf");
                 rimraf(dir, function () {});
                 (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
             },
@@ -326,6 +328,7 @@
                     title: "Open a project",
                     properties: ["openDirectory"]
                 });
+                fprime.viewManager.generateText();
                 fprime.viewManager.writeToFile(dirs[0]);
             },
             /**

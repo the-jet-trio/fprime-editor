@@ -203,6 +203,7 @@ export default class ViewManager {
     } catch (err) {
       this.appendOutput(err);
     }
+    console.dir(this.modelManager);
   }
 
   /**
@@ -548,13 +549,13 @@ export default class ViewManager {
   /**
    * Generate text according to the model
    */
-  public async generateText() {
+  public generateText() {
     this.modelManager.generateText();
   }
   /**
    * Update text according to the text editor.
    */
-  public async applyText(files: {[fileName: string]: string}) {
+  public applyText(files: {[fileName: string]: string}) {
     this.modelManager.applyText(files);
   }
   /**
