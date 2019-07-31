@@ -242,7 +242,7 @@
       <option name="presentableId" value="Default" />
       <updated>1564363700977</updated>
       <workItem from="1564363703609" duration="27150000" />
-      <workItem from="1564547340519" duration="503000" />
+      <workItem from="1564547340519" duration="722000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed the issue &quot;The editing on Port and Component is not stable&quot;">
       <created>1564437242352</created>
@@ -269,7 +269,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27653000" />
+    <option name="totallyTimeSpent" value="27872000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
