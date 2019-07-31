@@ -516,12 +516,17 @@ export default class ViewManager {
       json.descriptor.style);
     return json;
   }
-
+  public compInfo(){
+    view.compInfo();
+  }
+  public portInfo(){
+    view.portInfo();
+  }
   /**
    * Get all the components in the model
    */
-  public async getComponents() {
-    await this.modelManager.loadModel(this.configManager.Config, this);
+  public getComponents() {
+    //await this.modelManager.loadModel(this.configManager.Config, this);
     // while (this.comps.length === 0){
     //
     // }
@@ -532,8 +537,8 @@ export default class ViewManager {
   /**
    * Get all the ports in the model
    */
-  public async getPorts(){
-    await this.modelManager.loadModel(this.configManager.Config, this);
+  public getPorts(){
+    // await this.modelManager.loadModel(this.configManager.Config, this);
     return this.modelManager.getPorts();
     // while (this.ports.size === 0){
     //   console.log(this.ports);

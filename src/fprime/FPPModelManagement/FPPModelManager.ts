@@ -222,6 +222,9 @@ export default class FPPModelManager {
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         console.dir(this.text);
+        // Notify the InfoPanel that it's ready to get the port and comp info.
+        fprime.viewManager.portInfo();
+        fprime.viewManager.compInfo();
         return viewlist;
     }
 

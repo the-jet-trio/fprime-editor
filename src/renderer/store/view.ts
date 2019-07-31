@@ -208,5 +208,11 @@ export default {
     updateEditor(text: any) {
 
     },
+    compInfo(){
+
+    },
+    portInfo(){
+
+    },
 }
 

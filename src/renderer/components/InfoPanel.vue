@@ -149,11 +149,11 @@
                 },
             };
         },
-        created(){
-            this.getComponentInfo;
-            this.getPortInfo;
-        },
+
         mounted(){
+            // After finish loading model, the model manager will notify InfoPanel to call getComponentInfo and getPortInfo
+            view.compInfo = this.getComponentInfo;
+            view.portInfo = this.getPortInfo;
             CyManager.cyShowComponentInfo = this.showComponentInfo;
             CyManager.cyShowComponentView = this.showComponentView;
             CyManager.cyShowPortInfo = this.showPortInfo;
@@ -165,50 +165,7 @@
             items() {
                 return view.GetViewList();
             },
-            getComponentInfo: function() {
 
-                view.getComponents().then(value => {
-                    var type:string[] = new Array();
-                    var namespace:string[] = new Array();
-                    //var port:string[] = new Array();
-                    for(var i=0; i < value.length;i++){
-                        type.push(value[i].name);
-                        namespace.push(value[i].namespace);
-                        //port.push(value[i].ports);
-                    }
-                    this.compAttributes.Types = type;
-                    this.compAttributes.NameSpaces = namespace;
-                    //this.comPorts = port;
-                });
-            },
-            getPortInfo: function() {
-                view.getPorts().then(value => {
-                    var names:string[] = new Array();
-                    var roles:string[] = new Array();
-                    var types:string[] = new Array();
-                    var kinds:string[] = new Array();
-                    //var port:string[] = new Array();
-                    for(let p of value){
-                        //console.log(p);
-                        const prop = p.properties;
-                        if (prop.name){
-                            names.push(prop.name);
-                        }
-                        if (prop.role) {
-                            roles.push(prop.role);
-                        }
-                        if (prop.type) {
-                            types.push(prop.type);
-                        }
-                        if (prop.kind) {
-                            kinds.push(prop.kind);
-                        }
-                    }
-                    this.portAttributes.Names = this.uniq(names);
-                    this.portAttributes.Types = this.uniq(types);
-                    this.portAttributes.Kinds = this.uniq(kinds);
-                });
-            }
         },
 
         watch: {
@@ -221,6 +178,47 @@
             }
         },
         methods:{
+            getComponentInfo () {
+
+                let value = view.getComponents();
+                var type:string[] = new Array();
+                var namespace:string[] = new Array();
+                //var port:string[] = new Array();
+                for(var i=0; i < value.length;i++){
+                    type.push(value[i].name);
+                    namespace.push(value[i].namespace);
+                    //port.push(value[i].ports);
+                }
+                this.compAttributes.Types = type;
+                this.compAttributes.NameSpaces = namespace;
+                //this.comPorts = port;
+
+            },
+            getPortInfo () {
+
+                let value = view.getPorts();
+                var names:string[] = new Array();
+                var types:string[] = new Array();
+                var kinds:string[] = new Array();
+                //var port:string[] = new Array();
+                for(let p of value){
+                    //console.log(p);
+                    const prop = p.properties;
+                    if (prop.name){
+                        names.push(prop.name);
+                    }
+                    if (prop.type) {
+                        types.push(prop.type);
+                    }
+                    if (prop.kind) {
+                        kinds.push(prop.kind);
+                    }
+                }
+                this.portAttributes.Names = this.uniq(names);
+                this.portAttributes.Types = this.uniq(types);
+                this.portAttributes.Kinds = this.uniq(kinds);
+
+            },
             // Remove duplicated elements in an array
             uniq(arr: string[]){
               let ret = [];
@@ -327,6 +325,10 @@
                 if(this.compViews.Name && this.compViews.NameSpace && this.compViews.Kind){
                     const oldName = this.oldCompViews.NameSpace + "." + this.oldCompViews.Name;
                     const newName = this.compViews.NameSpace + "." + this.compViews.Name;
+                    if(!this.nameCheck(newName)){
+                        alert("Name attribute cannot contain a space!");
+                        return;
+                    }
                     const non_existed = view.UpdateViewList(oldName,newName);
                     if(non_existed) {
                         const result = fprime.viewManager.updateAttributes(ViewType.Component, {
@@ -376,6 +378,10 @@
                     // 1 update model
                     const oldName = this.OldCompAttributes.NameSpace + "." + this.OldCompAttributes.Name;
                     const newName = this.compAttributes.NameSpace + "." + this.compAttributes.Name;
+                    if(!this.nameCheck(newName)){
+                        alert("Name attribute cannot contain a space!");
+                        return;
+                    }
                     // First update the viewList.
                     const non_existed = view.UpdateViewList(oldName,newName);
                     if(non_existed) {
@@ -425,6 +431,10 @@
             updatePortInfo(){
                 const oldName = this.oldPortAttributes.Name;
                 const newName = this.portAttributes.Name;
+                if(!this.nameCheck(newName)){
+                    alert("Name attribute cannot contain a space!");
+                    return;
+                }
                 const result = fprime.viewManager.updateAttributes("Port",
                     {
                         ["CompName"]: this.$route.params.viewName,
@@ -443,7 +453,15 @@
                     this.oldPortAttributes.Name = newName;
                 }
 
-            }
+            },
+            nameCheck(compName : string){
+                for (let i = 0; i <compName.length; ++i){
+                    if(compName[i] === " "){
+                        return false;
+                    }
+                }
+                return true;
+            },
         },
     })
 </script>
