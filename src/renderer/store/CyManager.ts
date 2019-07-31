@@ -645,7 +645,6 @@ class CyManager {
     })
         .map((node) => {
         node.on("click", () => {
-          console.log(node.data());
           const label = node.data().label;
           const namespace = label.split(".")[0];
           const name = label.split(".")[1];
@@ -674,7 +673,10 @@ class CyManager {
         .map((node) => {
           node.on("click", () => {
             const info = node.data("properties");
-            const name = info.name;
+            let name = info.name;
+            if (!name){
+              name = node.data("label");
+            }
             const direct = info.direction;
             const number = info.number;
             const role = info.role;

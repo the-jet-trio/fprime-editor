@@ -299,6 +299,12 @@ export default class FPPModelManager {
                ret.add(ports[p]);
            }
         });
+        this.components.forEach((i) =>{
+            const comPorts = i.ports;
+            for (const p of comPorts) {
+                ret.add(p);
+            }
+        });
         return ret;
     }
     public getText() {
