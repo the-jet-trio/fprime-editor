@@ -229,6 +229,12 @@
                 else{
                     this.compViewPanel.display = "none";
                 }
+                // If it is in Function View, none of the InfoPanels should be shown
+                if(this.$route.params.viewType === ViewType.Function){
+                    this.portPanel.display = "none";
+                    this.compPanel.display = "none";
+                    this.compViewPanel.display = "none";
+                }
                 this.oldCompViews.Name = compName;
                 this.oldCompViews.NameSpace = compNamespace;
                 this.oldCompViews.Kind = kind;
@@ -253,6 +259,17 @@
                     }
                 }
                 else{
+                    if (this.$route.params.viewType !== ViewType.Component){
+                        this.portPanel.display = "block";
+                    }else{
+                        this.portPanel.display = "none";
+                    }
+                    this.compPanel.display = "none";
+                    this.compViewPanel.display = "none";
+                }
+                // If it is in Function View, none of the InfoPanels should be shown
+                if(this.$route.params.viewType === ViewType.Function){
+                    this.portPanel.display = "none";
                     this.compPanel.display = "none";
                     this.compViewPanel.display = "none";
                 }
@@ -267,7 +284,7 @@
             },
             // Get the information of the selected port and assign it to the v-model of the selector.
             showPortInfo(portName: string, portDirect: string, portNumber: string, portRole: string, portType:string, portKind:string){
-                if (this.$route.params.viewType === ViewType.InstanceCentric ||this.$route.params.viewType === ViewType.Component) {
+                if (this.$route.params.viewType === ViewType.Component) {
                     this.portPanel.display = "block";
                     this.compPanel.display = "none";
                     this.compViewPanel.display = "none";
@@ -283,6 +300,15 @@
                     this.oldPortAttributes.Role = portRole;
                     this.oldPortAttributes.Type = portType;
                     this.oldPortAttributes.Kind = portKind;
+                }
+                else{
+                    this.portPanel.display = "none";
+                }
+                // If it is in Function View, none of the InfoPanels should be shown
+                if(this.$route.params.viewType === ViewType.Function){
+                    this.portPanel.display = "none";
+                    this.compPanel.display = "none";
+                    this.compViewPanel.display = "none";
                 }
             },
             updateComponentView(){
@@ -316,7 +342,19 @@
                     }
                 }
                 else{
-                    alert("Please use valid input!");
+                    let ret = "Attribute ";
+                    if (!this.compViews.Name){
+                        ret += "Name,"
+                    }
+                    if (!this.compViews.NameSpace){
+                        ret += "NameSpace,"
+                    }
+                    if (!this.compViews.Kind){
+                        ret += "Kind,"
+                    }
+                    ret = ret.substring(0,ret.length-1);
+                    ret += " cannot be empty!";
+                    alert(ret + " Please use valid input!");
                 }
             },
             updateComponentInfo(){
@@ -354,7 +392,22 @@
                     }
                 }
                 else{
-                    alert("Please use valid input!");
+                    let ret = "Attribute ";
+                    if (!this.compAttributes.NameSpace){
+                        ret += "NameSpace,"
+                    }
+                    if (!this.compAttributes.Name){
+                        ret += "Name,"
+                    }
+                    if (!this.compAttributes.Type){
+                        ret += "Type,"
+                    }
+                    if (!this.compAttributes.BaseID){
+                        ret += "BaseID,"
+                    }
+                    ret = ret.substring(0,ret.length-1);
+                    ret += " cannot be empty!";
+                    alert(ret + " Please use valid input!");
                 }
             },
             updatePortInfo(){
