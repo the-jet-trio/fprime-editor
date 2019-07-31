@@ -96,11 +96,14 @@
                 const namespace = viewName[0];
                 const type = params.viewType;
                 let path = "";
-                if (type === "Component View" || type === "PortType View") {
+                if (type === "DataType View") {
+                    path = namespace + "\\DataType.fpp";
+                }
+                else if (type === "Component View" || type === "PortType View") {
                     path = namespace + "\\" + name + ".fpp";
                 }
                 else if (type === "Function View" || type === "InstanceCentric View") {
-                    path = namespace + "\\" + "System.fpp";
+                    path = namespace + "\\System.fpp";
                 }
                 if (this.fileNames.includes(path))
                 {

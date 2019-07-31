@@ -54,6 +54,11 @@ class CyManager {
   private viewName: string = "";
 
   /**
+   * The view type of the current view.
+   */
+  private viewType: string = "";
+
+  /**
    * The container html element <div id="cytoscape"></div>
    */
   private container?: HTMLElement;
@@ -120,7 +125,9 @@ class CyManager {
    */
   public startUpdate(viewName: string, render: IRenderJSON) {
     if(!this.container) return;
+    // update the current view name and view type
     this.viewName = viewName;
+    this.viewType = render.viewType;
     // Hide the viewport for usability concern
     this.container!.style.visibility = "hidden";
     // Cleanup the system
@@ -533,6 +540,7 @@ class CyManager {
   /*
    * This function config a right-click menu on all the edges and component nodes in function view.
    * In the menu, a remove function is provided to delete the edge and component nodes directly.
+   * See https://github.com/iVis-at-Bilkent/cytoscape.js-context-menus (contextMenus extension for cytoscape.js)
    */
   private configMenu() {
     var module = {cyManager: this};
@@ -575,6 +583,10 @@ class CyManager {
       menuItemClasses: ['custom-menu-item'],
       contextMenuClasses: ['custom-context-menu']
     };
+    
+    if(this.viewType !== "Function View") {
+      options.menuItems = [];
+    }
     (this.cy! as any).contextMenus( options );
   }
 

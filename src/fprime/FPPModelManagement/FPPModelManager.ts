@@ -805,7 +805,7 @@ export default class FPPModelManager {
    * Output the model into the selected folder
    */
   public writeToFile(folderPath: string) {
-        this.generateText();
+        // this.generateText();
         fs.readdir(folderPath, (err, files) => {
             if (err) {
                 throw err;
@@ -1045,7 +1045,13 @@ export default class FPPModelManager {
             }
 
             // Concatenate to text
-            this.text[instancePath] += instanceContent[key] + topologyContent[key] + "}";
+            if (instanceContent[key]) {
+                this.text[instancePath] += instanceContent[key];
+            }
+            if (topologyContent[key]) {
+                this.text[instancePath] += topologyContent[key];
+            }
+            this.text[instancePath] += "}";
         }
         console.dir(this.text);
     }
@@ -1054,8 +1060,8 @@ export default class FPPModelManager {
      * Update text according to the text editor.
      */
     public applyText(files: {[fileName: string]: string}) {
-        console.dir(files);
         this.text = files;
+        console.dir(this.text);
     }
 
     /**
