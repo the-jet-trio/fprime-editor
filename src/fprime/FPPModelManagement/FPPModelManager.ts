@@ -220,8 +220,11 @@ export default class FPPModelManager {
 
         // Generate text
         this.generateText();
+<<<<<<< HEAD
         fprime.viewManager.updateEditor(this.text);
         console.dir(this.text);
+=======
+>>>>>>> minghui
         return viewlist;
     }
 
@@ -485,6 +488,26 @@ export default class FPPModelManager {
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
+    }
+
+    /**
+     * renameTopology
+     * @param previous the old name of the topology
+     * @param newname the new name of the topology
+     */
+    public renameTopology(previous: string, newname: string) {
+        this.topologies = this.topologies.map(i => {
+            if(i.name === previous) {
+                return {
+                    name: newname,
+                    connections: i.connections,
+                };
+            } else {
+                return i;
+            }
+        });
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
     }
 
     public addPortToComponent(portname: string, compname: string): boolean {
