@@ -30,10 +30,11 @@
                     v-model="compViews.Name"
                     label="Name"
             ></v-text-field>
-            <v-text-field
+            <v-autocomplete
                     v-model="compViews.Kind"
+                    :items="compViews.Kinds"
                     label="Kind"
-            ></v-text-field>
+            ></v-autocomplete>
             <v-btn color="success" @click="updateComponentView()">Update</v-btn>
         </v-container>
         <v-container class="info-panel" v-bind:style="portPanel">
@@ -102,12 +103,14 @@
                 oldCompViews:{
                     Name: "",
                     NameSpace: "",
-                    Kind: ""
+                    Kind: "",
+                    Kinds: ["active","passive","queued"],
                 },
                 compViews:{
                     Name: "",
                     NameSpace: "",
-                    Kind: ""
+                    Kind: "",
+                    Kinds: ["active","passive","queued"],
                 },
                 oldPortAttributes: {
                     Name:"",
@@ -116,7 +119,7 @@
                     Directions:["in","out"],
                     Number:"",
                     Role:"",
-                    Roles:[""],
+                    Roles:["Cmd","CmdRegistration","CmdResponse","LogEvent","LogEvent","Telemetry","TimeGet","None"],
                     Type : "",
                     Types:[""],
                     Kind: "",
@@ -129,7 +132,7 @@
                     Directions:["in","out"],
                     Number:"",
                     Role:"",
-                    Roles:[""],
+                    Roles:["Cmd","CmdRegistration","CmdResponse","LogEvent","LogEvent","Telemetry","TimeGet","None"],
                     Type : "",
                     Types:[""],
                     Kind: "",
@@ -203,7 +206,6 @@
                     }
                     this.portAttributes.Names = this.uniq(names);
                     this.portAttributes.Types = this.uniq(types);
-                    this.portAttributes.Roles = this.uniq(roles);
                     this.portAttributes.Kinds = this.uniq(kinds);
                 });
             }
