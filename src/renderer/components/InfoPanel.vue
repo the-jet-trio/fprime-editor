@@ -74,6 +74,7 @@
     import Vue from "vue";
     import view from "@/store/view";
     import CyManager from "@/store/CyManager";
+    import { Route } from "vue-router/types/router";
     import fprime from "../../fprime";
     import { ViewType } from "../../fprime/FPPModelManagement/FPPModelManager";
     export default Vue.extend({
@@ -208,6 +209,15 @@
             }
         },
 
+        watch: {
+            $route: function(to: Route, from: Route) {
+                if(to !== from) {
+                    this.compPanel.display = "none";
+                    this.compViewPanel.display = "none";
+                    this.portPanel.display = "none";
+                }
+            }
+        },
         methods:{
             // Remove duplicated elements in an array
             uniq(arr: string[]){
