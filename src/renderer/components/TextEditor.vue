@@ -112,6 +112,7 @@
             },
             readText(text) {
                 this.files = text;
+                this.fileNames = Object.keys(text);
                 if (this.fileName in this.files)
                 {
                     this.code = this.files[this.fileName];

@@ -220,6 +220,7 @@ export default class FPPModelManager {
 
         // Generate text
         this.generateText();
+        fprime.viewManager.updateEditor(this.text);
         console.dir(this.text);
         return viewlist;
     }
