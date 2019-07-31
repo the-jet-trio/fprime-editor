@@ -316,6 +316,7 @@ export default class FPPModelManager {
         };
         this.datatypes.push(item);
         this.generateText();
+        console.dir(this.text);
         fprime.viewManager.updateEditor(this.text);
         return item.namespace + "." + item.name;
     }
@@ -1071,7 +1072,7 @@ export default class FPPModelManager {
     public updateEditor(text: any): void {
     }
 
-    private reset() {
+    reset() {
         this.datatypes = [];
         this.porttypes = [];
         this.instances = [];

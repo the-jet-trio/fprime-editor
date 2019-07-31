@@ -134,6 +134,7 @@ export default class ViewManager {
       try {
           // Cleanup the views
           this.cleanup();
+          this.modelManager.reset();
           // Set the project path
           this.configManager.ProjectPath = dir;
           // Load the project config.
