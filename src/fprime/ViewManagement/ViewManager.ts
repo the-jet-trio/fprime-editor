@@ -157,7 +157,7 @@ export default class ViewManager {
           this.styleManager.loadDefaultStyles(
               this.configManager.Config.DefaultStyleFilePath);
 
-          this.updateEditor({});
+          view.updateEditor({});
       } catch (err) {
           this.appendOutput(err);
       }
