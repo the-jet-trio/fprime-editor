@@ -4,7 +4,6 @@
     <list default="true" id="a365a552-aa9b-4a22-be02-c89422937cc4" name="Default Changelist" comment="Merge branch 'dev' of github.com:the-jet-trio/fprime-editor into dev&#10;&#10;# Conflicts:&#10;#&#9;src/fprime/FPPModelManagement/FPPModelManager.ts&#10;#&#9;src/fprime/ViewManagement/ViewManager.ts&#10;#&#9;src/renderer/store/view.ts">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/components/InfoPanel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/InfoPanel.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/store/CyManager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/store/CyManager.ts" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -20,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/renderer/components/InfoPanel.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="156">
-              <caret line="290" column="89" selection-start-line="290" selection-start-column="89" selection-end-line="290" selection-end-column="89" />
+            <state relative-caret-position="671">
+              <caret line="405" column="38" selection-start-line="405" selection-start-column="38" selection-end-line="405" selection-end-column="38" />
               <folding>
                 <element signature="e#2810#2832#0" expanded="true" />
               </folding>
@@ -33,7 +32,7 @@
         <entry file="file://$PROJECT_DIR$/src/renderer/store/CyManager.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="372">
-              <caret line="635" column="13" selection-start-line="635" selection-start-column="13" selection-end-line="635" selection-end-column="13" />
+              <caret line="647" column="13" selection-start-line="647" selection-start-column="13" selection-end-line="647" selection-end-column="13" />
               <folding>
                 <element signature="e#0#65#0" expanded="true" />
               </folding>
@@ -69,7 +68,7 @@
         <entry file="file://$PROJECT_DIR$/src/fprime/ViewManagement/ViewManager.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
-              <caret line="636" column="34" lean-forward="true" selection-start-line="636" selection-start-column="34" selection-end-line="636" selection-end-column="34" />
+              <caret line="637" column="34" selection-start-line="637" selection-start-column="34" selection-end-line="637" selection-end-column="34" />
               <folding>
                 <element signature="e#0#79#0" expanded="true" />
               </folding>
@@ -90,7 +89,7 @@
         <entry file="file://$PROJECT_DIR$/src/fprime/FPPModelManagement/FPPModelManager.ts">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="430">
-              <caret line="736" column="39" selection-start-line="736" selection-start-column="39" selection-end-line="736" selection-end-column="39" />
+              <caret line="737" column="39" selection-start-line="737" selection-start-column="39" selection-end-line="737" selection-end-column="39" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -242,7 +241,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564363700977</updated>
-      <workItem from="1564363703609" duration="22941000" />
+      <workItem from="1564363703609" duration="25079000" />
     </task>
     <task id="LOCAL-00001" summary="Fixed the issue &quot;The editing on Port and Component is not stable&quot;">
       <created>1564437242352</created>
@@ -269,7 +268,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="22941000" />
+    <option name="totallyTimeSpent" value="25079000" />
   </component>
   <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
@@ -282,7 +281,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="npm" side_tool="true" />
       <window_info id="Favorites" side_tool="true" />
@@ -350,7 +348,7 @@
     <entry file="file://$PROJECT_DIR$/src/renderer/store/CyManager.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="372">
-          <caret line="635" column="13" selection-start-line="635" selection-start-column="13" selection-end-line="635" selection-end-column="13" />
+          <caret line="647" column="13" selection-start-line="647" selection-start-column="13" selection-end-line="647" selection-end-column="13" />
           <folding>
             <element signature="e#0#65#0" expanded="true" />
           </folding>
@@ -360,7 +358,7 @@
     <entry file="file://$PROJECT_DIR$/src/fprime/ViewManagement/ViewManager.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
-          <caret line="636" column="34" lean-forward="true" selection-start-line="636" selection-start-column="34" selection-end-line="636" selection-end-column="34" />
+          <caret line="637" column="34" selection-start-line="637" selection-start-column="34" selection-end-line="637" selection-end-column="34" />
           <folding>
             <element signature="e#0#79#0" expanded="true" />
           </folding>
@@ -370,7 +368,7 @@
     <entry file="file://$PROJECT_DIR$/src/fprime/FPPModelManagement/FPPModelManager.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="430">
-          <caret line="736" column="39" selection-start-line="736" selection-start-column="39" selection-end-line="736" selection-end-column="39" />
+          <caret line="737" column="39" selection-start-line="737" selection-start-column="39" selection-end-line="737" selection-end-column="39" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
@@ -379,8 +377,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/renderer/components/InfoPanel.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="156">
-          <caret line="290" column="89" selection-start-line="290" selection-start-column="89" selection-end-line="290" selection-end-column="89" />
+        <state relative-caret-position="671">
+          <caret line="405" column="38" selection-start-line="405" selection-start-column="38" selection-end-line="405" selection-end-column="38" />
           <folding>
             <element signature="e#2810#2832#0" expanded="true" />
           </folding>
