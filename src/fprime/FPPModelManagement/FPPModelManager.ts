@@ -312,7 +312,7 @@ export default class FPPModelManager {
     public addNewDataType(defaultName: string): string {
         var item: IFPPDataType = {
             name: defaultName,
-            namespace: this.defaultNamespace,
+            namespace: "Fw",
         };
         this.datatypes.push(item);
         this.generateText();
@@ -330,7 +330,7 @@ export default class FPPModelManager {
     public addNewPortType(defaultName: string): string {
         var porttype: IFPPPortType = {
             name: defaultName,
-            namespace: this.defaultNamespace,
+            namespace: "Fw",
             arg: {},
         };
         this.porttypes.push(porttype);
@@ -353,7 +353,7 @@ export default class FPPModelManager {
     public addNewComponent(defaultName: string): string {
         var item: IFPPComponent = {
             name: this.defaultNamespace + "." + defaultName,
-            namespace: this.defaultNamespace,
+            namespace: "Ref",
             ports: [],
             kind: "Active",
         };
