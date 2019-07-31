@@ -634,8 +634,9 @@ class CyManager {
         .map((node) => {
         node.on("click", () => {
           console.log(node.data());
-          const name = node.data().label;
-          const namespace = name.split(".")[0];
+          const label = node.data().label;
+          const namespace = label.split(".")[0];
+          const name = label.split(".")[1];
           const kind = node.data().kind;
           this.cyShowComponentView(name, namespace, kind);
       });

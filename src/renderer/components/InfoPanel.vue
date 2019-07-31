@@ -287,15 +287,15 @@
             },
             updateComponentView(){
                 if(this.compViews.Name && this.compViews.NameSpace && this.compViews.Kind){
-                    const oldName = this.oldCompViews.Name;
-                    const newName = this.compViews.Name;
+                    const oldName = this.oldCompViews.NameSpace + "." + this.oldCompViews.Name;
+                    const newName = this.compViews.NameSpace + "." + this.compViews.Name;
                     const non_existed = view.UpdateViewList(oldName,newName);
                     if(non_existed) {
                         const result = fprime.viewManager.updateAttributes(ViewType.Component, {
                             ["NameSpace"]: this.compViews.NameSpace,
-                            ["Name"]: this.compViews.Name,
+                            ["Name"]: newName,
                             ["Kind"]: this.compViews.Kind,
-                            ["OldName"]: this.oldCompViews.Name
+                            ["OldName"]: oldName
                         });
                         if (result){
                             console.log(this.$route.params.viewName);
@@ -307,7 +307,8 @@
                             else{
                                 this.$root.$emit("updateCytoscape", newName);
                             }
-                            this.oldCompViews.Name = newName;
+                            this.oldCompViews.Name = newName.split(".")[1];
+                            this.oldCompViews.NameSpace = newName.split(".")[0];
                         }
                     }
                     else{
