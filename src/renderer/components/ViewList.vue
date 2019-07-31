@@ -73,13 +73,74 @@
             color="blue darken-1"
             flat
             @click="
-              instance_dialog.clicked = true;
+              instance_dialog.confirmed = true;
               addNewItem('InstanceCentric View', instance_dialog.selected);
             "
           >OK</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <!-- dialog when rename -->
+    <v-dialog
+        v-model="rename_dialog.showDialog"
+        max-width="300px"
+      >
+        <v-card>
+          <v-card-title class="headline">Rename the Topology</v-card-title>
+  
+          <v-form v-model="rename_dialog.valid">
+            <v-container grid-list-xl>
+              <v-layout wrap>
+                <v-flex
+                  xs12
+                  md6
+                >
+                  <v-text-field
+                    v-model="rename_dialog.namespace"
+                    :rules="rename_dialog.namespaceRules"
+                    label="Namespace"
+                    required
+                  ></v-text-field>
+                </v-flex>
+        
+                <v-flex
+                  xs12
+                  md6
+                >
+                  <v-text-field
+                    v-model="rename_dialog.name"
+                    :rules="rename_dialog.nameRules"
+                    label="Name"
+                    required
+                  ></v-text-field>
+                </v-flex>
+              </v-layout>
+            </v-container>
+          </v-form>
+  
+          <v-card-actions>
+            <v-spacer></v-spacer>
+  
+            <v-btn
+              color="blue darken-1"
+              flat
+              @click="rename_dialog.showDialog = false"
+            >
+              Cancel
+            </v-btn>
+  
+            <v-btn
+              color="blue darken-1"
+              flat
+              :disabled="!rename_dialog.valid"
+              @click="renameItem();
+              rename_dialog.showDialog = false;"
+            >
+              OK
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
   </v-navigation-drawer>
 </template>
 
@@ -97,8 +158,23 @@ export default Vue.extend({
     return {
       instance_dialog: {
         showDialog: false,
-        clicked: false,
+        confirmed: false,
         selected: ""
+      },
+      rename_dialog: {
+        showDialog: false,
+        valid: false,
+        namespace: '',
+        name: '',
+        previousID: '',
+        nameRules: [
+          (v: string) => !!v || 'Name is required',
+          (v: string) => v.length <= 20 || 'Name must be less than 10 characters',
+        ],
+        namespaceRules: [
+          (v: string) => !!v || 'Namespace is required',
+          (v: string) => v.length <= 10 || 'Namespace must be less than 10 characters',
+        ],
       },
       menu: {
         showMenu: false,
@@ -107,7 +183,7 @@ export default Vue.extend({
         clickedName: "",
         clickedType: ""
       },
-      menuitems: [{ title: "add" }, { title: "delete" }],
+      menuitems: [] as {title: string}[],
       viewlist: View.state.views,
       toggle: [false, false, false, false, false]
     };
@@ -135,17 +211,23 @@ export default Vue.extend({
   },
   methods: {
     showMenu(viewitem: string, viewtype: string, e: any) {
-      if (this.menuitems.length == 3) {
-        this.menuitems.pop();
-      }
       this.menu.showMenu = false;
       this.menu.x = e.clientX;
       this.menu.y = e.clientY;
       this.menu.clickedName = viewitem;
       this.menu.clickedType = viewtype;
+
+      // add menu options
+      this.menuitems = [];
+      this.menuitems.push({ title: "add" });
+      this.menuitems.push({ title: "delete" });
       if (viewtype === ViewType.Component) {
         this.menuitems.push({ title: "instantiate" });
       }
+      if (viewtype === ViewType.Function) {
+        this.menuitems.push({ title: "rename"});
+      }
+
       this.$nextTick(() => {
         this.menu.showMenu = true;
       });
@@ -161,6 +243,16 @@ export default Vue.extend({
       } else if (menuitem === "instantiate") {
         // must be component
         this.addNewItem(ViewType.InstanceCentric, this.menu.clickedName);
+      } else if (menuitem === "rename") {
+        // rename the item name
+        // open dialog
+        this.rename_dialog.showDialog = true;
+        this.rename_dialog.previousID = this.menu.clickedName;
+        var splits = this.menu.clickedName.split('.');
+        if(splits.length == 2) {
+          this.rename_dialog.namespace = splits[0];
+          this.rename_dialog.name = splits[1];
+        }
       }
     },
     addNewItem(itemType: string, compName?: string) {
@@ -182,9 +274,16 @@ export default Vue.extend({
       }
       this.resetDialog();
     },
+    renameItem() {
+      if (this.rename_dialog.showDialog && this.rename_dialog.valid) {
+        var newname = this.rename_dialog.namespace + '.' + this.rename_dialog.name;
+        if(newname !== this.rename_dialog.previousID)
+          View.renameItem(this.rename_dialog.previousID, newname);
+      }
+    },
     resetDialog() {
       this.instance_dialog.showDialog = false;
-      this.instance_dialog.clicked = false;
+      this.instance_dialog.confirmed = false;
       this.instance_dialog.selected = "";
     },
     dragStart(viewtype: string, itemname: string, e: any) {

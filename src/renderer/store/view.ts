@@ -170,6 +170,10 @@ export default {
     removeItem(name: string, type: string) {
         fprime.viewManager.removeItem(name, type);
     },
+
+    renameItem(previous: string, newname: string) {
+        fprime.viewManager.renameItem(previous, newname);
+    },
     /**
      * Get all the components in the current model.
      */
