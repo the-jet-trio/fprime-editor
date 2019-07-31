@@ -134,6 +134,7 @@ export default class ViewManager {
       try {
           // Cleanup the views
           this.cleanup();
+          this.modelManager.reset();
           // Set the project path
           this.configManager.ProjectPath = dir;
           // Load the project config.
@@ -624,6 +625,20 @@ export default class ViewManager {
     }
     // remove in the view list
     this.viewList[type] = this.viewList[type].filter((i) => i.name !== name);
+  }
+
+  /**
+   * Rename the item with new namespace and name
+   * NOTE: only valid in Function view yet
+   * @param namespace new namespace of the topology
+   * @param name new name of the topology
+   */
+  public renameItem(previous: string, newname: string) {
+    this.modelManager.renameTopology(previous, newname);
+    this.viewList[ViewType.Function] = this.viewList[ViewType.Function].map((i) => {
+      if (i.name === previous) return { name: newname, type: ViewType.Function };
+      else return i;
+    })
   }
 
   public addPortToComponent(portname: string, compname: string): boolean {

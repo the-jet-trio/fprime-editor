@@ -322,6 +322,7 @@ export default class FPPModelManager {
         };
         this.datatypes.push(item);
         this.generateText();
+        console.dir(this.text);
         fprime.viewManager.updateEditor(this.text);
         return item.namespace + "." + item.name;
     }
@@ -490,6 +491,26 @@ export default class FPPModelManager {
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
+    }
+
+    /**
+     * renameTopology
+     * @param previous the old name of the topology
+     * @param newname the new name of the topology
+     */
+    public renameTopology(previous: string, newname: string) {
+        this.topologies = this.topologies.map(i => {
+            if(i.name === previous) {
+                return {
+                    name: newname,
+                    connections: i.connections,
+                };
+            } else {
+                return i;
+            }
+        });
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
     }
 
     public addPortToComponent(portname: string, compname: string): boolean {
@@ -1077,7 +1098,7 @@ export default class FPPModelManager {
     public updateEditor(text: any): void {
     }
 
-    private reset() {
+    reset() {
         this.datatypes = [];
         this.porttypes = [];
         this.instances = [];
