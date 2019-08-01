@@ -671,6 +671,10 @@ export default class ViewManager {
     return this.modelManager.removeInstance(view, inst_name);
   }
 
+  public removePort(view: string, portname: string): boolean{
+    return this.modelManager.removePort(view, portname);
+  }
+
 
   public updateEditor(text: any) {
       view.updateEditor(text);
