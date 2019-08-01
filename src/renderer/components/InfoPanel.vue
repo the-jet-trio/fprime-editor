@@ -1,21 +1,21 @@
 <template v-slot:header xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <v-container>
         <v-container class="info-panel" v-bind:style="compPanel">
-            <v-autocomplete
+            <v-combobox
                     v-model="compAttributes.NameSpace"
                     :items="compAttributes.NameSpaces"
                     label="NameSpace"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-text-field
                     v-model="compAttributes.Name"
                     label="Name"
             ></v-text-field>
-            <v-autocomplete
+            <v-combobox
                     v-model="compAttributes.Type"
                     :items="compAttributes.Types"
 
                     label="Type"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-text-field
                     v-model="compAttributes.BaseID"
                     label="BaseID"
@@ -31,11 +31,11 @@
                     v-model="compViews.Name"
                     label="Name"
             ></v-text-field>
-            <v-autocomplete
+            <v-combobox
                     v-model="compViews.Kind"
                     :items="compViews.Kinds"
                     label="Kind"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-btn color="success" @click="updateComponentView()">Update</v-btn>
         </v-container>
         <v-container class="info-panel" v-bind:style="portPanel">
@@ -43,30 +43,30 @@
                     v-model="portAttributes.Name"
                     label="Name"
             ></v-text-field>
-            <v-autocomplete
+            <v-combobox
                     v-model="portAttributes.Role"
                     :items="portAttributes.Roles"
                     label="Role"
-            ></v-autocomplete>
-            <v-autocomplete
+            ></v-combobox>
+            <v-combobox
                     v-model="portAttributes.Type"
                     :items="portAttributes.Types"
                     label="Type"
-            ></v-autocomplete>
-            <v-autocomplete
+            ></v-combobox>
+            <v-combobox
                     v-model="portAttributes.Direction"
                     :items="portAttributes.Directions"
                     label="Direction"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-text-field
                     v-model="portAttributes.Number"
                     label="Number"
             ></v-text-field>
-            <v-autocomplete
+            <v-combobox
                     v-model="portAttributes.Kind"
                     :items="portAttributes.Kinds"
                     label="Kind"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-btn color="success" @click="updatePortInfo()">Update</v-btn>
         </v-container>
     </v-container>
