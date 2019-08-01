@@ -851,19 +851,24 @@ export default class FPPModelManager {
    */
   public writeToFile(folderPath: string) {
         // this.generateText();
-        fs.readdir(folderPath, (err, files) => {
-            if (err) {
-                throw err;
-            }
-
-            for (var file of files) {
-                fs.unlink(path.join(folderPath, file), err => {
-                    if (err) {
-                        throw err;
-                    }
-                });
-            }
-        });
+        // fs.readdir(folderPath, (err, files) => {
+        //     if (err) {
+        //         throw err;
+        //     }
+        //
+        //     for (var file of files) {
+        //         fs.unlink(path.join(folderPath, file), err => {
+        //             if (err) {
+        //                 throw err;
+        //             }
+        //         });
+        //     }
+        // });
+        const rimraf = require("rimraf");
+        rimraf.sync(folderPath);
+        if (!fs.existsSync(folderPath)) {
+            fs.mkdirSync(folderPath);
+        }
         for (var key in this.text) {
             var fileName = folderPath + "\\" + key;
             mkdirp(getDirName(fileName), function(dir_err: any) {
