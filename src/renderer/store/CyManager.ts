@@ -628,7 +628,6 @@ class CyManager {
           const name = node.data().id.split("_")[1];
           const info = node.data("properties");
           const type = info.type;
-          console.log(type);
           const namespace = info.namespace;
           const baseid = info.base_id_window;
           this.cyShowComponentInfo(type, namespace, name, baseid);

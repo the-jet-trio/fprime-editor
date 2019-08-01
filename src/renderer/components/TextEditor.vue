@@ -69,7 +69,6 @@
                 console.log('the editor is focus!', cm)
             },
             onCmCodeChange(newCode) {
-                console.log('this is new code', newCode)
                 this.code = newCode
                 this.files[this.fileName] = newCode;  // Update code stored in text editor
             },

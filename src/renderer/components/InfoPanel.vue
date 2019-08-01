@@ -147,6 +147,8 @@
                 portPanel: {
                     display: 'none',
                 },
+                // This is used to check whether the change of type of an instance is legal.
+                // usedNames: [""],
             };
         },
         mounted(){
@@ -281,6 +283,14 @@
                 // The type of the instance is newly added and currently not in the this.compAttributes.Types
                 if (this.compAttributes.Types.indexOf(compType) === -1){
                     this.compAttributes.Types.push(compType);
+                    // const idx = this.usedNames.indexOf(compType);
+                    // if (idx === -1) {
+                    //     this.compAttributes.Types.push(compType);
+                    // }
+                    // else{
+                    //     this.usedNames.splice(idx,1);
+                    //     compType = "";
+                    // }
                 }
                 this.compAttributes.Type = compType;
                 this.compAttributes.NameSpace = compNamespace;
@@ -335,9 +345,11 @@
                             ["OldName"]: oldName
                         });
                         if (result){
-                            console.log(this.$route.params.viewName);
+                            const idx = this.compAttributes.Types.indexOf(oldName);
+                            if (idx !== -1){
+                                this.compAttributes.Types[idx] = newName;
+                            }
                             this.$route.params.viewName = newName;
-                            console.log(this.$route.params.viewName);
                             if (newName === oldName) {
                                 this.$root.$emit("updateContent", newName);
                             }
