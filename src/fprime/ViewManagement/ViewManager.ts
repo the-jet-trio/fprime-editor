@@ -1,3 +1,4 @@
+import { IFPPPort } from './../FPPModelManagement/FPPModelManager';
 import ViewDescriptor, { ICytoscapeJSON, IRenderJSON } from "./ViewDescriptor";
 import StyleManager from "../StyleManagement/StyleManager";
 import FPPModelManager from "../FPPModelManagement/FPPModelManager";
@@ -5,9 +6,7 @@ import ConfigManager from "../ConfigManagement/ConfigManager";
 import LayoutGenerator from "./LayoutGenerator";
 import AnalyzerManager from "../StyleManagement/AnalyzerManager";
 import { IStyle } from "../DataImport/StyleConverter";
-import CyManager from "@/store/CyManager";
 import {IFPPComponent} from "../FPPModelManagement/FPPModelManager";
-import {IFPPPort} from "../FPPModelManagement/FPPModelManager";
 import view from "@/store/view";
 
 export interface IViewList {
@@ -75,7 +74,7 @@ export default class ViewManager {
   }
 
   private comps: IFPPComponent[] = [];
-  private ports = new Set();
+  private ports = new Set<IFPPPort>();
 
   public filterPorts = false;
 
@@ -201,6 +200,7 @@ export default class ViewManager {
         this.configManager.Config, this);
       this.comps = this.modelManager.getComponents();
       this.ports = this.modelManager.getPorts();
+      
       this.generateViewList(viewlist);
     } catch (err) {
       this.appendOutput(err);
