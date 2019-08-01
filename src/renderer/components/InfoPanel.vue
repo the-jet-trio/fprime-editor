@@ -13,6 +13,7 @@
             <v-autocomplete
                     v-model="compAttributes.Type"
                     :items="compAttributes.Types"
+
                     label="Type"
             ></v-autocomplete>
             <v-text-field
@@ -277,7 +278,7 @@
                 }
                 this.compAttributes.Name = compName;
                 if (typeof (compBaseID) === "undefined"){
-                    compBaseID = "DefaultBaseID";
+                    compBaseID = "-1";
                 }
                 this.compAttributes.BaseID = compBaseID;
                 // The type of the instance is newly added and currently not in the this.compAttributes.Types
