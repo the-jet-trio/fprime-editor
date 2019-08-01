@@ -216,5 +216,8 @@ export default {
     portInfo(){
 
     },
+    resetInfoPanel(){
+
+    },
 }
 

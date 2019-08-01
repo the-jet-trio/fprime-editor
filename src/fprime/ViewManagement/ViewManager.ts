@@ -159,6 +159,7 @@ export default class ViewManager {
               this.configManager.Config.DefaultStyleFilePath);
 
           view.updateEditor({});
+          view.resetInfoPanel();
       } catch (err) {
           this.appendOutput(err);
       }
@@ -522,6 +523,7 @@ export default class ViewManager {
   public portInfo(){
     view.portInfo();
   }
+
   /**
    * Get all the components in the model
    */

@@ -156,6 +156,7 @@
             // After finish loading model, the model manager will notify InfoPanel to call getComponentInfo and getPortInfo
             view.compInfo = this.getComponentInfo;
             view.portInfo = this.getPortInfo;
+            view.resetInfoPanel = this.resetInfoPanel;
             CyManager.cyShowComponentInfo = this.showComponentInfo;
             CyManager.cyShowComponentView = this.showComponentView;
             CyManager.cyShowPortInfo = this.showPortInfo;
@@ -165,6 +166,7 @@
             items() {
                 return view.GetViewList();
             },
+
         },
         watch: {
             $route: function(to: Route, from: Route) {
@@ -176,6 +178,20 @@
             }
         },
         methods:{
+            // Every time initialize a new project, reset the InfoPanel
+            resetInfoPanel () {
+                for ( let ele in this.$data){
+                    for (let attr in this.$data[ele]){
+                        const attrType = typeof(this.$data[ele][attr]);
+                        if (attrType === "object"){
+                            this.$data[ele][attr] = [""];
+                        }
+                        if (attrType === "string"){
+                            this.$data[ele][attr] = "";
+                        }
+                    }
+                }
+            },
             getComponentInfo () {
                 let value = view.getComponents();
                 var type:string[] = new Array();
