@@ -57,14 +57,34 @@
                     <span>Save Project</span>
                 </v-tooltip>
 
-                <!-- refresh button -->
+                <!-- cache button -->
                 <v-tooltip bottom>
                     <template v-slot:activator="{ on }">
                         <v-btn small icon @click="recompile" v-on="on">
-                            <v-icon>refresh</v-icon>
+                            <v-icon>cached</v-icon>
                         </v-btn>
                     </template>
                     <span>Recompile</span>
+                </v-tooltip>
+
+                <!-- undo button -->
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon @click="undo" v-on="on">
+                            <v-icon>undo</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>Undo</span>
+                </v-tooltip>
+
+                <!-- redo button -->
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn small icon @click="redo" v-on="on">
+                            <v-icon>redo</v-icon>
+                        </v-btn>
+                    </template>
+                    <span>Redo</span>
                 </v-tooltip>
 
                 <v-divider vertical></v-divider>
@@ -391,6 +411,12 @@
                     elesNoPosition: [],
                 });
                 CyManager.endUpdate();
+            },
+            undo() {
+
+            },
+            redo() {
+
             },
         }
     });
