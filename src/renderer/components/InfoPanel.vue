@@ -149,7 +149,6 @@
                 },
             };
         },
-
         mounted(){
             // After finish loading model, the model manager will notify InfoPanel to call getComponentInfo and getPortInfo
             view.compInfo = this.getComponentInfo;
@@ -157,17 +156,13 @@
             CyManager.cyShowComponentInfo = this.showComponentInfo;
             CyManager.cyShowComponentView = this.showComponentView;
             CyManager.cyShowPortInfo = this.showPortInfo;
-
         },
         // Get all components in the current model and push them to the items of the selector.
         computed:{
-
             items() {
                 return view.GetViewList();
             },
-
         },
-
         watch: {
             $route: function(to: Route, from: Route) {
                 if(to !== from) {
@@ -179,7 +174,6 @@
         },
         methods:{
             getComponentInfo () {
-
                 let value = view.getComponents();
                 var type:string[] = new Array();
                 var namespace:string[] = new Array();
@@ -192,10 +186,8 @@
                 this.compAttributes.Types = type;
                 this.compAttributes.NameSpaces = namespace;
                 //this.comPorts = port;
-
             },
             getPortInfo () {
-
                 let value = view.getPorts();
                 var names:string[] = new Array();
                 var types:string[] = new Array();
@@ -217,17 +209,16 @@
                 this.portAttributes.Names = this.uniq(names);
                 this.portAttributes.Types = this.uniq(types);
                 this.portAttributes.Kinds = this.uniq(kinds);
-
             },
             // Remove duplicated elements in an array
             uniq(arr: string[]){
-              let ret = [];
-              for (let i = 0; i < arr.length; ++i){
-                  if (ret.indexOf(arr[i]) === -1){
-                      ret.push(arr[i]);
-                  }
-              }
-              return ret;
+                let ret = [];
+                for (let i = 0; i < arr.length; ++i){
+                    if (ret.indexOf(arr[i]) === -1){
+                        ret.push(arr[i]);
+                    }
+                }
+                return ret;
             },
             // Get the information of the selected component view and assign it to the v-model of the selector.
             showComponentView(compName: string, compNamespace: string, kind: string ){
@@ -255,7 +246,6 @@
             // Get the information of the selected component instance and assign it to the v-model of the selector.
             showComponentInfo(compType :string, compNamespace: string, compName: string, compBaseID: string){
                 // Check whether the current selected instance is the centric instance of the current view
-
                 //console.log(this.$route.params.viewName,this.$route.params.viewType);
                 if (this.$route.params.viewType === ViewType.InstanceCentric ) {
                     if (this.$route.params.viewName === compNamespace + "." + compName) {
@@ -284,7 +274,14 @@
                     this.compViewPanel.display = "none";
                 }
                 this.compAttributes.Name = compName;
+                if (typeof (compBaseID) === "undefined"){
+                    compBaseID = "DefaultBaseID";
+                }
                 this.compAttributes.BaseID = compBaseID;
+                // The type of the instance is newly added and currently not in the this.compAttributes.Types
+                if (this.compAttributes.Types.indexOf(compType) === -1){
+                    this.compAttributes.Types.push(compType);
+                }
                 this.compAttributes.Type = compType;
                 this.compAttributes.NameSpace = compNamespace;
                 this.OldCompAttributes.Name = compName;
@@ -372,7 +369,6 @@
                 }
             },
             updateComponentInfo(){
-
                 if(this.compAttributes.Type && this.compAttributes.NameSpace && this.compAttributes.Name && this.compAttributes.BaseID){
                     // CyManager.cyUpdateComponentInfo(this.compType, this.compNameSpace);
                     // 1 update model
@@ -397,12 +393,10 @@
                         if (result) {
                             // 2 content: rerender
                             this.$route.params.viewName = newName;
-
                             this.$root.$emit("updateCytoscape", newName);
                             this.$root.$emit("updateContent", newName);
                             this.OldCompAttributes.NameSpace = newName.split(".")[0];
                             this.OldCompAttributes.Name = newName.split(".")[1];
-
                         }
                     }
                     else{
@@ -452,7 +446,6 @@
                     this.$root.$emit("updateContent",this.$route.params.viewName);
                     this.oldPortAttributes.Name = newName;
                 }
-
             },
             nameCheck(compName : string){
                 for (let i = 0; i <compName.length; ++i){

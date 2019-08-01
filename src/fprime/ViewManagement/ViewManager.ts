@@ -526,11 +526,7 @@ export default class ViewManager {
    * Get all the components in the model
    */
   public getComponents() {
-    //await this.modelManager.loadModel(this.configManager.Config, this);
-    // while (this.comps.length === 0){
-    //
-    // }
-    // return this.comps;
+
     return this.modelManager.getComponents();
   }
 
@@ -538,12 +534,8 @@ export default class ViewManager {
    * Get all the ports in the model
    */
   public getPorts(){
-    // await this.modelManager.loadModel(this.configManager.Config, this);
+
     return this.modelManager.getPorts();
-    // while (this.ports.size === 0){
-    //   console.log(this.ports);
-    // }
-    // return this.ports;
   }
 
   /**

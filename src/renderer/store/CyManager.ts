@@ -624,9 +624,11 @@ class CyManager {
     })
         .map((node) => {
         node.on("click", () => {
+          console.log(node.data());
           const name = node.data().id.split("_")[1];
           const info = node.data("properties");
           const type = info.type;
+          console.log(type);
           const namespace = info.namespace;
           const baseid = info.base_id_window;
           this.cyShowComponentInfo(type, namespace, name, baseid);
@@ -652,14 +654,6 @@ class CyManager {
           this.cyShowComponentView(name, namespace, kind);
       });
     });
-    // this.cy!.nodes(".fprime-component").forEach((node: any) => {
-    //   node.on("click", () => {
-    //     const name = node.data().label;
-    //     const namespace = name.split(".")[0];
-    //     const kind = node.data().kind;
-    //     this.cyShowComponentView(name, namespace, kind);
-    //   });
-    // });
   }
 
   /**
