@@ -1184,7 +1184,7 @@ export default class FPPModelManager {
     }
 
     private push_curr_state_to_stack(stack: IStackEle[]) {
-        console.dir(stack);
+        console.log(stack.length);
         // Pop first if undo stack is full
         if (stack.length >= this.MAX_undo_redo) {
             stack.shift();
@@ -1200,7 +1200,7 @@ export default class FPPModelManager {
             porttypes: this.porttypes,
         };
         stack.push(curr);
-        console.dir(stack);
+        console.log(stack.length);
 
         // console.dir(this.undo_stack);
         // // Pop first if undo stack is full
