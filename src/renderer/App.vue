@@ -413,10 +413,10 @@
                 CyManager.endUpdate();
             },
             undo() {
-
+                fprime.viewManager.undo();
             },
             redo() {
-
+                fprime.viewManager.redo();
             },
         }
     });

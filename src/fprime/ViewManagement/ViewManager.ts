@@ -675,5 +675,13 @@ export default class ViewManager {
   public updateEditor(text: any) {
       view.updateEditor(text);
   }
+
+  public undo() {
+    this.modelManager.undo();
+  }
+
+  public redo() {
+    this.modelManager.redo();
+  }
 }
 
