@@ -1,0 +1,75 @@
+edge {
+  line-color: rgb(0,0,0);
+  mid-target-arrow-shape: triangle;
+  mid-target-arrow-color: rgb(0,0,0);
+  width: 2px;
+}
+
+.instance-port {
+  display: none;
+}
+
+.component-port {
+  display: none;
+}
+
+.component-component {
+  display: none;
+}
+
+.fprime-instance {
+  shape: rectangle;
+  width: 400px;
+  height: 450px;
+  label: data(label);
+  font-size: 28px;
+  text-halign: data(label_hloc);
+  text-valign: data(label_vloc);
+  text-opacity: 1;
+  text-margin-y: 0px;
+  background-color: rgb(252,242,199);
+  border-width: 2px;
+  border-color: rgb(192,192,192);
+}
+
+.fprime-component {
+  shape: rectangle;
+  width: 400px;
+  height: 450px;
+  label: data(label);
+  font-size: 28px;
+  text-opacity: 0.5;
+  text-halign: data(label_hloc);
+  text-valign: data(label_vloc);
+  text-margin-y: 0px;
+  background-color: rgb(216,204,186);
+  border-width: 2px;
+  border-color: rgb(192,192,192);
+}
+
+.fprime-port {
+  shape: rectangle;
+  width: 50px;
+  height: 50px;
+  label: data(label);
+  font-size: 25px;
+  text-opacity: 0.5;
+  text-halign: data(label_hloc);
+  text-valign: data(label_vloc);
+  background-color: rgb(205,217,205);
+  background-image: data(img);
+  background-width: 70%;
+  background-height: 70%;
+  border-width: 2px;
+  border-color: rgb(158,173,145);
+}
+
+#Refdf_sf {
+  x: 0;
+  y: 0;
+}
+
+#Refdf_sf_is12 {
+  x: 0;
+  y: -227;
+}
