@@ -13,7 +13,6 @@
             <v-combobox
                     v-model="compAttributes.Type"
                     :items="compAttributes.Types"
-
                     label="Type"
             ></v-combobox>
             <v-text-field
@@ -160,6 +159,12 @@
             CyManager.cyShowComponentInfo = this.showComponentInfo;
             CyManager.cyShowComponentView = this.showComponentView;
             CyManager.cyShowPortInfo = this.showPortInfo;
+            this.$root.$on("addType", (name: string) => {
+                this.addType(name);
+            });
+            this.$root.$on("removeType", (name: string) => {
+                this.removeType(name);
+            });
         },
         // Get all components in the current model and push them to the items of the selector.
         computed:{
@@ -299,11 +304,9 @@
                     compBaseID = "-1";
                 }
                 this.compAttributes.BaseID = compBaseID;
-                console.log("hiiiii",this.compAttributes.Types,compType);
                 // The type of the instance is newly added and currently not in the this.compAttributes.Types
                 if (this.compAttributes.Types.indexOf(compType) === -1){
                     this.compAttributes.Types.push(compType);
-                    console.log("hi",this.compAttributes.Types);
                     // const idx = this.usedNames.indexOf(compType);
                     // if (idx === -1) {
                     //     this.compAttributes.Types.push(compType);
@@ -370,7 +373,8 @@
                         if (result){
                             const idx = this.compAttributes.Types.indexOf(oldName);
                             if (idx !== -1){
-                                this.compAttributes.Types[idx] = newName;
+                                this.compAttributes.Types.splice(idx,1);
+                                this.compAttributes.Types.push(newName);
                             }
                             this.$route.params.viewName = newName;
                             if (newName === oldName) {
@@ -484,13 +488,22 @@
                     this.oldPortAttributes.Name = newName;
                 }
             },
-            nameCheck(compName : string){
+            nameCheck(compName: string){
                 for (let i = 0; i <compName.length; ++i){
                     if(compName[i] === " "){
                         return false;
                     }
                 }
                 return true;
+            },
+            // Add a new type to Type selections of an instance.
+            addType(type: string){
+                this.compAttributes.Types.push(type);
+            },
+            // Remove an existing type of the Type selections of an instance.
+            removeType(type: string){
+                const idx = this.compAttributes.Types.indexOf(type);
+                this.compAttributes.Types.splice(idx,1);
             },
         },
     })
