@@ -124,7 +124,7 @@
                     Type : "",
                     Types:[""],
                     Kind: "",
-                    Kinds: [""],
+                    Kinds: ["async,sync,guarded"],
                 },
                 portAttributes: {
                     Name:"",
@@ -137,7 +137,7 @@
                     Type : "",
                     Types:[""],
                     Kind: "",
-                    Kinds: [""],
+                    Kinds: ["async,sync,guarded"],
                 },
                 compPanel: {
                     display: 'none',
@@ -184,7 +184,9 @@
                     for (let attr in this.$data[ele]){
                         const attrType = typeof(this.$data[ele][attr]);
                         if (attrType === "object"){
-                            this.$data[ele][attr] = [""];
+                            if (attr !== "Directions" && attr !== "Roles" && attr !== "Kinds"){
+                                this.$data[ele][attr] = [""];
+                            }
                         }
                         if (attrType === "string"){
                             this.$data[ele][attr] = "";
