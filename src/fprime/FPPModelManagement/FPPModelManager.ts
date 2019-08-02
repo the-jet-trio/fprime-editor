@@ -104,12 +104,12 @@ export interface IFPPModel {
  */
 interface IStackEle {
     text: { [fileName: string]: string };
-    datatypes: IFPPDataType[];
-    enumtypes: IFPPEnumType[];
-    instances: IFPPInstance[];
-    topologies: IFPPTopology[];
-    components: IFPPComponent[];
-    porttypes: IFPPPortType[];
+    datatypes: string;
+    enumtypes: string;
+    instances: string;
+    topologies: string;
+    components: string;
+    porttypes: string;
 }
 
 /**
@@ -1162,15 +1162,15 @@ export default class FPPModelManager {
             if (top) {
                 console.dir(top.datatypes);
                 // Push current state to redo stack
-                this.push_curr_state_to_stack(this.redo_stack);
+                this.redo_stack.push(top);
                 // Undo action
                 this.text = top.text;
-                this.datatypes = top.datatypes;
-                this.enumtypes = top.enumtypes;
-                this.instances = top.instances;
-                this.topologies = top.topologies;
-                this.components = top.components;
-                this.porttypes = top.porttypes;
+                this.datatypes = JSON.parse(top.datatypes);
+                this.enumtypes = JSON.parse(top.enumtypes);
+                this.instances = JSON.parse(top.instances);
+                this.topologies = JSON.parse(top.topologies);
+                this.components = JSON.parse(top.components);
+                this.porttypes = JSON.parse(top.porttypes);
             }
         }
         console.dir(this.datatypes);
@@ -1184,15 +1184,15 @@ export default class FPPModelManager {
             const top = this.redo_stack.pop();
             if (top) {
                 // Push current state to undo stack
-                this.push_curr_state_to_stack(this.undo_stack);
+                this.undo_stack.push(top);
                 // Redo action
                 this.text = top.text;
-                this.datatypes = top.datatypes;
-                this.enumtypes = top.enumtypes;
-                this.instances = top.instances;
-                this.topologies = top.topologies;
-                this.components = top.components;
-                this.porttypes = top.porttypes;
+                this.datatypes = JSON.parse(top.datatypes);
+                this.enumtypes = JSON.parse(top.enumtypes);
+                this.instances = JSON.parse(top.instances);
+                this.topologies = JSON.parse(top.topologies);
+                this.components = JSON.parse(top.components);
+                this.porttypes = JSON.parse(top.porttypes);
             }
         }
     }
@@ -1206,12 +1206,12 @@ export default class FPPModelManager {
         // Push current state to undo deque
         const curr: IStackEle = {
             text: this.text,
-            datatypes: this.datatypes,
-            enumtypes: this.enumtypes,
-            instances: this.instances,
-            topologies: this.topologies,
-            components: this.components,
-            porttypes: this.porttypes,
+            datatypes: JSON.stringify(this.datatypes),
+            enumtypes: JSON.stringify(this.enumtypes),
+            instances: JSON.stringify(this.instances),
+            topologies: JSON.stringify(this.topologies),
+            components: JSON.stringify(this.components),
+            porttypes: JSON.stringify(this.porttypes),
         };
         stack.push(curr);
         console.log(stack.length);

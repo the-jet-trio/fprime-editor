@@ -327,7 +327,7 @@
                 this.$router.replace("/");
                 this.showOutputPanel();
                 // Delete ~tmp folder
-                rimraf(dir, function () {});
+                // rimraf(dir, function () {});
                 (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
             },
             /**
@@ -414,9 +414,11 @@
             },
             undo() {
                 fprime.viewManager.undo();
+                this.$root.$emit("updateContent", this.$route.params.viewName);
             },
             redo() {
                 fprime.viewManager.redo();
+                this.$root.$emit("updateContent", this.$route.params.viewName);
             },
         }
     });
