@@ -162,6 +162,7 @@
     import CyManager from "@/store/CyManager";
     import view from "@/store/view";
     import fs from "fs";
+    import * as path from "path";
 
     export default Vue.extend({
         name: "fprime-editor",
@@ -298,17 +299,18 @@
                 // Apply text change
                 // (this.$refs.msg as Vue & { applyText: () => boolean }).applyText(); // Trigger text editor to write text to Modelmanager
                 const files = (this.$refs.msg as Vue & { returnFiles: () => any }).returnFiles(); // Get text files from text editor
-                console.dir(files["Ref\\System.fpp"]);
+                // console.dir(files["Ref\\System.fpp"]);
+                console.dir(files[path.join("Ref", "System.fpp")]);
                 fprime.viewManager.applyText(files); // Triggers ViewManager to recompile with new files
 
-                const dir = "./~tmp";
+                const dir = path.join(".", "~tmp");
                 const rimraf = require("rimraf");
                 // rimraf(dir, function () {});
                 rimraf.sync(dir);
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                 }
-                fprime.viewManager.writeToFile("./~tmp");
+                fprime.viewManager.writeToFile(dir);
                 this.processBar = true;
                 await fprime.viewManager.build(dir);
                 // Close all the opening views
