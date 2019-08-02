@@ -1,0 +1,3 @@
+namespace Fw
+
+datatype FOO

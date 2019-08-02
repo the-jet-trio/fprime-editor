@@ -60,6 +60,8 @@ export default Vue.extend({
       event.preventDefault();
     },
     updateContent(name: string) {
+      console.log("updateContent:" + name);
+      
       var render: IRenderJSON | null;
         render = fprime.viewManager.rerender(name, CyManager.getDescriptor());
       if (render) {

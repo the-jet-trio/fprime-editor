@@ -102,10 +102,10 @@ export default Vue.extend({
     closeTab(viewName: string) {
       let idx = View.CloseViewByName(viewName);
       if (this.items.length === 0) {
-        this.$router.replace("/");
+        this.$router.push("/");
       } else if (viewName === this.$route.params.viewName) {
         idx = --idx > 0 ? idx : 0;
-        this.$router.replace(this.getViewRoute(this.items[idx]));
+        this.$router.push(this.getViewRoute(this.items[idx]));
       }
     },
   },
