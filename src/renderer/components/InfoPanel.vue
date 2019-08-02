@@ -1,7 +1,7 @@
 <template v-slot:header xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <v-container>
         <v-container class="info-panel" v-bind:style="compPanel">
-            <v-combobox
+            <v-combobox class ="combobox"
                     v-model="compAttributes.NameSpace"
                     :items="compAttributes.NameSpaces"
                     label="NameSpace"
@@ -10,7 +10,7 @@
                     v-model="compAttributes.Name"
                     label="Name"
             ></v-text-field>
-            <v-combobox
+            <v-combobox class ="combobox"
                     v-model="compAttributes.Type"
                     :items="compAttributes.Types"
                     label="Type"
@@ -30,7 +30,7 @@
                     v-model="compViews.Name"
                     label="Name"
             ></v-text-field>
-            <v-combobox
+            <v-combobox class ="combobox"
                     v-model="compViews.Kind"
                     :items="compViews.Kinds"
                     label="Kind"
@@ -42,17 +42,17 @@
                     v-model="portAttributes.Name"
                     label="Name"
             ></v-text-field>
-            <v-combobox
+            <v-combobox class ="combobox"
                     v-model="portAttributes.Role"
                     :items="portAttributes.Roles"
                     label="Role"
             ></v-combobox>
-            <v-combobox
+            <v-combobox class ="combobox"
                     v-model="portAttributes.Type"
                     :items="portAttributes.Types"
                     label="Type"
             ></v-combobox>
-            <v-combobox
+            <v-combobox class ="combobox"
                     v-model="portAttributes.Direction"
                     :items="portAttributes.Directions"
                     label="Direction"
@@ -61,7 +61,7 @@
                     v-model="portAttributes.Number"
                     label="Number"
             ></v-text-field>
-            <v-combobox
+            <v-combobox class ="combobox"
                     v-model="portAttributes.Kind"
                     :items="portAttributes.Kinds"
                     label="Kind"
@@ -123,7 +123,7 @@
                     Type : "",
                     Types:[""],
                     Kind: "",
-                    Kinds: ["async,sync,guarded"],
+                    Kinds: ["async","sync","guarded"],
                 },
                 portAttributes: {
                     Name:"",
@@ -136,7 +136,7 @@
                     Type : "",
                     Types:[""],
                     Kind: "",
-                    Kinds: ["async,sync,guarded"],
+                    Kinds: ["async","sync","guarded"],
                 },
                 compPanel: {
                     display: 'none',
@@ -517,5 +517,8 @@
         box-shadow: 0px -0.5px 1px #bdbdbd;
         background-color: white;
         z-index: 1000;
+    }
+    .combobox{
+        width: 200px;
     }
 </style>
