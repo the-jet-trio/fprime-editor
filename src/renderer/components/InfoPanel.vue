@@ -123,7 +123,7 @@
                     Type : "",
                     Types:[""],
                     Kind: "",
-                    Kinds: ["async,sync,guarded"],
+                    Kinds: ["async","sync","guarded"],
                 },
                 portAttributes: {
                     Name:"",
@@ -136,7 +136,7 @@
                     Type : "",
                     Types:[""],
                     Kind: "",
-                    Kinds: ["async,sync,guarded"],
+                    Kinds: ["async","sync","guarded"],
                 },
                 compPanel: {
                     display: 'none',
@@ -234,7 +234,7 @@
                 }
                 this.portAttributes.Names = this.uniq(names);
                 this.portAttributes.Types = this.uniq(types);
-                this.portAttributes.Kinds = this.uniq(kinds);
+                // this.portAttributes.Kinds = this.uniq(kinds);
             },
             // Remove duplicated elements in an array
             uniq(arr: string[]){

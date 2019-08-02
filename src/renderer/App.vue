@@ -237,7 +237,7 @@
                     await fprime.viewManager.newProject(dirs[0]);
                     // Close all the opening views
                     view.CloseAll();
-                    this.$router.replace("/");
+                    this.$router.push("/");
                     // this.showOutputPanel();
                 }
             },
@@ -255,7 +255,7 @@
                     await fprime.viewManager.build(dirs[0]);
                     // Close all the opening views
                     view.CloseAll();
-                    this.$router.replace("/");
+                    this.$router.push("/");
                     this.showOutputPanel();
                     console.dir(this.$refs);
                     (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
@@ -315,7 +315,7 @@
                 await fprime.viewManager.build(dir);
                 // Close all the opening views
                 view.CloseAll();
-                this.$router.replace("/");
+                this.$router.push("/");
                 this.showOutputPanel();
                 // Delete ~tmp folder
                 // rimraf(dir, function () {});
@@ -404,12 +404,30 @@
                 CyManager.endUpdate();
             },
             undo() {
-                fprime.viewManager.undo();
-                this.$root.$emit("updateContent", this.$route.params.viewName);
+                if (fprime.viewManager.undo()) {
+                    let viewtype = this.$route.params.viewType;
+                    let viewname = this.$route.params.viewName;
+                    if(fprime.viewManager.updateViewList(viewtype, viewname)) {
+                        // has the view
+                        this.$root.$emit("updateContent", viewname);
+                    } else {
+                        this.$router.go(-1);
+                        this.$root.$emit("updateContent", this.$route.params.viewName);
+                    }
+                };
             },
             redo() {
-                fprime.viewManager.redo();
-                this.$root.$emit("updateContent", this.$route.params.viewName);
+                if(fprime.viewManager.redo()) {
+                    let viewtype = this.$route.params.viewType;
+                    let viewname = this.$route.params.viewName;
+                    if(fprime.viewManager.updateViewList(viewtype, viewname)) {
+                        // has the view
+                        this.$root.$emit("updateContent", viewname);
+                    } else {
+                        this.$router.go(1);
+                        this.$root.$emit("updateContent", this.$route.params.viewName);
+                    }
+                }
             },
         }
     });
