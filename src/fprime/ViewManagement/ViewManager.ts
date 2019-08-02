@@ -159,6 +159,7 @@ export default class ViewManager {
               this.configManager.Config.DefaultStyleFilePath);
 
           view.updateEditor({});
+          view.resetInfoPanel();
       } catch (err) {
           this.appendOutput(err);
       }
@@ -522,6 +523,7 @@ export default class ViewManager {
   public portInfo(){
     view.portInfo();
   }
+
   /**
    * Get all the components in the model
    */
@@ -669,6 +671,10 @@ export default class ViewManager {
   public removeInstance(view: string, inst_name: string): boolean {
     // remove instance and all related connection from the model
     return this.modelManager.removeInstance(view, inst_name);
+  }
+
+  public removePort(view: string, portname: string): boolean{
+    return this.modelManager.removePort(view, portname);
   }
 
 

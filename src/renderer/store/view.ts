@@ -172,7 +172,9 @@ export default {
     },
 
     renameItem(previous: string, newname: string) {
-        fprime.viewManager.renameItem(previous, newname);
+        if(this.UpdateViewList(previous, newname)) {
+            fprime.viewManager.renameItem(previous, newname);
+        }
     },
     /**
      * Get all the components in the current model.
@@ -212,6 +214,9 @@ export default {
 
     },
     portInfo(){
+
+    },
+    resetInfoPanel(){
 
     },
 }

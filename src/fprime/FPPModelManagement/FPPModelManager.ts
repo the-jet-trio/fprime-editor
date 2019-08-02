@@ -786,6 +786,20 @@ export default class FPPModelManager {
     }
 
     /**
+     * removePort
+     */
+    public removePort(compname: string, portname: string): boolean{
+        const component = this.components.find((i) => i.name === compname);
+        if (component === undefined) { return false; }
+        component.ports = component.ports.filter((p => p.name !== portname));
+
+        this.generateText();
+        fprime.viewManager.updateEditor(this.text);
+        
+        return true;
+    }
+
+    /**
      * Update the model
      */
   public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {

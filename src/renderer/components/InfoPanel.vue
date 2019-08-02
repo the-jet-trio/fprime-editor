@@ -1,20 +1,21 @@
 <template v-slot:header xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <v-container>
         <v-container class="info-panel" v-bind:style="compPanel">
-            <v-autocomplete
+            <v-combobox
                     v-model="compAttributes.NameSpace"
                     :items="compAttributes.NameSpaces"
                     label="NameSpace"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-text-field
                     v-model="compAttributes.Name"
                     label="Name"
             ></v-text-field>
-            <v-autocomplete
+            <v-combobox
                     v-model="compAttributes.Type"
                     :items="compAttributes.Types"
+
                     label="Type"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-text-field
                     v-model="compAttributes.BaseID"
                     label="BaseID"
@@ -30,11 +31,11 @@
                     v-model="compViews.Name"
                     label="Name"
             ></v-text-field>
-            <v-autocomplete
+            <v-combobox
                     v-model="compViews.Kind"
                     :items="compViews.Kinds"
                     label="Kind"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-btn color="success" @click="updateComponentView()">Update</v-btn>
         </v-container>
         <v-container class="info-panel" v-bind:style="portPanel">
@@ -42,30 +43,30 @@
                     v-model="portAttributes.Name"
                     label="Name"
             ></v-text-field>
-            <v-autocomplete
+            <v-combobox
                     v-model="portAttributes.Role"
                     :items="portAttributes.Roles"
                     label="Role"
-            ></v-autocomplete>
-            <v-autocomplete
+            ></v-combobox>
+            <v-combobox
                     v-model="portAttributes.Type"
                     :items="portAttributes.Types"
                     label="Type"
-            ></v-autocomplete>
-            <v-autocomplete
+            ></v-combobox>
+            <v-combobox
                     v-model="portAttributes.Direction"
                     :items="portAttributes.Directions"
                     label="Direction"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-text-field
                     v-model="portAttributes.Number"
                     label="Number"
             ></v-text-field>
-            <v-autocomplete
+            <v-combobox
                     v-model="portAttributes.Kind"
                     :items="portAttributes.Kinds"
                     label="Kind"
-            ></v-autocomplete>
+            ></v-combobox>
             <v-btn color="success" @click="updatePortInfo()">Update</v-btn>
         </v-container>
     </v-container>
@@ -155,6 +156,7 @@
             // After finish loading model, the model manager will notify InfoPanel to call getComponentInfo and getPortInfo
             view.compInfo = this.getComponentInfo;
             view.portInfo = this.getPortInfo;
+            view.resetInfoPanel = this.resetInfoPanel;
             CyManager.cyShowComponentInfo = this.showComponentInfo;
             CyManager.cyShowComponentView = this.showComponentView;
             CyManager.cyShowPortInfo = this.showPortInfo;
@@ -164,6 +166,7 @@
             items() {
                 return view.GetViewList();
             },
+
         },
         watch: {
             $route: function(to: Route, from: Route) {
@@ -175,6 +178,20 @@
             }
         },
         methods:{
+            // Every time initialize a new project, reset the InfoPanel
+            resetInfoPanel () {
+                for ( let ele in this.$data){
+                    for (let attr in this.$data[ele]){
+                        const attrType = typeof(this.$data[ele][attr]);
+                        if (attrType === "object"){
+                            this.$data[ele][attr] = [""];
+                        }
+                        if (attrType === "string"){
+                            this.$data[ele][attr] = "";
+                        }
+                    }
+                }
+            },
             getComponentInfo () {
                 let value = view.getComponents();
                 var type:string[] = new Array();
@@ -277,7 +294,7 @@
                 }
                 this.compAttributes.Name = compName;
                 if (typeof (compBaseID) === "undefined"){
-                    compBaseID = "DefaultBaseID";
+                    compBaseID = "-1";
                 }
                 this.compAttributes.BaseID = compBaseID;
                 // The type of the instance is newly added and currently not in the this.compAttributes.Types

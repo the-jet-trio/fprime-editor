@@ -544,49 +544,76 @@ class CyManager {
    */
   private configMenu() {
     var module = {cyManager: this};
-    var options = {
-      menuItems: [
-        {
-          id: 'remove', // ID of menu item
-          content: 'remove', // Display content of menu item
-          tooltipText: 'remove the connection', // Tooltip text for menu item
-          // Filters the elements to have this menu item on cxttap
-          // If the selector is not truthy no elements will have this menu item on cxttap
-          selector: '.fprime-instance, .port-port', 
-          onClickFunction: function (event: any) { // The function to be executed on click
-            var target = event.target || event.cyTarget;
-            if(target.classes().includes('port-port')) {
-              target.remove();
+    var removePort = {
+      id: 'remove1', // ID of menu item
+      content: 'remove', // Display content of menu item
+      tooltipText: 'remove the port', // Tooltip text for menu item
+      // Filters the elements to have this menu item on cxttap
+      // If the selector is not truthy no elements will have this menu item on cxttap
+      selector: '.fprime-port', 
+      onClickFunction: function (event: any) { // The function to be executed on click
+        var target = event.target || event.cyTarget;
+        console.log(target.data());
+        console.log(target.classes());
+        
+        target.remove();
+        fprime.viewManager.removePort(module.cyManager.viewName, target.data().label);
+      },
+    };
+    var removeConnection = {
+      id: 'remove2',
+      content: 'remove',
+      tooltipText: 'remove the connection',
+      selector: '.port-port', 
+      onClickFunction: function (event: any) {
+        var target = event.target || event.cyTarget;
+        target.remove();
 
-              if(target.source().connectedEdges().length <= 1) {
-                // become an unused port
-                target.source().addClass('fprime-port-unused');
-              }
-              if(target.target().connectedEdges().length <= 1) {
-                // become an unused port
-                target.target().addClass('fprime-port-unused');
-              }
-              module.cyManager.refreshUnusedPorts();
-              
-              fprime.viewManager.removeConnection(module.cyManager.viewName, target.data().source, target.data().target);
-            } else if (target.classes().includes('fprime-instance')) {
-              fprime.viewManager.removeInstance(module.cyManager.viewName, target.data().label);
-              var render = fprime.viewManager.rerender(module.cyManager.viewName, module.cyManager.getDescriptor());
-              if (render) {
-                module.cyManager.startUpdate(module.cyManager.viewName, render);
-                module.cyManager.endUpdate();
-              }
-            }
-          },
-        },
-      ],
+        if(target.source().connectedEdges().length <= 1) {
+          // become an unused port
+          target.source().addClass('fprime-port-unused');
+        }
+        if(target.target().connectedEdges().length <= 1) {
+          // become an unused port
+          target.target().addClass('fprime-port-unused');
+        }
+        module.cyManager.refreshUnusedPorts();
+        fprime.viewManager.removeConnection(module.cyManager.viewName, target.data().source, target.data().target);
+      },
+    };
+    var removeInstance = {
+      id: 'remove3',
+      content: 'remove',
+      tooltipText: 'remove the instance',
+      selector: '.fprime-instance', 
+      onClickFunction: function (event: any) {
+        var target = event.target || event.cyTarget;
+        fprime.viewManager.removeInstance(module.cyManager.viewName, target.data().label);
+        var render = fprime.viewManager.rerender(module.cyManager.viewName, module.cyManager.getDescriptor());
+        if (render) {
+          module.cyManager.startUpdate(module.cyManager.viewName, render);
+          module.cyManager.endUpdate();
+        }
+      },
+    };
+    var options = {
+      menuItems: [] as any[],
       menuItemClasses: ['custom-menu-item'],
       contextMenuClasses: ['custom-context-menu']
     };
     
-    if(this.viewType !== "Function View") {
-      options.menuItems = [];
+    if(this.viewType === "Function View") {
+      // enable remove instance and remove connection in Function View
+      console.log("config as function view");
+      
+      options.menuItems.push(removeConnection);
+      options.menuItems.push(removeInstance);
+    } else if (this.viewType === "Component View") {
+      console.log("config as component view");
+      // enable remove port in Component View
+      options.menuItems.push(removePort);
     }
+
     (this.cy! as any).contextMenus( options );
   }
 
