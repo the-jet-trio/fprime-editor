@@ -810,7 +810,7 @@ export default class FPPModelManager {
                   i.name = attrs["NewName"];
                   i.properties["type"] = attrs["Type"];
                   i.properties["namespace"] = attrs["NameSpace"];
-                  i.properties["base_id_window"] = attrs["BaseID"];
+                  i.base_id = attrs["BaseID"];
                   console.log("After", i);
               }
           });
@@ -822,6 +822,15 @@ export default class FPPModelManager {
                   i.name = attrs["Name"];
                   i.kind = attrs["Kind"];
                   i.namespace = attrs["NameSpace"];
+                  // If the name of a component gets changed, all its instances type should
+                  // get changed too.
+                  if (attrs["OldName"] !== attrs["Name"]){
+                      this.instances.forEach((j) =>{
+                         if (j.properties["type"] === attrs["OldName"]){
+                             j.properties["type"] = attrs["Name"];
+                         }
+                      });
+                  }
                   console.log("after", i);
               }
           });
@@ -833,7 +842,6 @@ export default class FPPModelManager {
                   if (i.name === attrs["CompName"]) {
                       let ports = i.ports;
                       console.log("Before Ports",i,ports);
-                      console.log("type",typeof (ports));
                       for (let p in ports) {
                           if (ports[p].name  === attrs["OldName"]) {
                               console.log("before", ports[p]);
@@ -888,21 +896,26 @@ export default class FPPModelManager {
    */
   public writeToFile(folderPath: string) {
         // this.generateText();
-        fs.readdir(folderPath, (err, files) => {
-            if (err) {
-                throw err;
-            }
-
-            for (var file of files) {
-                fs.unlink(path.join(folderPath, file), err => {
-                    if (err) {
-                        throw err;
-                    }
-                });
-            }
-        });
+        // fs.readdir(folderPath, (err, files) => {
+        //     if (err) {
+        //         throw err;
+        //     }
+        //
+        //     for (var file of files) {
+        //         fs.unlink(path.join(folderPath, file), err => {
+        //             if (err) {
+        //                 throw err;
+        //             }
+        //         });
+        //     }
+        // });
+        const rimraf = require("rimraf");
+        rimraf.sync(folderPath);
+        if (!fs.existsSync(folderPath)) {
+            fs.mkdirSync(folderPath);
+        }
         for (var key in this.text) {
-            var fileName = folderPath + "\\" + key;
+            var fileName = path.join(folderPath, key);
             mkdirp(getDirName(fileName), function(dir_err: any) {
                 if (dir_err) {
                     throw dir_err;
@@ -928,7 +941,7 @@ export default class FPPModelManager {
 
         // TODO: Data Types INCLUDING fprime.fpp
         this.datatypes.forEach((e: IFPPDataType) => {
-            var dataTypePath: string = e.namespace + "\\DataType.fpp";
+            var dataTypePath: string = path.join(e.namespace, "DataType.fpp");
             if (!(dataTypePath in this.text)) {
                 this.text[dataTypePath] = "namespace " + e.namespace + "\n\n";
             }
@@ -936,7 +949,7 @@ export default class FPPModelManager {
         });
 
         this.enumtypes.forEach((e: IFPPEnumType) => {
-            var enumTypePath: string = e.namespace + "\\DataType.fpp";
+            var enumTypePath: string = path.join(e.namespace, "DataType.fpp");
             if (!(enumTypePath in this.text)) {
                 this.text[enumTypePath] = "namespace " + e.namespace + "\n\n";
             }
@@ -953,7 +966,7 @@ export default class FPPModelManager {
             // if (!fs.existsSync(portTypePath)) {
             //     fs.mkdirSync(portTypePath);
             // }
-            portTypePath += "\\" + e.name + ".fpp";
+            portTypePath = path.join(portTypePath, e.name + ".fpp");
 
             // If text does not exist, create an empty one
             if (!(portTypePath in this.text)) {
@@ -994,7 +1007,7 @@ export default class FPPModelManager {
             if (!fs.existsSync(componentPath)) {
                 fs.mkdirSync(componentPath);
             }
-            componentPath += "\\" + componentName + ".fpp";
+            componentPath = path.join(componentPath, componentName + ".fpp");
 
             // If text does not exist, create an empty one
             if (!(componentPath in this.text)) {
@@ -1119,7 +1132,7 @@ export default class FPPModelManager {
             // if (!fs.existsSync(instancePath)) {
             //     fs.mkdirSync(instancePath);
             // }
-            instancePath += "\\System.fpp";
+            instancePath = path.join(instancePath, "System.fpp");
 
             // If text does not exist, create an empty one
             if (!(instancePath in this.text)) {

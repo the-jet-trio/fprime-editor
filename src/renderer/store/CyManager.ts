@@ -651,12 +651,11 @@ class CyManager {
     })
         .map((node) => {
         node.on("click", () => {
-          console.log(node.data());
           const name = node.data().id.split("_")[1];
           const info = node.data("properties");
           const type = info.type;
           const namespace = info.namespace;
-          const baseid = info.base_id_window;
+          const baseid = info.base_id;
           this.cyShowComponentInfo(type, namespace, name, baseid);
           });
       });
@@ -673,6 +672,7 @@ class CyManager {
     })
         .map((node) => {
         node.on("click", () => {
+          console.log(node.data());
           const label = node.data().label;
           const namespace = label.split(".")[0];
           const name = label.split(".")[1];
@@ -692,6 +692,7 @@ class CyManager {
     })
         .map((node) => {
           node.on("click", () => {
+
             const info = node.data("properties");
             let name = info.name;
             if (!name){

@@ -13,7 +13,6 @@
             <v-combobox
                     v-model="compAttributes.Type"
                     :items="compAttributes.Types"
-
                     label="Type"
             ></v-combobox>
             <v-text-field
@@ -124,7 +123,7 @@
                     Type : "",
                     Types:[""],
                     Kind: "",
-                    Kinds: [""],
+                    Kinds: ["async,sync,guarded"],
                 },
                 portAttributes: {
                     Name:"",
@@ -137,7 +136,7 @@
                     Type : "",
                     Types:[""],
                     Kind: "",
-                    Kinds: [""],
+                    Kinds: ["async,sync,guarded"],
                 },
                 compPanel: {
                     display: 'none',
@@ -160,6 +159,12 @@
             CyManager.cyShowComponentInfo = this.showComponentInfo;
             CyManager.cyShowComponentView = this.showComponentView;
             CyManager.cyShowPortInfo = this.showPortInfo;
+            this.$root.$on("addType", (name: string) => {
+                this.addType(name);
+            });
+            this.$root.$on("removeType", (name: string) => {
+                this.removeType(name);
+            });
         },
         // Get all components in the current model and push them to the items of the selector.
         computed:{
@@ -184,7 +189,9 @@
                     for (let attr in this.$data[ele]){
                         const attrType = typeof(this.$data[ele][attr]);
                         if (attrType === "object"){
-                            this.$data[ele][attr] = [""];
+                            if (attr !== "Directions" && attr !== "Roles" && attr !== "Kinds"){
+                                this.$data[ele][attr] = [""];
+                            }
                         }
                         if (attrType === "string"){
                             this.$data[ele][attr] = "";
@@ -353,9 +360,11 @@
                         alert("Name attribute cannot contain a space!");
                         return;
                     }
+
                     const non_existed = view.UpdateViewList(oldName,newName);
                     if(non_existed) {
                         const result = fprime.viewManager.updateAttributes(ViewType.Component, {
+
                             ["NameSpace"]: this.compViews.NameSpace,
                             ["Name"]: newName,
                             ["Kind"]: this.compViews.Kind,
@@ -364,12 +373,15 @@
                         if (result){
                             const idx = this.compAttributes.Types.indexOf(oldName);
                             if (idx !== -1){
-                                this.compAttributes.Types[idx] = newName;
+                                this.compAttributes.Types.splice(idx,1);
+                                this.compAttributes.Types.push(newName);
                             }
                             this.$route.params.viewName = newName;
                             if (newName === oldName) {
                                 this.$root.$emit("updateContent", newName);
                             }
+                            // If the name of a component gets changed, all its instances type should
+                            // get changed too.
                             else{
                                 this.$root.$emit("updateCytoscape", newName);
                             }
@@ -476,13 +488,22 @@
                     this.oldPortAttributes.Name = newName;
                 }
             },
-            nameCheck(compName : string){
+            nameCheck(compName: string){
                 for (let i = 0; i <compName.length; ++i){
                     if(compName[i] === " "){
                         return false;
                     }
                 }
                 return true;
+            },
+            // Add a new type to Type selections of an instance.
+            addType(type: string){
+                this.compAttributes.Types.push(type);
+            },
+            // Remove an existing type of the Type selections of an instance.
+            removeType(type: string){
+                const idx = this.compAttributes.Types.indexOf(type);
+                this.compAttributes.Types.splice(idx,1);
             },
         },
     })
