@@ -869,7 +869,7 @@ export default class FPPModelManager {
             fs.mkdirSync(folderPath);
         }
         for (var key in this.text) {
-            var fileName = folderPath + "\\" + key;
+            var fileName = path.join(folderPath, key);
             mkdirp(getDirName(fileName), function(dir_err: any) {
                 if (dir_err) {
                     throw dir_err;
@@ -895,7 +895,7 @@ export default class FPPModelManager {
 
         // TODO: Data Types INCLUDING fprime.fpp
         this.datatypes.forEach((e: IFPPDataType) => {
-            var dataTypePath: string = e.namespace + "\\DataType.fpp";
+            var dataTypePath: string = path.join(e.namespace, "DataType.fpp");
             if (!(dataTypePath in this.text)) {
                 this.text[dataTypePath] = "namespace " + e.namespace + "\n\n";
             }
@@ -903,7 +903,7 @@ export default class FPPModelManager {
         });
 
         this.enumtypes.forEach((e: IFPPEnumType) => {
-            var enumTypePath: string = e.namespace + "\\DataType.fpp";
+            var enumTypePath: string = path.join(e.namespace, "DataType.fpp");
             if (!(enumTypePath in this.text)) {
                 this.text[enumTypePath] = "namespace " + e.namespace + "\n\n";
             }
@@ -920,7 +920,7 @@ export default class FPPModelManager {
             // if (!fs.existsSync(portTypePath)) {
             //     fs.mkdirSync(portTypePath);
             // }
-            portTypePath += "\\" + e.name + ".fpp";
+            portTypePath = path.join(portTypePath, e.name + ".fpp");
 
             // If text does not exist, create an empty one
             if (!(portTypePath in this.text)) {
@@ -961,7 +961,7 @@ export default class FPPModelManager {
             if (!fs.existsSync(componentPath)) {
                 fs.mkdirSync(componentPath);
             }
-            componentPath += "\\" + componentName + ".fpp";
+            componentPath = path.join(componentPath, componentName + ".fpp");
 
             // If text does not exist, create an empty one
             if (!(componentPath in this.text)) {
@@ -1086,7 +1086,7 @@ export default class FPPModelManager {
             // if (!fs.existsSync(instancePath)) {
             //     fs.mkdirSync(instancePath);
             // }
-            instancePath += "\\System.fpp";
+            instancePath = path.join(instancePath, "System.fpp");
 
             // If text does not exist, create an empty one
             if (!(instancePath in this.text)) {
