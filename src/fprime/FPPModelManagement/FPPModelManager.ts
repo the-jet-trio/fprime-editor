@@ -774,7 +774,7 @@ export default class FPPModelManager {
                   i.name = attrs["NewName"];
                   i.properties["type"] = attrs["Type"];
                   i.properties["namespace"] = attrs["NameSpace"];
-                  i.properties["base_id_window"] = attrs["BaseID"];
+                  i.base_id = attrs["BaseID"];
                   console.log("After", i);
               }
           });
@@ -797,7 +797,6 @@ export default class FPPModelManager {
                   if (i.name === attrs["CompName"]) {
                       let ports = i.ports;
                       console.log("Before Ports",i,ports);
-                      console.log("type",typeof (ports));
                       for (let p in ports) {
                           if (ports[p].name  === attrs["OldName"]) {
                               console.log("before", ports[p]);

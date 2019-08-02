@@ -120,12 +120,14 @@ export default class ViewDescriptor {
       // The mapping relation from IFPPInstance to INode is:
       //  id <- name by changing . to _
       //  modelID <- name
+      let pro = i.properties;
+      pro['base_id'] = i.base_id;
       const insID = escapeDot(i.name);
       view.graph.nodes[insID] = {
         id: insID,
         modelID: i.name,
         type: NodeType.Instance,
-        properties: i.properties,
+        properties: pro,
       };
 
       // Covert all the ports to a node in the graph
