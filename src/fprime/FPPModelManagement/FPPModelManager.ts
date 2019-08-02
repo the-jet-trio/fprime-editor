@@ -870,7 +870,7 @@ export default class FPPModelManager {
             fs.mkdirSync(folderPath);
         }
         for (var key in this.text) {
-            var fileName = folderPath + "\\" + key;
+            var fileName = path.join(folderPath, key);
             mkdirp(getDirName(fileName), function(dir_err: any) {
                 if (dir_err) {
                     throw dir_err;

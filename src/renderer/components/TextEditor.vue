@@ -9,6 +9,7 @@
 
         <!-- or to manually control the datasynchronization（或者手动控制数据流，需要像这样手动监听changed事件） -->
         <codemirror ref="myCm"
+                    class="myCm"
                     :value="code"
                     :options="cmOptions"
                     @ready="onCmReady"
@@ -153,3 +154,10 @@
         }
     })
 </script>
+
+<style>
+    .myCm {
+        border: 1px solid #eee;
+        height: auto;
+    }
+</style>

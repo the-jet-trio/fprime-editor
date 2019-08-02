@@ -308,17 +308,6 @@
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                 }
-                // const path = require('path');
-                // fs.readdir(dir, (err, files) => {
-                //     if (err) throw err;
-                //
-                //     for (const file of files) {
-                //         fs.unlink(path.join(dir, file), err => {
-                //             if (err) throw err;
-                //         });
-                //     }
-                // });
-                // Write text to folder and load it
                 fprime.viewManager.writeToFile("./~tmp");
                 this.processBar = true;
                 await fprime.viewManager.build(dir);
@@ -327,7 +316,7 @@
                 this.$router.replace("/");
                 this.showOutputPanel();
                 // Delete ~tmp folder
-                rimraf(dir, function () {});
+                // rimraf(dir, function () {});
                 (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
             },
             /**
