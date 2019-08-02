@@ -786,6 +786,15 @@ export default class FPPModelManager {
                   i.name = attrs["Name"];
                   i.kind = attrs["Kind"];
                   i.namespace = attrs["NameSpace"];
+                  // If the name of a component gets changed, all its instances type should
+                  // get changed too.
+                  if (attrs["OldName"] !== attrs["Name"]){
+                      this.instances.forEach((j) =>{
+                         if (j.properties["type"] === attrs["OldName"]){
+                             j.properties["type"] = attrs["Name"];
+                         }
+                      });
+                  }
                   console.log("after", i);
               }
           });

@@ -299,9 +299,11 @@
                     compBaseID = "-1";
                 }
                 this.compAttributes.BaseID = compBaseID;
+                console.log("hiiiii",this.compAttributes.Types,compType);
                 // The type of the instance is newly added and currently not in the this.compAttributes.Types
                 if (this.compAttributes.Types.indexOf(compType) === -1){
                     this.compAttributes.Types.push(compType);
+                    console.log("hi",this.compAttributes.Types);
                     // const idx = this.usedNames.indexOf(compType);
                     // if (idx === -1) {
                     //     this.compAttributes.Types.push(compType);
@@ -355,9 +357,11 @@
                         alert("Name attribute cannot contain a space!");
                         return;
                     }
+
                     const non_existed = view.UpdateViewList(oldName,newName);
                     if(non_existed) {
                         const result = fprime.viewManager.updateAttributes(ViewType.Component, {
+
                             ["NameSpace"]: this.compViews.NameSpace,
                             ["Name"]: newName,
                             ["Kind"]: this.compViews.Kind,
@@ -372,6 +376,8 @@
                             if (newName === oldName) {
                                 this.$root.$emit("updateContent", newName);
                             }
+                            // If the name of a component gets changed, all its instances type should
+                            // get changed too.
                             else{
                                 this.$root.$emit("updateCytoscape", newName);
                             }
