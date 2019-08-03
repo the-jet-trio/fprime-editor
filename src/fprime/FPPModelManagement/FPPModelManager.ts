@@ -319,12 +319,14 @@ export default class FPPModelManager {
      * addNewDataType
      */
     public addNewDataType(defaultName: string): string {
+        const defaultNameSpace: string = "Fw";
         var item: IFPPDataType = {
             name: defaultName,
-            namespace: "Fw",
+            namespace: defaultNameSpace,
         };
         this.datatypes.push(item);
         this.generateText();
+
         console.dir(this.text);
         fprime.viewManager.updateEditor(this.text);
         return item.namespace + "." + item.name;
@@ -1037,10 +1039,11 @@ export default class FPPModelManager {
             // write the instance name first
             instanceContent[instanceNameSpace] += tab + "instance " + instanceName + ":" + instanceType + " {\n";
             // write base_id
+            console.dir(e);
             instanceContent[instanceNameSpace] += tab + tab + "base_id = " + e.base_id + "\n";
             // write each instance's properties
             for (var key in e.properties) {
-                if (key === "type" || key === "namespace") {
+                if (key === "type" || key === "namespace" || key === "base_id") {
                     continue;
                 }
                 if (!e.properties[key]) {  // If value is null

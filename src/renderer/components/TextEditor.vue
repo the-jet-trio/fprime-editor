@@ -72,6 +72,7 @@
             onCmCodeChange(newCode) {
                 this.code = newCode
                 this.files[this.fileName] = newCode;  // Update code stored in text editor
+                console.dir(this.files[this.fileName]);
             },
             onCursorActivity(cm) {
             },
@@ -87,6 +88,7 @@
             // Return text files
             returnFiles() {
                 return this.files;
+                console.dir(this.files);
             },
             // Show corresponding text to the selected element
             showText(params) {
