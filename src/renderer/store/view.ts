@@ -152,6 +152,17 @@ export default {
         return encodeURI("/view/" + item.type + "/" + item.name + "/edit");
     },
 
+    refreshOpened() {
+        let all_views = Object.keys(views)
+                        .map((key) => views[key])
+                        .reduce((x, y) => x.concat(y));
+        opened.forEach(i => {
+            if (!all_views.some((ele) => ele.name === i.name)) {
+               this.CloseViewByName(i.name); 
+            }
+        });
+    },
+
     /**
      * Add a new item to the view list.
      * When the user wants to add a new item to the list,
