@@ -6,8 +6,6 @@ import * as path from "path";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
 import fprime from "fprime";
-import { originModel } from "./FPPModelStore";
-import { proxyModel } from "./FPPModelObserver";
 /**
  *
  */
@@ -107,6 +105,12 @@ export interface IFPPModel {
 export default class FPPModelManager {
     private text: { [fileName: string]: string } = {};
     private dataImporter: DataImporter = new DataImporter();
+    private datatypes: IFPPDataType[] = [];
+    private enumtypes: IFPPEnumType[] = [];
+    private instances: IFPPInstance[] = [];
+    private topologies: IFPPTopology[] = [];
+    private components: IFPPComponent[] = [];
+    private porttypes: IFPPPortType[] = [];
     private keywords: string[] = ["base_id", "name"];
     private defaultNamespace: string = "Ref";
 
@@ -131,25 +135,25 @@ export default class FPPModelManager {
         }
 
         data.forEach((i: any) => {
-            originModel.datatypes = originModel.datatypes.concat(this.generateDataType(
+            this.datatypes = this.datatypes.concat(this.generateDataType(
                 i.namespace.data_type,
             ));
         });
 
         data.forEach((i: any) => {
-            originModel.enumtypes = originModel.enumtypes.concat(this.generateEnumType(
+            this.enumtypes = this.enumtypes.concat(this.generateEnumType(
                 i.namespace.enum,
             ));
         });
 
         data.forEach((i: any) => {
-            originModel.porttypes = originModel.porttypes.concat(this.generatePortType(
+            this.porttypes = this.porttypes.concat(this.generatePortType(
                 i.namespace.port_type,
             ));
         });
 
         data.forEach((i: any) => {
-            originModel.components = originModel.components.concat(this.generateComponents(
+            this.components = this.components.concat(this.generateComponents(
                 i.namespace.component,
             ));
         });
@@ -159,7 +163,7 @@ export default class FPPModelManager {
                 return;
             }
 
-            originModel.instances = originModel.instances.concat(this.generateInstances(
+            this.instances = this.instances.concat(this.generateInstances(
                 i.namespace.$.name,
                 i.namespace.system[0].instance,
             ));
@@ -169,11 +173,11 @@ export default class FPPModelManager {
             if (i.namespace.system == null || i.namespace.system.length === 0) {
                 return;
             }
-            originModel.topologies = originModel.topologies.concat(this.generateTopologies(
+
+            this.topologies = this.topologies.concat(this.generateTopologies(
                 i.namespace.$.name,
                 i.namespace.system[0].topology,
             ));
-            
         });
 
         // Return the view list of the model
@@ -185,27 +189,27 @@ export default class FPPModelManager {
             datatypes: [],
         };
 
-        originModel.datatypes.forEach((e: IFPPDataType) => {
+        this.datatypes.forEach((e: IFPPDataType) => {
             viewlist.datatypes.push(e.namespace + "." + e.name);
         });
 
-        originModel.enumtypes.forEach((e: IFPPDataType) => {
+        this.enumtypes.forEach((e: IFPPDataType) => {
             viewlist.datatypes.push(e.namespace + "." + e.name);
         });
 
-        originModel.topologies.forEach((e: IFPPTopology) => {
+        this.topologies.forEach((e: IFPPTopology) => {
             viewlist.topologies.push(e.name);
         });
 
-        originModel.instances.forEach((e: IFPPInstance) => {
+        this.instances.forEach((e: IFPPInstance) => {
             viewlist.instances.push(e.name);
         });
 
-        originModel.components.forEach((e: IFPPComponent) => {
+        this.components.forEach((e: IFPPComponent) => {
             viewlist.components.push(e.name);
         });
 
-        originModel.porttypes.forEach((e: IFPPPortType) => {
+        this.porttypes.forEach((e: IFPPPortType) => {
             viewlist.porttypes.push(e.namespace + "." + e.name);
         });
 
@@ -227,7 +231,7 @@ export default class FPPModelManager {
     public query(viewName: string, viewType: string): any {
         switch (viewType) {
             case ViewType.Function: {
-                var cons: IFPPConnection[] = originModel.topologies.filter(
+                var cons: IFPPConnection[] = this.topologies.filter(
                     (i) => i.name === viewName)[0].connections;
                 let ins: IFPPInstance[] = [];
                 cons.forEach((c) => {
@@ -249,7 +253,7 @@ export default class FPPModelManager {
             case ViewType.Component: {
                 var ins: IFPPInstance[] = [];
                 var cons: IFPPConnection[] = [];
-                var comps = originModel.components.filter((i) => i.name === viewName);
+                var comps = this.components.filter((i) => i.name === viewName);
                 return {
                     instances: ins,
                     connections: cons,
@@ -259,9 +263,9 @@ export default class FPPModelManager {
             case ViewType.InstanceCentric: {
                 let ins: IFPPInstance[] = [];
                 var cons: IFPPConnection[] = [];
-                var root = originModel.instances.filter((i) => i.name === viewName)[0];
+                var root = this.instances.filter((i) => i.name === viewName)[0];
 
-                originModel.topologies.forEach((t) => {
+                this.topologies.forEach((t) => {
                     t.connections.forEach((c) => {
                         if (c.from.inst === root && c.to) {
                             ins.push(Object.assign({}, c.to.inst));
@@ -288,17 +292,17 @@ export default class FPPModelManager {
     }
 
     public getComponents() {
-        return originModel.components;
+        return this.components;
     }
-    public getPorts(): Set<IFPPPort> {
-        let ret = new Set<IFPPPort>();
-        originModel.instances.forEach((i) => {
+    public getPorts() {
+        let ret = new Set();
+        this.instances.forEach((i) => {
             const ports = i.ports;
            for (const p in ports) {
                ret.add(ports[p]);
            }
         });
-        originModel.components.forEach((i) =>{
+        this.components.forEach((i) =>{
             const comPorts = i.ports;
             for (const p of comPorts) {
                 ret.add(p);
@@ -319,7 +323,7 @@ export default class FPPModelManager {
             name: defaultName,
             namespace: "Fw",
         };
-        proxyModel.datatypes.push(item);
+        this.datatypes.push(item);
         this.generateText();
         console.dir(this.text);
         fprime.viewManager.updateEditor(this.text);
@@ -339,7 +343,7 @@ export default class FPPModelManager {
             namespace: "Fw",
             arg: {},
         };
-        proxyModel.porttypes.push(porttype);
+        this.porttypes.push(porttype);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return porttype.namespace + "." + porttype.name;
@@ -363,7 +367,7 @@ export default class FPPModelManager {
             ports: [],
             kind: "Active",
         };
-        proxyModel.components.push(item);
+        this.components.push(item);
         // TODO: (async) update the model data
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
@@ -392,7 +396,7 @@ export default class FPPModelManager {
 
         var namespace = type[0];
         var name = type[1];
-        proxyModel.components.forEach((c: IFPPComponent) => {
+        this.components.forEach((c: IFPPComponent) => {
             if (c.name === namespace + "." + name && c.namespace === namespace) {
                 c.ports.forEach((p: IFPPPort) => {
                     ps[p.name] = p;
@@ -411,7 +415,7 @@ export default class FPPModelManager {
             used_ports: {}, // no port is connected yet, so the set is empty
         };
 
-        proxyModel.instances.push(item);
+        this.instances.push(item);
         // TODO: (async) update the model data
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
@@ -430,11 +434,11 @@ export default class FPPModelManager {
             name: this.defaultNamespace + "." + defaultName,
             connections: [],
         };
-        proxyModel.topologies.push(item);
+        this.topologies.push(item);
         // TODO: (async) update the model data
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
-        console.dir(proxyModel.topologies);
+        console.dir(this.topologies);
         console.dir(this.text);
         return item.name;
     }
@@ -444,7 +448,7 @@ export default class FPPModelManager {
      * @param name item to delete
      */
     public deleteDataType(name: string): boolean {
-        proxyModel.datatypes = proxyModel.datatypes.filter((i) => (i.namespace + "." + i.name) !== name);
+        this.datatypes = this.datatypes.filter((i) => (i.namespace + "." + i.name) !== name);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
@@ -455,7 +459,7 @@ export default class FPPModelManager {
      * @param name item to delete
      */
     public deletePortType(name: string): boolean {
-        proxyModel.porttypes = proxyModel.porttypes.filter((i) => (i.namespace + "." + i.name) !== name);
+        this.porttypes = this.porttypes.filter((i) => (i.namespace + "." + i.name) !== name);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
@@ -467,7 +471,7 @@ export default class FPPModelManager {
      * @param name name of the component to delete
      */
     public deleteComponent(name: string): boolean {
-        proxyModel.components = proxyModel.components.filter((i) => i.name !== name);
+        this.components = this.components.filter((i) => i.name !== name);
         this.generateText();
         console.dir(this.text);
         fprime.viewManager.updateEditor(this.text);
@@ -479,14 +483,14 @@ export default class FPPModelManager {
      * @param name item to delete
      */
     public deleteInstance(name: string): boolean {
-        proxyModel.instances = proxyModel.instances.filter((i) => i.name !== name);
+        this.instances = this.instances.filter((i) => i.name !== name);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
     public deleteTopology(name: string): boolean {
-        proxyModel.topologies = proxyModel.topologies.filter((i) => i.name !== name);
+        this.topologies = this.topologies.filter((i) => i.name !== name);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
@@ -498,7 +502,7 @@ export default class FPPModelManager {
      * @param newname the new name of the topology
      */
     public renameTopology(previous: string, newname: string) {
-        proxyModel.topologies = proxyModel.topologies.map(i => {
+        this.topologies = this.topologies.map(i => {
             if(i.name === previous) {
                 return {
                     name: newname,
@@ -513,10 +517,10 @@ export default class FPPModelManager {
     }
 
     public addPortToComponent(portname: string, compname: string): boolean {
-        var porttype = proxyModel.porttypes.find((i) => {
+        var porttype = this.porttypes.find((i) => {
             return (i.namespace + "." + i.name) === portname;
         });
-        var comp = proxyModel.components.find((i) => i.name === compname);
+        var comp = this.components.find((i) => i.name === compname);
         if (porttype == undefined || comp == undefined) {
             return false;
         }
@@ -553,12 +557,12 @@ export default class FPPModelManager {
     public addInstanceToTopo(instname: string, toponame: string): boolean {
         // console.log("add instance to topo: " + instname + " " + toponame);
 
-        const instance = proxyModel.instances.find((i) => i.name === instname);
+        const instance = this.instances.find((i) => i.name === instname);
         if (instance === undefined) { return false; }
         // console.log("find instance");
         // console.log(instance);
 
-        var topology = proxyModel.topologies.find((i) => i.name === toponame);
+        var topology = this.topologies.find((i) => i.name === toponame);
         if (topology == undefined) {
             return false;
         }
@@ -584,17 +588,17 @@ export default class FPPModelManager {
             console.log("can't drag connection on one instance");
             return false;
         }
-        var topology = proxyModel.topologies.find((i) => i.name === toponame);
+        var topology = this.topologies.find((i) => i.name === toponame);
         if (topology == undefined) {
             return false;
         }
 
-        var source = proxyModel.instances.find((i) => i.name === from_inst);
+        var source = this.instances.find((i) => i.name === from_inst);
         if (source == undefined) {
             return false;
         }
 
-        var target = proxyModel.instances.find((i) => i.name === to_inst);
+        var target = this.instances.find((i) => i.name === to_inst);
         if (target == undefined) {
             return false;
         }
@@ -639,17 +643,17 @@ export default class FPPModelManager {
         if (from_inst === to_inst) {
             return false;
         }
-        var topology = proxyModel.topologies.find((i) => i.name === toponame);
+        var topology = this.topologies.find((i) => i.name === toponame);
         if (topology == undefined) {
             return false;
         }
 
-        var source = proxyModel.instances.find((i) => i.name === from_inst);
+        var source = this.instances.find((i) => i.name === from_inst);
         if (source == undefined) {
             return false;
         }
 
-        var target = proxyModel.instances.find((i) => i.name === to_inst);
+        var target = this.instances.find((i) => i.name === to_inst);
         if (target == undefined) {
             return false;
         }
@@ -697,12 +701,12 @@ export default class FPPModelManager {
 
     public removeInstance(toponame: string, instname: string): boolean {
         console.log("rm instance from the topo");
-        var topology = proxyModel.topologies.find((i) => i.name === toponame);
+        var topology = this.topologies.find((i) => i.name === toponame);
         if (topology == undefined) {
             return false;
         }
 
-        var inst = proxyModel.instances.find((i) => i.name === instname);
+        var inst = this.instances.find((i) => i.name === instname);
         if (inst == undefined) {
             return false;
         }
@@ -749,7 +753,7 @@ export default class FPPModelManager {
      * removePort
      */
     public removePort(compname: string, portname: string): boolean{
-        const component = proxyModel.components.find((i) => i.name === compname);
+        const component = this.components.find((i) => i.name === compname);
         if (component === undefined) { return false; }
         component.ports = component.ports.filter((p => p.name !== portname));
 
@@ -764,7 +768,7 @@ export default class FPPModelManager {
      */
   public updateAttributes(type: string, attrs: {[attrname: string]: string}): boolean {
       if (type === ViewType.InstanceCentric) {
-          proxyModel.instances.forEach((i) => {
+          this.instances.forEach((i) => {
               if (i.name === attrs["OldName"]) {
                   console.log("Before", i);
                   i.name = attrs["NewName"];
@@ -776,7 +780,7 @@ export default class FPPModelManager {
           });
       }
       if (type === ViewType.Component){
-          proxyModel.components.forEach((i) => {
+          this.components.forEach((i) => {
               if (i.name === attrs["OldName"]){
                   console.log("Before", i);
                   i.name = attrs["Name"];
@@ -789,7 +793,7 @@ export default class FPPModelManager {
       if (type === "Port") {
           if (attrs["ViewType"] === ViewType.InstanceCentric) {
               console.log("okkk",attrs["CompName"],attrs["OldName"]);
-              proxyModel.instances.forEach((i) => {
+              this.instances.forEach((i) => {
                   if (i.name === attrs["CompName"]) {
                       let ports = i.ports;
                       console.log("Before Ports",i,ports);
@@ -814,7 +818,7 @@ export default class FPPModelManager {
               });
           }
           else if (attrs["ViewType"] === ViewType.Component){
-              proxyModel.components.forEach((i) => {
+              this.components.forEach((i) => {
                   if (i.name === attrs["CompName"]){
                       let ports = i.ports;
                       console.log("type",typeof (ports));
@@ -886,7 +890,7 @@ export default class FPPModelManager {
         var tab: string = "    ";
 
         // TODO: Data Types INCLUDING fprime.fpp
-        proxyModel.datatypes.forEach((e: IFPPDataType) => {
+        this.datatypes.forEach((e: IFPPDataType) => {
             var dataTypePath: string = e.namespace + "\\DataType.fpp";
             if (!(dataTypePath in this.text)) {
                 this.text[dataTypePath] = "namespace " + e.namespace + "\n\n";
@@ -894,7 +898,7 @@ export default class FPPModelManager {
             this.text[dataTypePath] += "datatype " + e.name + "\n";
         });
 
-        proxyModel.enumtypes.forEach((e: IFPPEnumType) => {
+        this.enumtypes.forEach((e: IFPPEnumType) => {
             var enumTypePath: string = e.namespace + "\\DataType.fpp";
             if (!(enumTypePath in this.text)) {
                 this.text[enumTypePath] = "namespace " + e.namespace + "\n\n";
@@ -907,7 +911,7 @@ export default class FPPModelManager {
             this.text[enumTypePath] += "}\n\n";
         });
 
-        proxyModel.porttypes.forEach((e: IFPPPortType) => {
+        this.porttypes.forEach((e: IFPPPortType) => {
             let portTypePath: string = e.namespace;
             // if (!fs.existsSync(portTypePath)) {
             //     fs.mkdirSync(portTypePath);
@@ -945,7 +949,7 @@ export default class FPPModelManager {
         });
 
 
-        proxyModel.components.forEach((e: IFPPComponent) => {
+        this.components.forEach((e: IFPPComponent) => {
             let componentName = e.name;
             var i = componentName.indexOf(".");
             componentName = componentName.substring(i + 1);
@@ -1006,7 +1010,7 @@ export default class FPPModelManager {
         // key: namespace
         // value: content
         var instanceContent: { [key: string]: string; } = {};
-        proxyModel.instances.forEach((e: IFPPInstance) => {
+        this.instances.forEach((e: IFPPInstance) => {
             let instanceName: string = e.name;
             var i = instanceName.indexOf(".");
             var instanceNameSpace = instanceName.substring(0, i);
@@ -1038,7 +1042,7 @@ export default class FPPModelManager {
         // key: namespace
         // value: content
         var topologyContent: { [key: string]: string; } = {};
-        proxyModel.topologies.forEach((e: IFPPTopology) => {
+        this.topologies.forEach((e: IFPPTopology) => {
             let topologyName: string = e.name;
             var i = topologyName.indexOf(".");
             var topologyNameSpace = topologyName.substring(0, i);
@@ -1108,17 +1112,17 @@ export default class FPPModelManager {
     /**
      * Dummy function to update text editor according to the ModelManager.
      */
-    public updateEditor(_: any): void {
+    public updateEditor(text: any): void {
     }
 
     reset() {
-        originModel.datatypes = [];
-        originModel.porttypes = [];
-        originModel.instances = [];
-        originModel.topologies = [];
-        originModel.components = [];
-        originModel.datatypes = [];
-        originModel.enumtypes = [];
+        this.datatypes = [];
+        this.porttypes = [];
+        this.instances = [];
+        this.topologies = [];
+        this.components = [];
+        this.datatypes = [];
+        this.enumtypes = [];
         this.text = {};
     }
 
@@ -1245,7 +1249,7 @@ export default class FPPModelManager {
 
             var namespace = type[0];
             var name = type[1];
-            originModel.components.forEach((c: IFPPComponent) => {
+            this.components.forEach((c: IFPPComponent) => {
                 if (c.name === namespace + "." + name && c.namespace === namespace) {
                     c.ports.forEach((p: IFPPPort) => {
                         ps[p.name] = p;
@@ -1274,9 +1278,9 @@ export default class FPPModelManager {
         topologies.forEach((ele: any) => {
             var cons: IFPPConnection[] = [];
             ele.connection.forEach((con: any) => {
-                var source = originModel.instances.filter(
+                var source = this.instances.filter(
                     (i) => i.name === ns + "." + con.source[0].$.instance)[0];
-                var target = originModel.instances.filter(
+                var target = this.instances.filter(
                     (i) => i.name === ns + "." + con.target[0].$.instance)[0];
 
 
@@ -1311,7 +1315,7 @@ export default class FPPModelManager {
         var prop: string[] = ins.properties.type.split(".");
         var name: string = prop[1];
         var namespace: string = prop[0];
-        var comp = originModel.components.filter(
+        var comp = this.components.filter(
             (c) => c.name === namespace + "." + name && c.namespace === namespace,
         )[0];
         return comp.ports;
