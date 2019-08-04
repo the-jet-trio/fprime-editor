@@ -5,10 +5,7 @@ import ConfigManager from "../ConfigManagement/ConfigManager";
 import LayoutGenerator from "./LayoutGenerator";
 import AnalyzerManager from "../StyleManagement/AnalyzerManager";
 import { IStyle } from "../DataImport/StyleConverter";
-import CyManager from "@/store/CyManager";
-import {IFPPComponent} from "../FPPModelManagement/FPPModelManager";
-import {IFPPPort} from "../FPPModelManagement/FPPModelManager";
-import view from "@/store/view";
+// import view from "@/store/view";
 
 export interface IViewList {
   [type: string]: IViewListItem[];
@@ -73,9 +70,6 @@ export default class ViewManager {
     [ViewType.PortType] : 1,
     [ViewType.DataType] : 1,
   }
-
-  private comps: IFPPComponent[] = [];
-  private ports = new Set();
 
   public filterPorts = false;
 
@@ -158,8 +152,8 @@ export default class ViewManager {
           this.styleManager.loadDefaultStyles(
               this.configManager.Config.DefaultStyleFilePath);
 
-          view.updateEditor({});
-          view.resetInfoPanel();
+          // view.updateEditor({});
+          // view.resetInfoPanel();
       } catch (err) {
           this.appendOutput(err);
       }
@@ -199,8 +193,6 @@ export default class ViewManager {
       // Load the FPP model
       const viewlist = await this.modelManager.loadModel(
         this.configManager.Config, this);
-      this.comps = this.modelManager.getComponents();
-      this.ports = this.modelManager.getPorts();
       this.generateViewList(viewlist);
     } catch (err) {
       this.appendOutput(err);
@@ -518,10 +510,10 @@ export default class ViewManager {
     return json;
   }
   public compInfo(){
-    view.compInfo();
+    // view.compInfo();
   }
   public portInfo(){
-    view.portInfo();
+    // view.portInfo();
   }
 
   /**
@@ -678,8 +670,8 @@ export default class ViewManager {
   }
 
 
-  public updateEditor(text: any) {
-      view.updateEditor(text);
+  public updateEditor(_: any) {
+      // view.updateEditor(text);
   }
 
   /**
@@ -692,7 +684,7 @@ export default class ViewManager {
       console.log("has the view " + view_name);
       return true;
     }
-    view.refreshOpened();
+    // view.refreshOpened();
     return false;
   }
 

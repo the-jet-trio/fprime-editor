@@ -218,7 +218,7 @@ export default {
         fprime.viewManager.applyText(files);
     },
 
-    updateEditor(text: any) {
+    updateEditor(_: any) {
 
     },
     compInfo(){

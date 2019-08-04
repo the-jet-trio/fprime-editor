@@ -37,10 +37,7 @@
     import 'codemirror/mode/javascript/javascript.js'
     // theme css
     import 'codemirror/theme/base16-dark.css'
-    // more codemirror resources
-    // import 'codemirror/some-resource...'
     import view from "@/store/view";
-    import FPPModelManager from "../../fprime/FPPModelManagement/FPPModelManager";
     import Vue from "vue";
     export default Vue.extend({
         name: "text-editor",

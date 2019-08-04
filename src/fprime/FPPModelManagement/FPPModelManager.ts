@@ -1,11 +1,11 @@
 import IConfig from "../Common/Config";
 import DataImporter, {IOutput} from "../DataImport/DataImporter";
-import fs from "fs";
+import * as fs from "fs";
 import _ from "lodash";
 import * as path from "path";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
-import fprime from "fprime";
+// import fprime from "fprime";
 /**
  *
  */
@@ -206,11 +206,11 @@ export default class FPPModelManager {
 
         // Generate text
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         console.dir(this.undo_stack);
         // Notify the InfoPanel that it's ready to get the port and comp info.
-        fprime.viewManager.portInfo();
-        fprime.viewManager.compInfo();
+        // fprime.viewManager.portInfo();
+        // fprime.viewManager.compInfo();
         return viewlist;
     }
 
@@ -355,7 +355,7 @@ export default class FPPModelManager {
         this.generateText();
 
         console.dir(this.text);
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         console.dir(this.undo_stack);
         console.dir(this.undo_stack);
         return item.namespace + "." + item.name;
@@ -377,7 +377,7 @@ export default class FPPModelManager {
         };
         this.porttypes.push(porttype);
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return porttype.namespace + "." + porttype.name;
     }
 
@@ -403,7 +403,7 @@ export default class FPPModelManager {
         this.components.push(item);
         // TODO: (async) update the model data
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return item.name;
     }
 
@@ -452,7 +452,7 @@ export default class FPPModelManager {
         this.instances.push(item);
         // TODO: (async) update the model data
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         
         return item.name;
     }
@@ -473,7 +473,7 @@ export default class FPPModelManager {
         this.topologies.push(item);
         // TODO: (async) update the model data
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         console.dir(this.topologies);
         console.dir(this.text);
         return item.name;
@@ -487,7 +487,7 @@ export default class FPPModelManager {
         this.push_curr_state_to_stack(this.undo_stack);
         this.datatypes = this.datatypes.filter((i) => (i.namespace + "." + i.name) !== name);
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -499,7 +499,7 @@ export default class FPPModelManager {
         this.push_curr_state_to_stack(this.undo_stack);
         this.porttypes = this.porttypes.filter((i) => (i.namespace + "." + i.name) !== name);
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -513,7 +513,7 @@ export default class FPPModelManager {
         this.components = this.components.filter((i) => i.name !== name);
         this.generateText();
         console.dir(this.text);
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -525,7 +525,7 @@ export default class FPPModelManager {
         this.push_curr_state_to_stack(this.undo_stack);
         this.instances = this.instances.filter((i) => i.name !== name);
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -533,7 +533,7 @@ export default class FPPModelManager {
         this.push_curr_state_to_stack(this.undo_stack);
         this.topologies = this.topologies.filter((i) => i.name !== name);
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -555,7 +555,7 @@ export default class FPPModelManager {
             }
         });
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
     }
 
     public addPortToComponent(portname: string, compname: string): boolean {
@@ -598,7 +598,7 @@ export default class FPPModelManager {
         comp.ports.push(port);
         console.dir(comp);
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -639,7 +639,7 @@ export default class FPPModelManager {
         topology.connections.push(halfConnection);
 
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -693,7 +693,7 @@ export default class FPPModelManager {
         topology.connections.push(newConn);
 
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -757,7 +757,7 @@ export default class FPPModelManager {
         }
 
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -807,7 +807,7 @@ export default class FPPModelManager {
         });
 
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
@@ -821,7 +821,7 @@ export default class FPPModelManager {
 
         component.ports = component.ports.filter((p => p.name !== portname));
         this.generateText();
-        fprime.viewManager.updateEditor(this.text);
+        // fprime.viewManager.updateEditor(this.text);
         
         return true;
     }
@@ -914,7 +914,7 @@ export default class FPPModelManager {
       }
 
       this.generateText();
-      fprime.viewManager.updateEditor(this.text);
+    //   fprime.viewManager.updateEditor(this.text);
       return true;
   }
 
@@ -948,7 +948,7 @@ export default class FPPModelManager {
                     throw dir_err;
                 }
             });
-            fs.writeFile(fileName, this.text[key], (err) => {
+            fs.writeFile(fileName, this.text[key], (err: any) => {
                 if (err) {
                     throw err;
                 }
@@ -1190,7 +1190,7 @@ export default class FPPModelManager {
     /**
      * Dummy function to update text editor according to the ModelManager.
      */
-    public updateEditor(text: any): void {
+    public updateEditor(_: any): void {
     }
 
     /**
