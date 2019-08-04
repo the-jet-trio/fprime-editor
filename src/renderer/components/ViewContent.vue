@@ -64,6 +64,7 @@ export default Vue.extend({
       
       var render: IRenderJSON | null;
         render = fprime.viewManager.rerender(name, CyManager.getDescriptor());
+        console.log(render);
       if (render) {
         CyManager.startUpdate(this.viewName, render);
         CyManager.endUpdate();
