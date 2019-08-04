@@ -237,6 +237,10 @@ export default Vue.extend({
       if (menuitem === "add") {
         this.addNewItem(this.menu.clickedType);
       } else if (menuitem === "delete") {
+        // Remove the type of the Type selections of an instance if there is a component got deleted.
+        if (this.menu.clickedType === ViewType.Component){
+          this.$root.$emit("removeType", this.menu.clickedName);
+        }
         View.removeItem(this.menu.clickedName, this.menu.clickedType);
         // Remove tab
         this.$root.$emit("closeTab", this.menu.clickedName);
@@ -259,6 +263,7 @@ export default Vue.extend({
       var newitem: IViewListItem;
       if (compName && compName.length > 0) {
         newitem = View.addNewItem(itemType, compName);
+
       } else if (itemType === ViewType.InstanceCentric) {
         // open dialog
         this.instance_dialog.showDialog = true;
@@ -267,6 +272,10 @@ export default Vue.extend({
         newitem = View.addNewItem(itemType);
       }
       if (newitem) {
+        // Add a new type to Type selections of an instance.
+        if (itemType === ViewType.Component){
+          this.$root.$emit("addType", newitem.name);
+        }
         // open the tab
         View.LoadViewByName(newitem.name);
         const newRoute: string = View.GetViewRoute(newitem);

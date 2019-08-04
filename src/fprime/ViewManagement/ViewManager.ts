@@ -681,5 +681,27 @@ export default class ViewManager {
   public updateEditor(text: any) {
       view.updateEditor(text);
   }
+
+  /**
+   * UpdateViewList
+   */
+  public updateViewList(view_type: string, view_name: string): boolean {
+    this.generateViewList(this.modelManager.generateViewList());
+    if(this.viewList[view_type].find(i => i.name === view_name)) {
+      // has the view
+      console.log("has the view " + view_name);
+      return true;
+    }
+    view.refreshOpened();
+    return false;
+  }
+
+  public undo(): boolean {
+    return this.modelManager.undo()
+  }
+
+  public redo(): boolean {
+    return this.modelManager.redo();
+  }
 }
 

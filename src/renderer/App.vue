@@ -162,6 +162,7 @@
     import CyManager from "@/store/CyManager";
     import view from "@/store/view";
     import fs from "fs";
+    import * as path from "path";
 
     export default Vue.extend({
         name: "fprime-editor",
@@ -236,7 +237,7 @@
                     await fprime.viewManager.newProject(dirs[0]);
                     // Close all the opening views
                     view.CloseAll();
-                    this.$router.replace("/");
+                    this.$router.push("/");
                     // this.showOutputPanel();
                 }
             },
@@ -254,7 +255,7 @@
                     await fprime.viewManager.build(dirs[0]);
                     // Close all the opening views
                     view.CloseAll();
-                    this.$router.replace("/");
+                    this.$router.push("/");
                     this.showOutputPanel();
                     console.dir(this.$refs);
                     (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
@@ -298,36 +299,26 @@
                 // Apply text change
                 // (this.$refs.msg as Vue & { applyText: () => boolean }).applyText(); // Trigger text editor to write text to Modelmanager
                 const files = (this.$refs.msg as Vue & { returnFiles: () => any }).returnFiles(); // Get text files from text editor
-                console.dir(files["Ref\\System.fpp"]);
+                // console.dir(files["Ref\\System.fpp"]);
+                console.dir(files);
                 fprime.viewManager.applyText(files); // Triggers ViewManager to recompile with new files
 
-                const dir = "./~tmp";
+                const dir = path.join(".", "~tmp");
                 const rimraf = require("rimraf");
                 // rimraf(dir, function () {});
                 rimraf.sync(dir);
                 if (!fs.existsSync(dir)) {
                     fs.mkdirSync(dir);
                 }
-                // const path = require('path');
-                // fs.readdir(dir, (err, files) => {
-                //     if (err) throw err;
-                //
-                //     for (const file of files) {
-                //         fs.unlink(path.join(dir, file), err => {
-                //             if (err) throw err;
-                //         });
-                //     }
-                // });
-                // Write text to folder and load it
-                fprime.viewManager.writeToFile("./~tmp");
+                fprime.viewManager.writeToFile(dir);
                 this.processBar = true;
                 await fprime.viewManager.build(dir);
                 // Close all the opening views
                 view.CloseAll();
-                this.$router.replace("/");
+                this.$router.push("/");
                 this.showOutputPanel();
                 // Delete ~tmp folder
-                rimraf(dir, function () {});
+                // rimraf(dir, function () {});
                 (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
             },
             /**
@@ -413,10 +404,30 @@
                 CyManager.endUpdate();
             },
             undo() {
-
+                if (fprime.viewManager.undo()) {
+                    let viewtype = this.$route.params.viewType;
+                    let viewname = this.$route.params.viewName;
+                    if(fprime.viewManager.updateViewList(viewtype, viewname)) {
+                        // has the view
+                        this.$root.$emit("updateContent", viewname);
+                    } else {
+                        this.$router.go(-1);
+                        this.$root.$emit("updateContent", this.$route.params.viewName);
+                    }
+                };
             },
             redo() {
-
+                if(fprime.viewManager.redo()) {
+                    let viewtype = this.$route.params.viewType;
+                    let viewname = this.$route.params.viewName;
+                    if(fprime.viewManager.updateViewList(viewtype, viewname)) {
+                        // has the view
+                        this.$root.$emit("updateContent", viewname);
+                    } else {
+                        this.$router.go(1);
+                        this.$root.$emit("updateContent", this.$route.params.viewName);
+                    }
+                }
             },
         }
     });

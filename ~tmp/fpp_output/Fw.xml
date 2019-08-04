@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<namespace name="Fw">
+  <data_type name="FOO" namespace="Fw"/>
+  <port_type name="Bar" namespace="Fw">
+    <arg name="id" type="Fw.FOO"/>
+  </port_type>
+</namespace>

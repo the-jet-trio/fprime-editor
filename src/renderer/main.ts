@@ -19,7 +19,7 @@ const app = new Vue({
   router,
   template: "<App/>",
 });
-app.$router.replace("/");
+app.$router.push("/");
 app.$mount("#app");
 
 window.console.error = (message?: any, ...optionalParams: any[]) => {
