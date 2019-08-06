@@ -957,9 +957,6 @@ export default class FPPModelManager {
 
         this.porttypes.forEach((e: IFPPPortType) => {
             let portTypePath: string = e.namespace;
-            // if (!fs.existsSync(portTypePath)) {
-            //     fs.mkdirSync(portTypePath);
-            // }
             portTypePath = path.join(portTypePath, e.name + ".fpp");
 
             // If text does not exist, create an empty one
@@ -998,9 +995,6 @@ export default class FPPModelManager {
             var i = componentName.indexOf(".");
             componentName = componentName.substring(i + 1);
             let componentPath: string = e.namespace;
-            if (!fs.existsSync(componentPath)) {
-                fs.mkdirSync(componentPath);
-            }
             componentPath = path.join(componentPath, componentName + ".fpp");
 
             // If text does not exist, create an empty one
@@ -1028,6 +1022,12 @@ export default class FPPModelManager {
                     }
                     if (!port.properties[key]) {  // If value is null
                         continue;
+                    }
+                    // If role is none, do not write
+                    if (key === "role") {
+                        if (port.properties[key] === "None") {
+                            continue;
+                        }
                     }
                     componentContent += tab + tab + key + " = ";
                     // For some reason Telemetry should be "Telemetry" instead
@@ -1119,9 +1119,6 @@ export default class FPPModelManager {
         // write to file for each namespace
         for (var key in instanceContent) {
             let instancePath: string = key;
-            // if (!fs.existsSync(instancePath)) {
-            //     fs.mkdirSync(instancePath);
-            // }
             instancePath = path.join(instancePath, "System.fpp");
 
             // If text does not exist, create an empty one
