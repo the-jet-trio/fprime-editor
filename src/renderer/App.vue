@@ -249,7 +249,7 @@
                     title: "Open a project",
                     properties: ["openDirectory"]
                 });
-                console.dir(dirs);
+                // console.dir(dirs);
                 if (dirs) {
                     this.processBar = true;
                     await fprime.viewManager.build(dirs[0]);
@@ -257,7 +257,7 @@
                     view.CloseAll();
                     this.$router.push("/");
                     this.showOutputPanel();
-                    console.dir(this.$refs);
+                    // console.dir(this.$refs);
                     (this.$refs.msg as Vue & { generateText: () => boolean }).generateText();
                 }
             },

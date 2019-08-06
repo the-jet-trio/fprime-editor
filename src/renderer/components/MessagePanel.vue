@@ -80,11 +80,11 @@
                 this.panelWidth = this.$el.parentElement!.clientWidth;
             },
             generateText() {
-                console.dir(this.$refs);
+                // console.dir(this.$refs);
                 (this.$refs.editor as Vue & { generateText: () => boolean }).generateText();
             },
             applyText() {
-                console.dir(this.$refs);
+                // console.dir(this.$refs);
                 (this.$refs.editor as Vue & { applyText: () => boolean }).applyText();
             },
             returnFiles()

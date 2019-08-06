@@ -553,8 +553,8 @@ class CyManager {
       selector: '.fprime-port', 
       onClickFunction: function (event: any) { // The function to be executed on click
         var target = event.target || event.cyTarget;
-        console.log(target.data());
-        console.log(target.classes());
+        // console.log(target.data());
+        // console.log(target.classes());
         
         target.remove();
         fprime.viewManager.removePort(module.cyManager.viewName, target.data().label);

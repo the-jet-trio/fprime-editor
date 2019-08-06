@@ -205,7 +205,7 @@ export default Vue.extend({
         View.LoadViewByName(to.params.viewName);
         // Show corresponding text
         this.$root.$emit("showText", to.params);
-        console.dir(to);
+        // console.dir(to);
       }
     }
   },
@@ -312,7 +312,7 @@ export default Vue.extend({
     dropItem(viewtype: string, itemname: string, event: any) {
       event.preventDefault();
       const data = event.dataTransfer.getData("text").split("&");
-      console.log(data)
+      // console.log(data)
       let droptype: string = data[0];
       let dropname: string = data[1];
       if(droptype === ViewType.PortType && viewtype === ViewType.Component) {

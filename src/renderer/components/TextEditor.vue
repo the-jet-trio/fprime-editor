@@ -60,23 +60,23 @@
             }
         },
         methods: {
-            onCmReady(cm) {
-                console.log('the editor is readied!', cm)
-            },
-            onCmFocus(cm) {
-                console.log('the editor is focus!', cm)
-            },
+            // onCmReady(cm) {
+            //     console.log('the editor is readied!', cm)
+            // },
+            // onCmFocus(cm) {
+            //     console.log('the editor is focus!', cm)
+            // },
             onCmCodeChange(newCode) {
                 this.code = newCode
                 this.files[this.fileName] = newCode;  // Update code stored in text editor
-                console.dir(this.files[this.fileName]);
+                // console.dir(this.files[this.fileName]);
             },
             onCursorActivity(cm) {
             },
             // Read text from Modelmanager
             generateText() {
                 this.getText;
-                console.dir(this.files);
+                // console.dir(this.files);
             },
             // Write text to Modelmanager
             applyText() {
@@ -85,11 +85,11 @@
             // Return text files
             returnFiles() {
                 return this.files;
-                console.dir(this.files);
+                // console.dir(this.files);
             },
             // Show corresponding text to the selected element
             showText(params) {
-                console.dir(params);
+                // console.dir(params);
                 const viewName = params.viewName.split(".", 2);
                 const name = viewName[1];
                 const namespace = viewName[0];
@@ -120,7 +120,7 @@
                     this.code = "";
                     this.fileName = "";
                 }
-                console.dir(this);
+                // console.dir(this);
             }
         },
         computed: {
@@ -134,7 +134,7 @@
                         // this.fileNames = Object.keys(value);
                         this.files = value;
                     }
-                    console.dir(value)
+                    // console.dir(value)
                 });
             },
         },

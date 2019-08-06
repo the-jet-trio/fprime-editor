@@ -1,7 +1,7 @@
 import IConfig from "../Common/Config";
 import DataImporter, {IOutput} from "../DataImport/DataImporter";
 import * as fs from "fs";
-import _ from "lodash";
+import * as _ from "lodash";
 import * as path from "path";
 const getDirName = require("path").dirname;
 const mkdirp = require('mkdirp');
@@ -135,9 +135,6 @@ export default class FPPModelManager {
      */
     public async loadModel(
         config: IConfig, output?: IOutput): Promise<{ [k: string]: string[] }> {
-        console.log("DEBUG: loadModel - configuration");
-        console.log(config);
-        
         // Reset all the model object lists
         this.reset();
 
@@ -207,7 +204,7 @@ export default class FPPModelManager {
         // Generate text
         this.generateText();
         // fprime.viewManager.updateEditor(this.text);
-        console.dir(this.undo_stack);
+        // console.dir(this.undo_stack);
         // Notify the InfoPanel that it's ready to get the port and comp info.
         // fprime.viewManager.portInfo();
         // fprime.viewManager.compInfo();
@@ -354,10 +351,10 @@ export default class FPPModelManager {
 
         this.generateText();
 
-        console.dir(this.text);
+        // console.dir(this.text);
         // fprime.viewManager.updateEditor(this.text);
-        console.dir(this.undo_stack);
-        console.dir(this.undo_stack);
+        // console.dir(this.undo_stack);
+        // console.dir(this.undo_stack);
         return item.namespace + "." + item.name;
     }
 
@@ -474,8 +471,8 @@ export default class FPPModelManager {
         // TODO: (async) update the model data
         this.generateText();
         // fprime.viewManager.updateEditor(this.text);
-        console.dir(this.topologies);
-        console.dir(this.text);
+        // console.dir(this.topologies);
+        // console.dir(this.text);
         return item.name;
     }
 
@@ -512,7 +509,7 @@ export default class FPPModelManager {
         this.push_curr_state_to_stack(this.undo_stack);
         this.components = this.components.filter((i) => i.name !== name);
         this.generateText();
-        console.dir(this.text);
+        // console.dir(this.text);
         // fprime.viewManager.updateEditor(this.text);
         return true;
     }
@@ -596,7 +593,7 @@ export default class FPPModelManager {
         };
 
         comp.ports.push(port);
-        console.dir(comp);
+        // console.dir(comp);
         this.generateText();
         // fprime.viewManager.updateEditor(this.text);
         return true;
@@ -687,9 +684,6 @@ export default class FPPModelManager {
             console.log("existing connection");
             return false;
         }
-
-        console.log("new connection");
-        console.dir(newConn);
         topology.connections.push(newConn);
 
         this.generateText();
@@ -699,8 +693,8 @@ export default class FPPModelManager {
 
     public removeConnection(toponame: string, from_inst: string, from_port: string,
                             to_inst: string, to_port: string): boolean {
-        console.log("rm conn topo:" + toponame + " from: " + from_inst + " " + from_port
-            + " to: " + to_inst + " " + to_port);
+        // console.log("rm conn topo:" + toponame + " from: " + from_inst + " " + from_port
+        //     + " to: " + to_inst + " " + to_port);
 
         if (from_inst === to_inst) {
             return false;
@@ -834,12 +828,12 @@ export default class FPPModelManager {
       if (type === ViewType.InstanceCentric) {
           this.instances.forEach((i) => {
               if (i.name === attrs["OldName"]) {
-                  console.log("Before", i);
+                //   console.log("Before", i);
                   i.name = attrs["NewName"];
                   i.properties["type"] = attrs["Type"];
                   i.properties["namespace"] = attrs["NameSpace"];
                   i.base_id = attrs["BaseID"];
-                  console.log("After", i);
+                //   console.log("After", i);
               }
           });
       }
@@ -954,7 +948,7 @@ export default class FPPModelManager {
                 }
             });
         }
-        console.dir(this.text);
+        // console.dir(this.text);
     }
 
     /**
@@ -1101,7 +1095,7 @@ export default class FPPModelManager {
             // write the instance name first
             instanceContent[instanceNameSpace] += tab + "instance " + instanceName + ":" + instanceType + " {\n";
             // write base_id
-            console.dir(e);
+            // console.dir(e);
             instanceContent[instanceNameSpace] += tab + tab + "base_id = " + e.base_id + "\n";
             // write each instance's properties
             for (var key in e.properties) {
@@ -1176,7 +1170,7 @@ export default class FPPModelManager {
             }
             this.text[instancePath] += "}";
         }
-        console.dir(this.text);
+        // console.dir(this.text);
     }
 
     /**
@@ -1184,7 +1178,7 @@ export default class FPPModelManager {
      */
     public applyText(files: {[fileName: string]: string}) {
         this.text = files;
-        console.dir(this.text);
+        // console.dir(this.text);
     }
 
     /**
@@ -1197,11 +1191,11 @@ export default class FPPModelManager {
      * Undo
      */
     public undo(): boolean {
-        console.dir(this.datatypes);
+        // console.dir(this.datatypes);
         if (this.undo_stack.length > 0) {
             const top = this.undo_stack.pop();
             if (top) {
-                console.dir(top.datatypes);
+                // console.dir(top.datatypes);
                 // Push current state to redo stack
                 this.push_curr_state_to_stack(this.redo_stack);
                 // Undo action

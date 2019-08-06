@@ -34,7 +34,7 @@ export default Vue.extend({
     updateCytoscape(name: string) {
       this.viewName = name;
       const render = fprime.viewManager.render(this.viewName, view.state.filterPort);
-      console.log(render);
+      // console.log(render);
       if(render!=null) {
         CyManager.startUpdate(this.viewName, render);
         CyManager.endUpdate();
@@ -44,10 +44,10 @@ export default Vue.extend({
       console.log("Drop");
       event.preventDefault();
       const data = event.dataTransfer.getData("text").split("&");
-      console.log(data)
+      // console.log(data)
       let droptype: string = data[0];
       let dropname: string = data[1];
-      console.log(droptype + " " + dropname + " " + this.viewName);
+      // console.log(droptype + " " + dropname + " " + this.viewName);
       var res = false;
       if(droptype === ViewType.PortType) {
         res = fprime.viewManager.addPortToComponent(dropname, this.viewName);
@@ -64,7 +64,7 @@ export default Vue.extend({
       
       var render: IRenderJSON | null;
         render = fprime.viewManager.rerender(name, CyManager.getDescriptor());
-        console.log(render);
+        // console.log(render);
       if (render) {
         CyManager.startUpdate(this.viewName, render);
         CyManager.endUpdate();

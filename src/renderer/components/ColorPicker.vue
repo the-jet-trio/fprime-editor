@@ -29,8 +29,6 @@ export default Vue.extend({
      */
     changeColor() {
       // The picker is open, apply the color
-      const ele = CyManager.getGrabbed();
-      console.log(ele);
       if (this.show === true) {
         CyManager.setColor(CyManager.getGrabbed(), this.colors.hex);
       }

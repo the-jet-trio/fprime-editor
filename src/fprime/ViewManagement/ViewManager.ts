@@ -580,9 +580,8 @@ export default class ViewManager {
             defaultName = type[0] + "." + defaultName;
           }
         } else {
-          defaultName = this.modelManager.addNewInstance(defaultName, "UndefinedComponent");
+          defaultName = this.modelManager.addNewInstance(defaultName, "Ref.UndefinedComponent");
         }
-        
         break;
       case ViewType.Function:
         defaultName  = "NewTopology" + this.indexCursor[type];
