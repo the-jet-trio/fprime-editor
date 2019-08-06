@@ -910,16 +910,11 @@ export default class FPPModelManager {
         }
         for (var key in this.text) {
             var fileName = path.join(folderPath, key);
-            mkdirp(getDirName(fileName), function(dir_err: any) {
-                if (dir_err) {
-                    throw dir_err;
-                }
-            });
-            fs.writeFile(fileName, this.text[key], (err) => {
-                if (err) {
-                    throw err;
-                }
-            });
+            if (!fs.existsSync(getDirName(fileName))) {
+                fs.mkdirSync(getDirName(fileName));
+            }
+            // fs.mkdirSync(getDirName(fileName));
+            fs.writeFileSync(fileName, this.text[key]);
         }
         console.dir(this.text);
     }
