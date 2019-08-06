@@ -407,13 +407,16 @@
                 if (fprime.viewManager.undo()) {
                     let viewtype = this.$route.params.viewType;
                     let viewname = this.$route.params.viewName;
-                    if (!viewtype || !viewname) return;
                     if(fprime.viewManager.updateViewList(viewtype, viewname)) {
                         // has the view
                         this.$root.$emit("updateContent", viewname);
                     } else {
                         this.$router.go(-1);
-                        this.$root.$emit("updateContent", this.$route.params.viewName);
+                        try {
+                            this.$root.$emit("updateContent", this.$route.params.viewName);
+                        } catch (error) {
+                            console.log("failed update to previous cytoscape");
+                        }
                     }
                 };
             },
