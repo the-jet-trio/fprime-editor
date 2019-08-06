@@ -130,20 +130,20 @@ export default class FPPModelManager {
     private redo_stack: IStackEle[] = [];
     private MAX_undo_redo: number = 10; // Maximum number of undos/redos
 
+    public constructor() {
+        this.reset();
+    }
     /**
      *
      */
     public async loadModel(
         config: IConfig, output?: IOutput): Promise<{ [k: string]: string[] }> {
-        console.log("DEBUG: loadModel - configuration");
-        console.log(config);
         
         // Reset all the model object lists
         this.reset();
 
         // Invoke the compiler
         var data = await this.dataImporter.invokeCompiler(config, output);
-        // console.dir(data);
 
         // Load the model from xml object and return the view list
         if (data == null || data.length === 0) {
@@ -207,7 +207,6 @@ export default class FPPModelManager {
         // Generate text
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
-        console.dir(this.undo_stack);
         // Notify the InfoPanel that it's ready to get the port and comp info.
         fprime.viewManager.portInfo();
         fprime.viewManager.compInfo();
@@ -354,10 +353,7 @@ export default class FPPModelManager {
 
         this.generateText();
 
-        console.dir(this.text);
         fprime.viewManager.updateEditor(this.text);
-        console.dir(this.undo_stack);
-        console.dir(this.undo_stack);
         return item.namespace + "." + item.name;
     }
 
@@ -474,8 +470,6 @@ export default class FPPModelManager {
         // TODO: (async) update the model data
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
-        console.dir(this.topologies);
-        console.dir(this.text);
         return item.name;
     }
 
@@ -512,7 +506,6 @@ export default class FPPModelManager {
         this.push_curr_state_to_stack(this.undo_stack);
         this.components = this.components.filter((i) => i.name !== name);
         this.generateText();
-        console.dir(this.text);
         fprime.viewManager.updateEditor(this.text);
         return true;
     }
@@ -568,7 +561,6 @@ export default class FPPModelManager {
         }
         // rename the port with the first letter in lower case
         var newPortname = porttype.name.charAt(0).toLowerCase() + porttype.name.slice(1);
-        console.log("new port name" + newPortname);
         // existing port
         if (comp.ports.find((i) => i.name === newPortname)) {
             // rename the portname
@@ -578,10 +570,6 @@ export default class FPPModelManager {
             }
             newPortname = newPortname + index;
         }
-        // console.log("In addPortToComponent");
-
-        // console.dir(porttype);
-        // console.dir(comp);
         this.push_curr_state_to_stack(this.undo_stack);
 
         var port: IFPPPort = {
@@ -596,19 +584,15 @@ export default class FPPModelManager {
         };
 
         comp.ports.push(port);
-        console.dir(comp);
         this.generateText();
         fprime.viewManager.updateEditor(this.text);
         return true;
     }
 
     public addInstanceToTopo(instname: string, toponame: string): boolean {
-        // console.log("add instance to topo: " + instname + " " + toponame);
 
         const instance = this.instances.find((i) => i.name === instname);
         if (instance === undefined) return false;
-        // console.log("find instance");
-        // console.log(instance);
 
         var topology = this.topologies.find((i) => i.name === toponame);
         if (topology == undefined) return false;
@@ -624,11 +608,8 @@ export default class FPPModelManager {
             return false;
         });
         if (existinst) {
-            console.log("existing instance");
             return false;
         }
-        // console.log("find topo");
-        // console.log(topology);
         this.push_curr_state_to_stack(this.undo_stack);
 
         var halfConnection: IFPPConnection = {
@@ -922,20 +903,6 @@ export default class FPPModelManager {
    * Output the model into the selected folder
    */
   public writeToFile(folderPath: string) {
-        // this.generateText();
-        // fs.readdir(folderPath, (err, files) => {
-        //     if (err) {
-        //         throw err;
-        //     }
-        //
-        //     for (var file of files) {
-        //         fs.unlink(path.join(folderPath, file), err => {
-        //             if (err) {
-        //                 throw err;
-        //             }
-        //         });
-        //     }
-        // });
         const rimraf = require("rimraf");
         rimraf.sync(folderPath);
         if (!fs.existsSync(folderPath)) {
@@ -1077,11 +1044,6 @@ export default class FPPModelManager {
             componentContent += "}";
             // Concatenate to text
             this.text[componentPath] += componentContent;
-            // fs.writeFile(componentPath, componentContent, (err) => {
-            //     if (err) {
-            //         throw err;
-            //     }
-            // });
         });
 
         // key: namespace

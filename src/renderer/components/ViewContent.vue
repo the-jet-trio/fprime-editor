@@ -75,7 +75,7 @@ export default Vue.extend({
     this.viewName = this.$route.params.viewName;
     CyManager.init(document.getElementById("cytoscape")!);
     this.updateCytoscape(this.viewName);
-    // mount updateContent calling from viewlist 
+    // mount updateContent calling from viewlist
     this.$root.$on('updateContent', (name: string) => {
       this.updateContent(name);
     });
