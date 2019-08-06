@@ -303,7 +303,7 @@
                 console.dir(files);
                 fprime.viewManager.applyText(files); // Triggers ViewManager to recompile with new files
 
-                const dir = path.join(".", "~tmp");
+                const dir = path.join(__dirname, "~tmp");
                 const rimraf = require("rimraf");
                 // rimraf(dir, function () {});
                 rimraf.sync(dir);
