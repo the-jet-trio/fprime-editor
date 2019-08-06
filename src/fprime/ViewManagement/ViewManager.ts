@@ -156,7 +156,7 @@ export default class ViewManager {
           view.updateEditor({});
           view.resetInfoPanel();
       } catch (err) {
-          if (!err.includes("updateEditor")) {
+          if (!err.message.includes("updateEditor")) {
             this.appendOutput(err);
           }
       }
