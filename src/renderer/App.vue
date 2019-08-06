@@ -407,6 +407,7 @@
                 if (fprime.viewManager.undo()) {
                     let viewtype = this.$route.params.viewType;
                     let viewname = this.$route.params.viewName;
+                    if (!viewtype || !viewname) return;
                     if(fprime.viewManager.updateViewList(viewtype, viewname)) {
                         // has the view
                         this.$root.$emit("updateContent", viewname);
