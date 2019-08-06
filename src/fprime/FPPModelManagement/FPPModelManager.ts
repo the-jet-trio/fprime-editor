@@ -4,7 +4,6 @@ import fs from "fs";
 import _ from "lodash";
 import * as path from "path";
 const getDirName = require("path").dirname;
-const mkdirp = require('mkdirp');
 import fprime from "fprime";
 /**
  *
@@ -1166,6 +1165,7 @@ export default class FPPModelManager {
                 this.components = top.components;
                 this.instances = top.instances;
                 this.topologies = top.topologies;
+                this.updateEditor(this.text);
                 return true;
             }
         }
@@ -1188,7 +1188,8 @@ export default class FPPModelManager {
                 this.porttypes = top.porttypes;
                 this.components = top.components;
                 this.instances = top.instances;
-                this.topologies =top.topologies;
+                this.topologies = top.topologies;
+                this.updateEditor(this.text);
                 return true;
             }
         }
