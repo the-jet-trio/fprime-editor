@@ -138,7 +138,8 @@ export default class FPPModelManager {
      */
     public async loadModel(
         config: IConfig, output?: IOutput): Promise<{ [k: string]: string[] }> {
-        
+        // push the current model to undo_stack
+        this.push_curr_state_to_stack(this.undo_stack);
         // Reset all the model object lists
         this.reset();
 
