@@ -4,7 +4,6 @@ import fs from "fs";
 import _ from "lodash";
 import * as path from "path";
 const getDirName = require("path").dirname;
-const mkdirp = require('mkdirp');
 import fprime from "fprime";
 /**
  *
@@ -1223,8 +1222,8 @@ export default class FPPModelManager {
         this.datatypes = [];
         this.enumtypes = [];
         this.text = {};
-        this.undo_stack = [];
-        this.redo_stack = [];
+        // this.undo_stack = [];
+        // this.redo_stack = [];
     }
 
     private generatePortType(porttypes: any[]): IFPPPortType[] {
