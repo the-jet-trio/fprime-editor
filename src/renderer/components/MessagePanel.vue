@@ -154,7 +154,7 @@
     }
     .message-panel .v-window__container p {
         overflow: auto;
-        max-height: 320px;
+        max-height: 300px;
     }
 
     .message-panel .v-window__container .text-editor {
