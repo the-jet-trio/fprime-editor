@@ -198,7 +198,7 @@ export default class ViewManager {
         this.configManager.Config, this);
       this.generateViewList(viewlist);
     } catch (err) {
-      this.appendOutput(err);
+      this.appendOutput("Build error:\n" + err);
     }
     console.dir(this.modelManager);
   }
@@ -284,7 +284,9 @@ export default class ViewManager {
       json.needLayout = json.needLayout || forceLayout;
       return json;
     } catch (e) {
-      this.appendOutput("Error: fails to generate render object,\n" + e);
+      if (viewType !== ViewType.DataType && viewType !== ViewType.PortType) {
+        this.appendOutput("Error: fails to generate render object,\n" + e);
+      }
       return {} as IRenderJSON;
     }
   }
