@@ -1166,7 +1166,7 @@ export default class FPPModelManager {
                 this.components = top.components;
                 this.instances = top.instances;
                 this.topologies = top.topologies;
-                this.updateEditor(this.text);
+                fprime.viewManager.updateEditor(this.text);
                 return true;
             }
         }
@@ -1190,7 +1190,7 @@ export default class FPPModelManager {
                 this.components = top.components;
                 this.instances = top.instances;
                 this.topologies = top.topologies;
-                this.updateEditor(this.text);
+                fprime.viewManager.updateEditor(this.text);
                 return true;
             }
         }
