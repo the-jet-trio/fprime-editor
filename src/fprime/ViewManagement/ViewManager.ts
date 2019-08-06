@@ -5,9 +5,6 @@ import ConfigManager from "../ConfigManagement/ConfigManager";
 import LayoutGenerator from "./LayoutGenerator";
 import AnalyzerManager from "../StyleManagement/AnalyzerManager";
 import { IStyle } from "../DataImport/StyleConverter";
-import CyManager from "@/store/CyManager";
-import {IFPPComponent} from "../FPPModelManagement/FPPModelManager";
-import {IFPPPort} from "../FPPModelManagement/FPPModelManager";
 import view from "@/store/view";
 
 export interface IViewList {
@@ -74,8 +71,6 @@ export default class ViewManager {
     [ViewType.DataType] : 1,
   }
 
-  private comps: IFPPComponent[] = [];
-  private ports = new Set();
 
   public filterPorts = false;
 
@@ -199,8 +194,6 @@ export default class ViewManager {
       // Load the FPP model
       const viewlist = await this.modelManager.loadModel(
         this.configManager.Config, this);
-      this.comps = this.modelManager.getComponents();
-      this.ports = this.modelManager.getPorts();
       this.generateViewList(viewlist);
     } catch (err) {
       this.appendOutput(err);

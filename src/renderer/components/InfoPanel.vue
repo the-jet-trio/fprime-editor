@@ -218,7 +218,6 @@
                 var names:string[] = new Array();
                 var types:string[] = new Array();
                 var kinds:string[] = new Array();
-                //var port:string[] = new Array();
                 for(let p of value){
                     //console.log(p);
                     const prop = p.properties;

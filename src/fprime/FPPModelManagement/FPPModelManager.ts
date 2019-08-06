@@ -1190,7 +1190,7 @@ export default class FPPModelManager {
     /**
      * Dummy function to update text editor according to the ModelManager.
      */
-    public updateEditor(text: any): void {
+    public updateEditor(_: any): void {
     }
 
     /**
