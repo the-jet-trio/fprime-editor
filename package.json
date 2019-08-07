@@ -16,9 +16,9 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "test": "npm run fprime-test && npm run ui-test && npm run e2e",
-    "regression-test": "nyc mocha --opts ./test/fprime/mocha-1.opts",
-    "fprime-test": "nyc mocha --opts ./test/fprime/mocha-2.opts",
+    "test": "nyc mocha --opts ./test/fprime/mocha.opts",
+    "regression-test": "nyc mocha --opts ./test/fprime/specs/regression/mocha.opts",
+    "fprime-test": "nyc mocha --opts ./test/fprime/specs/editor/mocha.opts",
     "ui-test": "karma start test/ui/karma.conf.js",
     "postinstall": "",
     "tslint": "tslint -c ./tslint.json -p ./tsconfig.json"

@@ -1,6 +1,6 @@
 import { expect } from "chai";
-// import * as fs from "fs";
-// import * as path from "path";
+import * as fs from "fs";
+import * as path from "path";
 import ViewManager from "fprime/ViewManagement/ViewManager";
 import { ICytoscapeJSON } from "fprime/ViewManagement/ViewDescriptor";
 import { NodeType, EdgeType } from "fprime/ViewManagement/ViewDescriptor";
@@ -128,19 +128,56 @@ describe("ViewManager rerender", () => {
 });
 
 describe("ViewManager getComponents", () => {
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should get all expected components information", async () => {
+    await viewManager.build(__project);
+    expect(viewManager.getComponents()).to.be.lengthOf(7);
+  });
+
+});
+
+describe("ViewManager getPorts", () => {
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should get all expected ports information", async () => {
+    await viewManager.build(__project);
+    expect(viewManager.getPorts()).to.be.lengthOf(28);
+  });
 
 });
 
 describe("ViewManager getText", () => {
-  
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should get all expected text", async () => {
+    await viewManager.build(__project);
+    viewManager.getText().then(text => 
+      expect(text).to.have.property('Ref\\PingReceiver.fpp'));
+  });
 });
 
 describe("ViewManager generateText", () => {
-  
-});
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
 
-describe("ViewManager applyText", () => {
-  
+  it ("should generateText as expected", async () => {
+    await viewManager.build(__project);
+    viewManager.generateText();
+    viewManager.getText().then(text => 
+      expect(text).to.have.property('Ref\\PingReceiver.fpp'));
+  });
 });
 
 describe("ViewManager addNewItem", () => {
@@ -448,7 +485,7 @@ describe("ViewManager addConnection", () => {
   it ("should return true if adding is valid", async() => {
     await viewManager.build(__project);
     
-    expect(viewManager.addConnection("Ref.RefLogger", 
+    expect(viewManager.addConnection("Ref.REFLogger", 
     "Ref_SG3_cmdRegOut", 
     "Ref_eventLogger_pingIn")).to.be.true;
   });
@@ -456,7 +493,7 @@ describe("ViewManager addConnection", () => {
   it ("should return fasle if connections are ports on the same instance", async() => {
     await viewManager.build(__project);
     
-    expect(viewManager.addConnection("Ref.RefLogger", 
+    expect(viewManager.addConnection("Ref.REFLogger", 
     "Ref_SG4_timeCaller", 
     "Ref_SG4_cmdIn")).to.be.false;
   });
@@ -470,20 +507,200 @@ describe("ViewManager addConnection", () => {
   it ("should return fasle if the connection already exists", async() => {
     await viewManager.build(__project);
     
-    expect(viewManager.addConnection("Ref.RefLogger", 
+    expect(viewManager.addConnection("Ref.REFLogger", 
     "Ref_SG2_logTextOut", 
     "Ref_textLogger_TextLogger")).to.be.false;
   });
 });
 
 describe("ViewManager removeConnection", () => {
-  
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should return true if remove is valid", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removeConnection("Ref.REFLogger", 
+    "Ref_SG1_logTextOut", 
+    "Ref_textLogger_TextLogger")).to.be.true;
+  });
+
+  it ("should return false if two connections on the same instance", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removeConnection("Ref.REFLogger", 
+    "Ref_SG1_logTextOut", 
+    "Ref_SG1_logTextOut")).to.be.false;
+  });
+
+  it ("should return false if remove is invalid", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removeConnection("Ref.invalid", 
+    "Ref_SG1_logTextOut", 
+    "Ref_textLogger_TextLogger")).to.be.false;
+
+    expect(viewManager.removeConnection("Ref.REFLogger", 
+    "Ref_invalid_logTextOut", 
+    "Ref_textLogger_TextLogger")).to.be.false;
+
+    expect(viewManager.removeConnection("Ref.REFLogger", 
+    "Ref_SG1_logTextOut", 
+    "Ref_invalid_TextLogger")).to.be.false;
+  });
+
+  it ("should return true if remove cause the instance disappears", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removeConnection("Ref.REFTime", 
+    "Ref_SG1_timeCaller", 
+    "Ref_linuxTime_timeGetPort")).to.be.true;
+  });
 });
 
 describe("ViewManager removeInstance", () => {
-  
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should return true if remove is valid", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removeInstance("Ref.REFLogger", 
+    "Ref.SG1")).to.be.true;
+  });
+
+  it ("should return false if remove is valid", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removeInstance("Ref.invalid", 
+    "Ref.SG1")).to.be.false;
+
+    expect(viewManager.removeInstance("Ref.REFLogger", 
+    "Ref.invalid")).to.be.false;
+  });
+
+  it ("should return true even if it causes all connections deleted", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removeInstance("Ref.REFTime", 
+    "Ref.linuxTime")).to.be.true;
+  })
 });
 
 describe("ViewManager removePort", () => {
-  
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should return true if remove is valid", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removePort("Ref.PingReceiver", 
+    "PingOut")).to.be.true;
+  });
+
+  it ("should return false if remove is valid", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.removePort("Ref.invalid", 
+    "PingOut")).to.be.false;
+
+    expect(viewManager.removeInstance("Ref.REFLogger", 
+    "invalid")).to.be.false;
+  });
+});
+
+describe("ViewManager undo", () => {
+  let viewManager: ViewManager;
+
+  it ("should recover the previous model if change is made", async() => {
+    viewManager = new ViewManager();
+    await viewManager.build(__project);
+    expect(viewManager.getComponents()).to.be.lengthOf(7);
+    viewManager.addNewItem(ViewType.Component);
+    expect(viewManager.getComponents()).to.be.lengthOf(8);
+    viewManager.undo();
+    expect(viewManager.getComponents()).to.be.lengthOf(7);
+
+  });
+
+  it ("should return false if no previous change is made", async() => {
+    viewManager = new ViewManager();
+    await viewManager.build(__project);
+    expect(viewManager.getComponents()).to.be.lengthOf(7);
+    expect(viewManager.undo()).to.be.true;
+    expect(viewManager.getComponents()).to.be.lengthOf(0);
+    expect(viewManager.undo()).to.be.false;
+  });
+
+});
+
+describe("ViewManager redo", () => {
+  let viewManager: ViewManager;
+
+  it ("should recover the previous model if undo is made", async() => {
+    viewManager = new ViewManager();
+    await viewManager.build(__project);
+    viewManager.addNewItem(ViewType.Component);
+    expect(viewManager.getComponents()).to.be.lengthOf(8);
+    viewManager.undo();
+    expect(viewManager.getComponents()).to.be.lengthOf(7);
+    viewManager.redo();
+    expect(viewManager.getComponents()).to.be.lengthOf(8);
+  });
+
+  it ("should return false if no undo before", async() => {
+    viewManager = new ViewManager();
+    await viewManager.build(__project);
+    expect(viewManager.redo()).to.be.false;
+  });
+
+});
+
+describe("ViewManager newProject", () => {
+  let viewManager: ViewManager;
+  it ("should have no elements in the new built model", async() => {
+    viewManager = new ViewManager();
+    viewManager.newProject("./test/Ref2/new_model").then(() => {
+      expect(viewManager.getComponents()).to.be.lengthOf(0);
+    });
+  });
+});
+
+describe("ViewManager writeToFile", () => {
+  let viewManager: ViewManager;
+  it ("should write model down in the given path", async() => {
+    viewManager = new ViewManager();
+    viewManager.build(__project).then(()=> {
+      let newpath = "./test/Ref2/new_model";
+      viewManager.writeToFile(newpath);
+      expect(fs.existsSync(path.join(newpath + "Ref"))).to.be.true;
+    });
+  });
+});
+
+describe("ViewManager renameItem", () => {
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should rename topology as expected", async () => {
+    await viewManager.build(__project);
+    let new_name = "Ref.REFLogger1";
+    viewManager.renameItem("Ref.REFLogger", new_name);
+    expect(viewManager.ViewList[ViewType.Function]).to.deep.include({
+      name: new_name,
+      type: ViewType.Function,
+    });
+  });
+});
+
+describe("ViewManager updateViewList", () => {
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should updateViewList and return true", async () => {
+    await viewManager.build(__project);
+    expect(viewManager.updateViewList(ViewType.Function, "Ref.REFLogger")).to.be.true;
+    expect(viewManager.ViewList[ViewType.Function]).to.be.lengthOf.above(0);
+  });
 });
