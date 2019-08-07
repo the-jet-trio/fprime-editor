@@ -197,7 +197,7 @@ export default class ViewManager {
     } catch (err) {
       this.appendOutput(err);
     }
-    console.dir(this.modelManager);
+    // console.dir(this.modelManager);
   }
 
   /**

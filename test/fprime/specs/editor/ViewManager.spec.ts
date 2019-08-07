@@ -288,19 +288,192 @@ describe("ViewManager removeItem", () => {
 });
 
 describe("ViewManager addPortToComponent", () => {
-  
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should add an existing port to a component as expected", async() => {
+    await viewManager.build(__project);
+    
+    let comp_name = viewManager.addNewItem(ViewType.Component).name;
+    let port_name = viewManager.addNewItem(ViewType.PortType).name;
+    viewManager.addPortToComponent(port_name, comp_name);
+    let comp = viewManager.getComponents().find(c => c.name === comp_name);
+    expect(comp).not.to.be.null.that.to.has.nested.include({'ports[0].name': port_name});
+  });
+
+  it ("should not make any change if the component or port is illegal", async () => {
+    await viewManager.build(__project);
+    expect(viewManager.addPortToComponent("invalid_port_name", "invalid_comp_name")).to.be.false;
+  });
+
+  it ("should be able to add a new port even if the port exists", async() => {
+    await viewManager.build(__project);
+    let comp_name = viewManager.addNewItem(ViewType.Component).name;
+    let port_name = viewManager.addNewItem(ViewType.PortType).name;
+    viewManager.addPortToComponent(port_name, comp_name);
+    let comp = viewManager.getComponents().find(c => c.name === comp_name);
+    expect(comp).not.to.be.null.that.to.has.nested.include({'ports[0].name': port_name});
+
+    viewManager.addPortToComponent(port_name, comp_name);
+    expect(comp!.ports).to.have.lengthOf(2);
+    expect(comp).not.to.be.null.that.to.has.nested.include({'ports[0].name': (port_name + 1)});
+
+    viewManager.addPortToComponent(port_name, comp_name);
+    expect(comp!.ports).to.have.lengthOf(3);
+    expect(comp).not.to.be.null.that.to.has.nested.include({'ports[0].name': (port_name + 2)});
+  })
 });
 
 describe("ViewManager addInstanceToTopo", () => {
-  
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should return true if adding is valid", async() => {
+    await viewManager.build(__project);
+    
+    let inst_name = viewManager.addNewItem(ViewType.InstanceCentric, "Ref.PingReceiver").name;
+    let topo_name = viewManager.addNewItem(ViewType.Function).name;
+    expect(viewManager.addInstanceToTopo(inst_name, topo_name)).to.be.true;
+
+    expect(viewManager.addInstanceToTopo("Ref.SG1", topo_name)).to.be.true;
+  });
+
+  it ("should return false if the instance exists", async() => {
+    await viewManager.build(__project);
+    
+    let inst_name = viewManager.addNewItem(ViewType.InstanceCentric, "Ref.PingReceiver").name;
+    let topo_name = viewManager.addNewItem(ViewType.Function).name;
+    expect(viewManager.addInstanceToTopo(inst_name, topo_name)).to.be.true;
+    expect(viewManager.addInstanceToTopo(inst_name, topo_name)).to.be.false;
+  });
+
+  it ("should return false if the instance or topology is invalid", async() => {
+    await viewManager.build(__project);
+
+    expect(viewManager.addInstanceToTopo("", "")).to.be.false;
+  });
 });
 
 describe("ViewManager updateAttributes", () => {
-  
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should return true if component updates is valid", async() => {
+    await viewManager.build(__project);
+    
+    expect(viewManager.updateAttributes(ViewType.Component, {
+      ["OldName"]: "Ref.PingReceiver",
+      ["Name"]: "Ref1.PingReceiver",
+      ["NameSpace"]: "Ref1",
+      ["Kind"]: "passive",
+    })).to.be.true;
+
+    expect(viewManager.updateAttributes(ViewType.Component, {
+      ["OldName"]: "Ref.PingReceiver",
+      ["Name"]: "Ref1.PingReceiver",
+      ["NameSpace"]: "Ref1",
+      ["Kind"]: "passive",
+    })).to.be.true;
+  });
+
+  it ("should return true if instance updates is valid", async() => {
+    await viewManager.build(__project);
+    expect(viewManager.updateAttributes(ViewType.InstanceCentric, {
+      ["Name"]: "SG1",
+      ["OldName"]: "Ref.SG1",
+      ["NewName"]: "Svc.SG1",
+      ["NameSpace"]: "Svc",
+      ["Type"]: "Ref.SignalGen",
+      ["BaseID"]: "180"
+    })).to.be.true;
+  });
+
+  it ("should return true if port updates is valid", async() => {
+    await viewManager.build(__project);
+    
+    expect(viewManager.updateAttributes("Port", {
+      ["CompName"]: "Ref.PingReceiver",
+      ["Direction"]: "in", 
+      ["Kind"]: "async",
+      ["Name"]: "PingOut",
+      ["NewName"]: "PingOut",
+      ["Number"]: "1",
+      ["OldName"]: "PingOut",
+      ["Role"]: "Cmd",
+      ["Type"]: "Fw.Time",
+      ["ViewType"]: ViewType.Component,
+    })).to.be.true;
+  });
+
+  it ("should return true even if updates is valid", async() => {
+    await viewManager.build(__project);
+    
+    expect(viewManager.updateAttributes(ViewType.Component, {
+      ["OldName"]: "",
+      ["Name"]: "",
+      ["NameSpace"]: "",
+      ["Kind"]: "",
+    })).to.be.true;
+
+    expect(viewManager.updateAttributes(ViewType.InstanceCentric, {
+      ["OldName"]: "",
+      ["Name"]: "",
+      ["NameSpace"]: "",
+      ["Kind"]: "",
+    })).to.be.true;
+
+    expect(viewManager.updateAttributes("Port", {
+      ["OldName"]: "",
+      ["Name"]: "",
+      ["NameSpace"]: "",
+      ["Kind"]: "",
+    })).to.be.true;
+  });
+
+
 });
 
 describe("ViewManager addConnection", () => {
+  let viewManager: ViewManager;
+  beforeEach(() => {
+    viewManager = new ViewManager();
+  });
+
+  it ("should return true if adding is valid", async() => {
+    await viewManager.build(__project);
+    
+    expect(viewManager.addConnection("Ref.RefLogger", 
+    "Ref_SG3_cmdRegOut", 
+    "Ref_eventLogger_pingIn")).to.be.true;
+  });
   
+  it ("should return fasle if connections are ports on the same instance", async() => {
+    await viewManager.build(__project);
+    
+    expect(viewManager.addConnection("Ref.RefLogger", 
+    "Ref_SG4_timeCaller", 
+    "Ref_SG4_cmdIn")).to.be.false;
+  });
+
+  it ("should return fasle if adding name is invalid", async() => {
+    await viewManager.build(__project);
+    
+    expect(viewManager.addConnection("invalid1", "invalid2", "invalid3")).to.be.false;
+  });
+
+  it ("should return fasle if the connection already exists", async() => {
+    await viewManager.build(__project);
+    
+    expect(viewManager.addConnection("Ref.RefLogger", 
+    "Ref_SG2_logTextOut", 
+    "Ref_textLogger_TextLogger")).to.be.false;
+  });
 });
 
 describe("ViewManager removeConnection", () => {
@@ -308,5 +481,9 @@ describe("ViewManager removeConnection", () => {
 });
 
 describe("ViewManager removeInstance", () => {
+  
+});
+
+describe("ViewManager removePort", () => {
   
 });
