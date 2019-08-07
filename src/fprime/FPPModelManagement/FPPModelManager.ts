@@ -4,8 +4,8 @@ import * as fs from "fs";
 import * as _ from "lodash";
 import * as path from "path";
 const getDirName = require("path").dirname;
-const mkdirp = require('mkdirp');
 // import fprime from "fprime";
+
 /**
  *
  */
@@ -130,17 +130,21 @@ export default class FPPModelManager {
     private redo_stack: IStackEle[] = [];
     private MAX_undo_redo: number = 10; // Maximum number of undos/redos
 
+    public constructor() {
+        this.reset();
+    }
     /**
      *
      */
     public async loadModel(
         config: IConfig, output?: IOutput): Promise<{ [k: string]: string[] }> {
+        // push the current model to undo_stack
+        this.push_curr_state_to_stack(this.undo_stack);
         // Reset all the model object lists
         this.reset();
 
         // Invoke the compiler
         var data = await this.dataImporter.invokeCompiler(config, output);
-        // console.dir(data);
 
         // Load the model from xml object and return the view list
         if (data == null || data.length === 0) {
@@ -565,7 +569,6 @@ export default class FPPModelManager {
         }
         // rename the port with the first letter in lower case
         var newPortname = porttype.name.charAt(0).toLowerCase() + porttype.name.slice(1);
-        console.log("new port name" + newPortname);
         // existing port
         if (comp.ports.find((i) => i.name === newPortname)) {
             // rename the portname
@@ -596,12 +599,9 @@ export default class FPPModelManager {
     }
 
     public addInstanceToTopo(instname: string, toponame: string): boolean {
-        // console.log("add instance to topo: " + instname + " " + toponame);
 
         const instance = this.instances.find((i) => i.name === instname);
         if (instance === undefined) return false;
-        // console.log("find instance");
-        // console.log(instance);
 
         var topology = this.topologies.find((i) => i.name === toponame);
         if (topology == undefined) return false;
@@ -617,11 +617,8 @@ export default class FPPModelManager {
             return false;
         });
         if (existinst) {
-            console.log("existing instance");
             return false;
         }
-        // console.log("find topo");
-        // console.log(topology);
         this.push_curr_state_to_stack(this.undo_stack);
 
         var halfConnection: IFPPConnection = {
@@ -887,20 +884,6 @@ export default class FPPModelManager {
    * Output the model into the selected folder
    */
   public writeToFile(folderPath: string) {
-        // this.generateText();
-        // fs.readdir(folderPath, (err, files) => {
-        //     if (err) {
-        //         throw err;
-        //     }
-        //
-        //     for (var file of files) {
-        //         fs.unlink(path.join(folderPath, file), err => {
-        //             if (err) {
-        //                 throw err;
-        //             }
-        //         });
-        //     }
-        // });
         const rimraf = require("rimraf");
         rimraf.sync(folderPath);
         if (!fs.existsSync(folderPath)) {
@@ -908,16 +891,11 @@ export default class FPPModelManager {
         }
         for (var key in this.text) {
             var fileName = path.join(folderPath, key);
-            mkdirp(getDirName(fileName), function(dir_err: any) {
-                if (dir_err) {
-                    throw dir_err;
-                }
-            });
-            fs.writeFile(fileName, this.text[key], (err: any) => {
-                if (err) {
-                    throw err;
-                }
-            });
+            if (!fs.existsSync(getDirName(fileName))) {
+                fs.mkdirSync(getDirName(fileName));
+            }
+            // fs.mkdirSync(getDirName(fileName));
+            fs.writeFileSync(fileName, this.text[key]);
         }
         // console.dir(this.text);
     }
@@ -955,9 +933,6 @@ export default class FPPModelManager {
 
         this.porttypes.forEach((e: IFPPPortType) => {
             let portTypePath: string = e.namespace;
-            // if (!fs.existsSync(portTypePath)) {
-            //     fs.mkdirSync(portTypePath);
-            // }
             portTypePath = path.join(portTypePath, e.name + ".fpp");
 
             // If text does not exist, create an empty one
@@ -996,9 +971,6 @@ export default class FPPModelManager {
             var i = componentName.indexOf(".");
             componentName = componentName.substring(i + 1);
             let componentPath: string = e.namespace;
-            if (!fs.existsSync(componentPath)) {
-                fs.mkdirSync(componentPath);
-            }
             componentPath = path.join(componentPath, componentName + ".fpp");
 
             // If text does not exist, create an empty one
@@ -1027,6 +999,12 @@ export default class FPPModelManager {
                     if (!port.properties[key]) {  // If value is null
                         continue;
                     }
+                    // If role is none, do not write
+                    if (key === "role") {
+                        if (port.properties[key] === "None") {
+                            continue;
+                        }
+                    }
                     componentContent += tab + tab + key + " = ";
                     // For some reason Telemetry should be "Telemetry" instead
                     if (port.properties[key] === "Telemetry") {
@@ -1042,11 +1020,6 @@ export default class FPPModelManager {
             componentContent += "}";
             // Concatenate to text
             this.text[componentPath] += componentContent;
-            // fs.writeFile(componentPath, componentContent, (err) => {
-            //     if (err) {
-            //         throw err;
-            //     }
-            // });
         });
 
         // key: namespace
@@ -1122,9 +1095,6 @@ export default class FPPModelManager {
         // write to file for each namespace
         for (var key in instanceContent) {
             let instancePath: string = key;
-            // if (!fs.existsSync(instancePath)) {
-            //     fs.mkdirSync(instancePath);
-            // }
             instancePath = path.join(instancePath, "System.fpp");
 
             // If text does not exist, create an empty one
@@ -1233,8 +1203,8 @@ export default class FPPModelManager {
         this.datatypes = [];
         this.enumtypes = [];
         this.text = {};
-        this.undo_stack = [];
-        this.redo_stack = [];
+        // this.undo_stack = [];
+        // this.redo_stack = [];
     }
 
     private generatePortType(porttypes: any[]): IFPPPortType[] {

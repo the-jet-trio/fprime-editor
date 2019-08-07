@@ -218,7 +218,6 @@
                 var names:string[] = new Array();
                 var types:string[] = new Array();
                 var kinds:string[] = new Array();
-                //var port:string[] = new Array();
                 for(let p of value){
                     //console.log(p);
                     const prop = p.properties;
@@ -513,6 +512,7 @@
     .info-panel {
         display: block;
         height: 480px;
+        width: 220px;
         position: fixed;
         box-shadow: 0px -0.5px 1px #bdbdbd;
         background-color: white;

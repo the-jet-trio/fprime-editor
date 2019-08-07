@@ -36,11 +36,15 @@
             <v-tab :style="{ display: 'none' }"></v-tab>
 
             <v-tab-item :key="output">
-                <p>{{ compilerOutput }}</p>
+                <pre>
+                    <p>{{ compilerOutput }}</p>
+                </pre>
             </v-tab-item>
 
             <v-tab-item :key="analysis">
-                <p>{{ analysisOutput }}</p>
+                <pre>
+                    <p>{{ analysisOutput }}</p>
+                </pre>
             </v-tab-item>
 
             <v-tab-item :key="editor">
@@ -150,7 +154,7 @@
     }
     .message-panel .v-window__container p {
         overflow: auto;
-        max-height: 320px;
+        max-height: 300px;
     }
 
     .message-panel .v-window__container .text-editor {
