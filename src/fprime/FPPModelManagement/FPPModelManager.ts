@@ -845,32 +845,8 @@ export default class FPPModelManager {
           });
       }
       if (type === "Port") {
-          if (attrs["ViewType"] === ViewType.InstanceCentric) {
-              console.log("okkk",attrs["CompName"],attrs["OldName"]);
-              this.instances.forEach((i) => {
-                  if (i.name === attrs["CompName"]) {
-                      let ports = i.ports;
-                      console.log("Before Ports",i,ports);
-                      for (let p in ports) {
-                          if (ports[p].name  === attrs["OldName"]) {
-                              console.log("before", ports[p]);
-                              ports[p].name = attrs["NewName"];
-                              ports[p].properties["direction"] = attrs["Direction"];
-                              ports[p].properties["name"] = attrs["NewName"];
-                              ports[p].properties["number"] = attrs["Number"];
-                              ports[p].properties["role"] = attrs["Role"];
-                              ports[p].properties["type"] = attrs["Type"];
-                              ports[p].properties["kind"] = attrs["Kind"];
-                              console.log("after", ports[p]);
-                              break;
-                          }
-                      }
 
-                      console.log("After Ports",i,ports);
-                  }
-              });
-          }
-          else if (attrs["ViewType"] === ViewType.Component){
+          if (attrs["ViewType"] === ViewType.Component){
               this.components.forEach((i) => {
                   if (i.name === attrs["CompName"]){
                       let ports = i.ports;
