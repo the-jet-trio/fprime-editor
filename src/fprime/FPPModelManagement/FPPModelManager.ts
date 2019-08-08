@@ -4,7 +4,6 @@ import fs from "fs";
 import _ from "lodash";
 import * as path from "path";
 const getDirName = require("path").dirname;
-const mkdirp = require('mkdirp');
 import fprime from "fprime";
 /**
  *
@@ -138,7 +137,8 @@ export default class FPPModelManager {
      */
     public async loadModel(
         config: IConfig, output?: IOutput): Promise<{ [k: string]: string[] }> {
-        
+        // push the current model to undo_stack
+        this.push_curr_state_to_stack(this.undo_stack);
         // Reset all the model object lists
         this.reset();
 
@@ -845,32 +845,8 @@ export default class FPPModelManager {
           });
       }
       if (type === "Port") {
-          if (attrs["ViewType"] === ViewType.InstanceCentric) {
-              console.log("okkk",attrs["CompName"],attrs["OldName"]);
-              this.instances.forEach((i) => {
-                  if (i.name === attrs["CompName"]) {
-                      let ports = i.ports;
-                      console.log("Before Ports",i,ports);
-                      for (let p in ports) {
-                          if (ports[p].name  === attrs["OldName"]) {
-                              console.log("before", ports[p]);
-                              ports[p].name = attrs["NewName"];
-                              ports[p].properties["direction"] = attrs["Direction"];
-                              ports[p].properties["name"] = attrs["NewName"];
-                              ports[p].properties["number"] = attrs["Number"];
-                              ports[p].properties["role"] = attrs["Role"];
-                              ports[p].properties["type"] = attrs["Type"];
-                              ports[p].properties["kind"] = attrs["Kind"];
-                              console.log("after", ports[p]);
-                              break;
-                          }
-                      }
 
-                      console.log("After Ports",i,ports);
-                  }
-              });
-          }
-          else if (attrs["ViewType"] === ViewType.Component){
+          if (attrs["ViewType"] === ViewType.Component){
               this.components.forEach((i) => {
                   if (i.name === attrs["CompName"]){
                       let ports = i.ports;
@@ -910,16 +886,11 @@ export default class FPPModelManager {
         }
         for (var key in this.text) {
             var fileName = path.join(folderPath, key);
-            mkdirp(getDirName(fileName), function(dir_err: any) {
-                if (dir_err) {
-                    throw dir_err;
-                }
-            });
-            fs.writeFile(fileName, this.text[key], (err) => {
-                if (err) {
-                    throw err;
-                }
-            });
+            if (!fs.existsSync(getDirName(fileName))) {
+                fs.mkdirSync(getDirName(fileName));
+            }
+            // fs.mkdirSync(getDirName(fileName));
+            fs.writeFileSync(fileName, this.text[key]);
         }
         console.dir(this.text);
     }
@@ -1171,6 +1142,7 @@ export default class FPPModelManager {
                 this.components = top.components;
                 this.instances = top.instances;
                 this.topologies = top.topologies;
+                fprime.viewManager.updateEditor(this.text);
                 return true;
             }
         }
@@ -1193,7 +1165,8 @@ export default class FPPModelManager {
                 this.porttypes = top.porttypes;
                 this.components = top.components;
                 this.instances = top.instances;
-                this.topologies =top.topologies;
+                this.topologies = top.topologies;
+                fprime.viewManager.updateEditor(this.text);
                 return true;
             }
         }
@@ -1227,8 +1200,8 @@ export default class FPPModelManager {
         this.datatypes = [];
         this.enumtypes = [];
         this.text = {};
-        this.undo_stack = [];
-        this.redo_stack = [];
+        // this.undo_stack = [];
+        // this.redo_stack = [];
     }
 
     private generatePortType(porttypes: any[]): IFPPPortType[] {

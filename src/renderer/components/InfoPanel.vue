@@ -512,6 +512,7 @@
     .info-panel {
         display: block;
         height: 480px;
+        width: 220px;
         position: fixed;
         box-shadow: 0px -0.5px 1px #bdbdbd;
         background-color: white;
