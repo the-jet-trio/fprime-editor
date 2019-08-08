@@ -87,7 +87,7 @@ describe("ViewManager build", () => {
   it("should print error message when the project not exists", async () => {
     await viewManager.build("invalid_project");
     expect(viewManager.OutputMessage.compile)
-      .to.equal("Error: invalid project path\n");
+      .to.equal("Build error:\nError: invalid project path\n");
   });
 
   it("should print compile message", async () => {
@@ -101,7 +101,7 @@ describe("ViewManager build", () => {
      async () => {
     await viewManager.rebuild();
     expect(viewManager.OutputMessage.compile)
-      .to.equal("Error: invalid project path\n");
+      .to.equal("Build error:\nError: invalid project path\n");
   });
 });
 
@@ -191,14 +191,34 @@ describe("ViewManager getSimpleGraph", () => {
     await viewManager.build(__project);
     viewManager.render(viewName);
     expect(viewManager.getSimpleGraphFor(viewName)).to.eql({
-      "#Ref_SG1": ["#Ref_SG1_logTextOut", "#Ref_SG1_logOut"],
-      "#Ref_SG2": ["#Ref_SG2_logTextOut", "#Ref_SG2_logOut"],
-      "#Ref_SG3": ["#Ref_SG3_logTextOut", "#Ref_SG3_logOut"],
-      "#Ref_SG4": ["#Ref_SG4_logTextOut", "#Ref_SG4_logOut"],
-      "#Ref_SG5": ["#Ref_SG5_logTextOut", "#Ref_SG5_logOut"],
+      "#Ref_SG1": ["#Ref_SG1_timeCaller", "#Ref_SG1_cmdRegOut", 
+                  "#Ref_SG1_cmdIn", "#Ref_SG1_schedIn", 
+                  "#Ref_SG1_logTextOut", "#Ref_SG1_logOut",
+                  "#Ref_SG1_cmdResponseOut", "#Ref_SG1_tlmOut"],
+      "#Ref_SG2": ["#Ref_SG2_timeCaller", "#Ref_SG2_cmdRegOut", 
+                  "#Ref_SG2_cmdIn", "#Ref_SG2_schedIn", 
+                  "#Ref_SG2_logTextOut", "#Ref_SG2_logOut",
+                  "#Ref_SG2_cmdResponseOut", "#Ref_SG2_tlmOut"],
+      "#Ref_SG3": ["#Ref_SG3_timeCaller", "#Ref_SG3_cmdRegOut", 
+                  "#Ref_SG3_cmdIn", "#Ref_SG3_schedIn", 
+                  "#Ref_SG3_logTextOut", "#Ref_SG3_logOut",
+                  "#Ref_SG3_cmdResponseOut", "#Ref_SG3_tlmOut"],
+      "#Ref_SG4": ["#Ref_SG4_timeCaller", "#Ref_SG4_cmdRegOut", 
+                  "#Ref_SG4_cmdIn", "#Ref_SG4_schedIn", 
+                  "#Ref_SG4_logTextOut", "#Ref_SG4_logOut",
+                  "#Ref_SG4_cmdResponseOut", "#Ref_SG4_tlmOut"],
+      "#Ref_SG5": ["#Ref_SG5_timeCaller", "#Ref_SG5_cmdRegOut", 
+                  "#Ref_SG5_cmdIn", "#Ref_SG5_schedIn", 
+                  "#Ref_SG5_logTextOut", "#Ref_SG5_logOut",
+                  "#Ref_SG5_cmdResponseOut", "#Ref_SG5_tlmOut"],
       "#Ref_eventLogger": [
         "#Ref_eventLogger_LogRecv",
+        "#Ref_eventLogger_PktSend",
+        "#Ref_eventLogger_FatalAnnounce",
+        "#Ref_eventLogger_pingIn",
+        "#Ref_eventLogger_pingOut",
         "#Ref_eventLogger_LogText",
+        "#Ref_eventLogger_Log",
       ],
       "#Ref_textLogger": ["#Ref_textLogger_TextLogger"],
     });
