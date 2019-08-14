@@ -1,7 +1,7 @@
-# Fprime-editor
+# FPP editor
 [![Build Status](http://128.2.25.105:8080/job/FPP%20Graphical%20Editor/badge/icon)](http://128.2.25.105:8080/job/FPP%20Graphical%20Editor/)
 
-> The joint project between NASA JPL and CMU to proceed the NASA [fprime open source project](https://github.com/nasa/fprime). The next generation of [fprime-visualizer](https://github.com/Real-Rocket-Panda/fprime-visual).
+> The joint project between NASA JPL and CMU to proceed the NASA [fprime open source project](https://github.com/nasa/fprime). Our previous team deleveoped [FPP visualizer](https://github.com/Real-Rocket-Panda/fprime-visual).
 
 ------
 
