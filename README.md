@@ -1,25 +1,39 @@
-# fprime-editor
+# Fprime-editor
 [![Build Status](http://128.2.25.105:8080/job/FPP%20Graphical%20Editor/badge/icon)](http://128.2.25.105:8080/job/FPP%20Graphical%20Editor/)
 
-> The next generation of [fprime-visualizer](https://github.com/Real-Rocket-Panda/fprime-visual)
+> The joint project between NASA JPL and CMU to proceed the NASA [fprime open source project](https://github.com/nasa/fprime). The next generation of [fprime-visualizer](https://github.com/Real-Rocket-Panda/fprime-visual).
 
-#### Build Setup
+------
+
+#### Quick start
+
+- [Download the latest release.](https://github.com/the-jet-trio/fprime-editor/releases/latest)
 
 ``` bash
-# install dependencies
+# Clone the repo
+git clone https://github.com/the-jet-trio/fprime-editor.git
+
+# Install dependencies
 npm install
 
-# serve with hot reload at localhost:9080
+# Serve with hot reload at localhost:9080
 npm run dev
 
-# build electron application for production
+# Build electron application for production
 npm run build
 
-# run unit & end-to-end tests
+# Run fprime backend tests
 npm test
 
-
 ```
+
+## Documentation
+
+Please get familiar with the [FPP language](https://github.com/the-jet-trio/fprime-editor/blob/master/TeamJPL_Source_Lang_Reference_Document.pdf). Explore the [User Guide](https://github.com/the-jet-trio/fprime-editor/blob/master/User%20Manual.pdf) to learn about the editing feature.
+
+## Contributing
+
+Please read through the [Developer's Guide](https://github.com/the-jet-trio/fprime-editor/blob/master/Developers%20Guide.pdf).
 
 ---
 
