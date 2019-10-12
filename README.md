@@ -3,6 +3,8 @@
 
 > The joint project between NASA JPL and CMU to proceed the NASA [fprime open source project](https://github.com/nasa/fprime). Our previous team deleveoped [FPP visualizer](https://github.com/Real-Rocket-Panda/fprime-visual).
 
+![FPP Editor1](https://github.com/the-jet-trio/fprime-editor/blob/master/image2.gif?raw=true)
+![FPP Editor 2](https://github.com/the-jet-trio/fprime-editor/blob/master/image1.gif?raw=true)
 ------
 
 #### Quick start
